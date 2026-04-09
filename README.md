@@ -1,3 +1,10 @@
+## Status
+This project is currently in active development. The application is not yet launched publicly.
+
+### Documentation can be found here:
+[Homescool Master Docs](https://homeschool-master.github.io/homeschool-master-docs/)
+
+
 # React + TypeScript + Vite
 
 This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
