@@ -6,6 +6,7 @@ import RegisterPage from './pages/app/RegisterPage'
 import AboutPage from './pages/marketing/AboutPage'
 import DownloadPage from './pages/marketing/DownloadPage'
 import LandingPage from './pages/marketing/LandingPage'
+import MarketingLayout from './components/marketing/MarketingLayout'
 
 const App = () => {
   return (
@@ -14,11 +15,13 @@ const App = () => {
           <Route element={<ProtectedRoutes/>}>
               <Route path='/dashboard' element={<DashboardPage/>} />
           </Route>
-          <Route path='/login' element={<LoginPage/>}/>
-          <Route path='/register' element={<RegisterPage/>}/>
-          <Route path='/about' element={<AboutPage/>}/>
-          <Route path='/download' element={<DownloadPage/>}/>
-          <Route path='/' element={<LandingPage/>}/>
+            <Route element={<MarketingLayout />} >
+            <Route path='/login' element={<LoginPage/>}/>
+            <Route path='/register' element={<RegisterPage/>}/>
+            <Route path='/about' element={<AboutPage/>}/>
+            <Route path='/download' element={<DownloadPage/>}/>
+            <Route path='/' element={<LandingPage/>}/>
+          </Route>
         </Routes>
     </Router>
   )
