@@ -4,7 +4,7 @@ import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
 import api from '../../services/api'
-import { login } from '../../store/authSlice'
+import { setUser } from '../../store/authSlice'
 import type { AppDispatch } from '../../store'
 
 const loginSchema = z.object({
@@ -30,12 +30,9 @@ const LoginPage = () => {
   const onSubmit = async (data: LoginFormData) => {
     try {
       const response = await api.post('/api/v1/auth/login', data)
-      dispatch(login({
-        token: response.data.accessToken,
-        user: response.data.user,
-      }))
+      dispatch(setUser(response.data.user))
       navigate('/dashboard')
-    } catch (error: unknown) {
+    } catch {
       setError('root', { message: 'Invalid email or password' })
     }
   }
