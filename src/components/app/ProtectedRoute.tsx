@@ -3,10 +3,10 @@ import { Navigate, Outlet } from 'react-router-dom';
 import type { RootState } from '../../store';
 
 const ProtectedRoutes = () => {
-  const token = useSelector((state: RootState) => state.auth.token)
+  const user = useSelector((state: RootState) => state.auth.user)
 
 return (
-    token ? <Outlet/> : <Navigate to='/login'/>
+    user ? <Outlet/> : <Navigate to='/login'/>
   )
 };
 
