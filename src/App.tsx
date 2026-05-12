@@ -12,6 +12,7 @@ import { useDispatch, useSelector } from 'react-redux'
 import type { RootState, AppDispatch } from './store'
 import { setUser } from './store/authSlice'
 import api from './services/api'
+import Navbar from './components/marketing/Navbar'
 
 const App = () => {
   const dispatch = useDispatch<AppDispatch>()
@@ -36,6 +37,7 @@ const App = () => {
 
   return (
     <Router>
+      <Navbar />
       <Routes>
         <Route element={<ProtectedRoutes />}>
           <Route path='/dashboard' element={<DashboardPage />} />
