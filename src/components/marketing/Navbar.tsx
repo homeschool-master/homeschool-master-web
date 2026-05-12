@@ -1,6 +1,6 @@
 import { Link, useNavigate } from 'react-router-dom'
-import type { AppDispatch, RootState } from '../../store'
 import { useDispatch, useSelector } from 'react-redux'
+import type { AppDispatch, RootState } from '../../store'
 import { clearUser } from '../../store/authSlice'
 import api from '../../services/api'
 
@@ -16,21 +16,32 @@ const Navbar = () => {
   }
 
   return (
-    <nav>
-      <Link to='/'>Home</Link>
-      <Link to='/about'>About</Link>
-      <Link to='/download'>Download</Link>
-      { user ?
-        <>
-          <Link to='/dashboard'>Dashboard</Link>
-          <button onClick={handleLogout}>Logout</button>
-        </>
-        :
-        <>
-          <Link to='/login'>Login</Link>
-          <Link to='/register'>Register</Link>
-        </>
-      }
+    <nav className='navbar'>
+      <Link to='/' className='navbar__logo'>
+        <span className='navbar__logo-icon'>🌿</span>
+        <span className='navbar__logo-homeschool'>HOMESCHOOL</span>
+        <span className='navbar__logo-master'>MASTER</span>
+      </Link>
+      <ul className='navbar__links'>
+        <li><Link to='/'>Home</Link></li>
+        <li><a href='#features'>Features</a></li>
+        <li><a href='#pricing'>Pricing</a></li>
+        <li><Link to='/about'>About Us</Link></li>
+        <li><a href='#contact'>Contact</a></li>
+      </ul>
+      <div className='navbar__actions'>
+        {user ? (
+          <>
+            <Link to='/dashboard' className='navbar__btn navbar__btn--outline'>Dashboard</Link>
+            <button className='navbar__btn navbar__btn--filled' onClick={handleLogout}>Logout</button>
+          </>
+        ) : (
+          <>
+            <Link to='/login' className='navbar__btn navbar__btn--outline'>Log In</Link>
+            <Link to='/download' className='navbar__btn navbar__btn--filled'>Download</Link>
+          </>
+        )}
+      </div>
     </nav>
   )
 }
