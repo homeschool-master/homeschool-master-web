@@ -1,13 +1,13 @@
 @use 'variables' as *;
 
 .landing {
-  background: linear-gradient(to bottom, $color-gradient-light, $color-gradient-dark);
   min-height: 100vh;
   font-family: $font-family-base;
   color: $color-text;
 
   // Hero
   &__hero {
+    background: linear-gradient(to bottom, $color-gradient-light, $color-gradient-dark);
     display: flex;
     align-items: center;
     justify-content: space-between;
@@ -33,6 +33,11 @@
 
   &__hero-sub {
     color: $color-text;
+    font-size: 1rem;
+    line-height: 1.5;
+  }
+    &__hero-how-it-does {
+    color: $color-headline;
     font-size: 1rem;
     line-height: 1.5;
   }
@@ -125,6 +130,7 @@
 
   // Trust / Quote
   &__trust {
+    background-color: #fbf7ee;
     display: flex;
     align-items: center;
     padding: $spacing-xl;

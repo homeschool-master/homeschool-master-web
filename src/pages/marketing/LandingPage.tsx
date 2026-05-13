@@ -24,7 +24,7 @@ const LandingPage = () => {
             Homeschool planning that actually fits your family
           </h1>
           <p className='landing__hero-sub'>The modern homeschool planner you wish existed.</p>
-          <p className='landing__hero-sub'>Now it does.</p>
+          <p className='landing__hero-how-it-does'>Now it does.</p>
           <button className='landing__hero-cta'>Get the App</button>
           <p className='landing__hero-availability'>Available on iOS and Android.</p>
         </div>

@@ -19,9 +19,14 @@
     letter-spacing: 0.5px;
 
     &-icon {
-      color: $color-accent;
-      font-size: 1.1rem;
+      display: flex;
+      align-items: center;
       margin-right: 0.2rem;
+
+      img {
+        height: 50px;
+        width: auto;
+      }
     }
 
     &-homeschool {

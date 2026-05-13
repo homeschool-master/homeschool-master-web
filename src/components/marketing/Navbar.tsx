@@ -3,6 +3,7 @@ import { useDispatch, useSelector } from 'react-redux'
 import type { AppDispatch, RootState } from '../../store'
 import { clearUser } from '../../store/authSlice'
 import api from '../../services/api'
+import logo from '../../assets/logo.png'
 
 const Navbar = () => {
   const user = useSelector((state: RootState) => state.auth.user)
@@ -18,7 +19,7 @@ const Navbar = () => {
   return (
     <nav className='navbar'>
       <Link to='/' className='navbar__logo'>
-        <span className='navbar__logo-icon'>🌿</span>
+        <span className='navbar__logo-icon'><img src={logo} alt='Homeschool Master' /></span>
         <span className='navbar__logo-homeschool'>HOMESCHOOL</span>
         <span className='navbar__logo-master'>MASTER</span>
       </Link>
