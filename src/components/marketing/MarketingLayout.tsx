@@ -1,5 +1,4 @@
 import { Outlet } from 'react-router-dom'
-import Footer from './Footer'
 
 const MarketingLayout = () => {
   return (
@@ -7,7 +6,6 @@ const MarketingLayout = () => {
       <main>
         <Outlet />
       </main>
-      <Footer />
     </div>
   )
 }

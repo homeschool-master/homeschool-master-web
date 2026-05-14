@@ -4,6 +4,7 @@
   min-height: 100vh;
   font-family: $font-family-base;
   color: $color-text;
+  background-color: $color-white;
 
   // Hero
   &__hero {
@@ -36,7 +37,8 @@
     font-size: 1rem;
     line-height: 1.5;
   }
-    &__hero-how-it-does {
+
+  &__hero-how-it-does {
     color: $color-headline;
     font-size: 1rem;
     line-height: 1.5;
@@ -73,6 +75,11 @@
     display: flex;
     justify-content: center;
     align-items: center;
+  }
+
+  &__hero-screenshot {
+    width: 260px;
+    border-radius: 24px;
   }
 
   // Phone mockup placeholder
@@ -128,14 +135,12 @@
     }
   }
 
-  // Trust / Quote
-  &__trust {
+  // Founders / Quote
+  &__founders {
     background-color: #fbf7ee;
     display: flex;
     align-items: center;
     padding: $spacing-xl;
-    max-width: 1200px;
-    margin: 0 auto;
     gap: $spacing-xl;
   }
 
@@ -150,13 +155,8 @@
     width: 80px;
     height: 80px;
     border-radius: 50%;
-    background-color: $color-gradient-dark;
+    object-fit: cover;
     flex-shrink: 0;
-    overflow: hidden;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 2.5rem;
   }
 
   &__quote-content {
@@ -202,7 +202,7 @@
 
   // Features
   &__features {
-    padding: $spacing-xl;
+    padding: $spacing-xl $spacing-xl 0;
     max-width: 1200px;
     margin: 0 auto;
   }
@@ -251,6 +251,11 @@
     justify-content: center;
   }
 
+  &__feature-screenshot {
+    width: 220px;
+    border-radius: 20px;
+  }
+
   &__feature-content {
     flex: 1;
   }
@@ -275,5 +280,368 @@
     color: $color-text;
     line-height: 1.6;
     font-size: 0.95rem;
+  }
+
+  // Testimonials
+  &__testimonials {
+    padding: $spacing-xl;
+    text-align: center;
+    background-color: $color-gradient-light;
+    width: 100%;
+  }
+
+  &__testimonials-label {
+    color: $color-accent;
+    font-size: 0.85rem;
+    font-weight: 600;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    margin-bottom: $spacing-sm;
+  }
+
+  &__testimonials-headline {
+    font-size: 1.75rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    color: $color-headline;
+    margin-bottom: $spacing-lg;
+  }
+
+  &__testimonials-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: $spacing-lg;
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+
+  &__testimonial-card {
+    // background: $color-white;
+    border-radius: 12px;
+    padding: $spacing-lg;
+    text-align: center;
+    // box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  &__testimonial-photo {
+    width: 120px;
+    height: 120px;
+    border-radius: 8px;
+    object-fit: cover;
+    margin-bottom: $spacing-sm;
+    
+  }
+
+  &__stars {
+    color: $color-accent;
+    font-size: 1rem;
+    margin-bottom: $spacing-sm;
+    justify-content: center;
+    display: flex;
+  }
+
+  &__testimonial-quote {
+    font-style: italic;
+    font-size: 0.9rem;
+    line-height: 1.6;
+    color: $color-text;
+    margin-bottom: $spacing-sm;
+
+    &::before { content: '"'; }
+    &::after { content: '"'; }
+  }
+
+  &__testimonial-name {
+    font-weight: 600;
+    font-size: 0.85rem;
+    color: $color-text;
+  }
+
+  // Pricing
+  &__pricing {
+    padding: $spacing-xl;
+    max-width: 800px;
+    margin: 0 auto;
+    text-align: center;
+  }
+
+  &__pricing-label {
+    color: $color-accent;
+    font-size: 0.85rem;
+    font-weight: 600;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    margin-bottom: $spacing-sm;
+  }
+
+  &__pricing-headline {
+    font-size: 1.75rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    color: $color-headline;
+    margin-bottom: $spacing-sm;
+  }
+
+  &__pricing-subtext {
+    color: $color-text;
+    margin-bottom: $spacing-lg;
+  }
+
+  &__pricing-card {
+    display: flex;
+    align-items: center;
+    gap: $spacing-xl;
+    background: $color-white;
+    border: 2px solid $color-gradient-dark;
+    border-radius: 16px;
+    padding: $spacing-lg $spacing-xl;
+    margin-bottom: $spacing-lg;
+    text-align: left;
+  }
+
+  &__pricing-price {
+    display: flex;
+    align-items: center;
+    gap: $spacing-sm;
+    flex-shrink: 0;
+  }
+
+  &__pricing-amount {
+    font-size: 3rem;
+    font-weight: 800;
+    color: $color-accent;
+  }
+
+  &__pricing-billing {
+    display: flex;
+    flex-direction: column;
+    font-size: 0.85rem;
+    color: $color-text;
+    opacity: 0.8;
+  }
+
+  &__pricing-features {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: $spacing-xs;
+  }
+
+  &__pricing-feature {
+    font-size: 0.9rem;
+    color: $color-text;
+
+    &::before {
+      content: '✓ ';
+      color: $color-accent;
+      font-weight: 700;
+    }
+  }
+
+  // FAQ
+  &__faq {
+    padding: $spacing-xl;
+    max-width: 800px;
+    margin: 0 auto;
+    text-align: center;
+  }
+
+  &__faq-label {
+    color: $color-accent;
+    font-size: 1.75rem;
+    // font-weight: 600;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    margin-bottom: $spacing-sm;
+  }
+
+  &__faq-headline {
+    font-size: 1.75rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    color: $color-headline;
+    margin-bottom: $spacing-lg;
+  }
+
+  &__faq-list {
+    text-align: left;
+    display: flex;
+    flex-direction: column;
+    gap: $spacing-sm;
+  }
+
+  &__faq-item {
+    background-color: #fef0ca;
+    border: 1.5px solid #eaa346;
+    border-radius: 50px;
+    overflow: hidden;
+    height: 30%;
+  }
+
+  &__faq-question {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.4rem $spacing-lg;
+    font-size: 0.95rem;
+    font-weight: 400;
+    color: $color-text;
+    text-align: left;
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-family: $font-family-base;
+  }
+
+  &__faq-chevron {
+    font-size: 2rem;
+    font-weight: 300;
+    transition: transform 0.2s;
+    transform: rotate(0deg);
+    flex-shrink: 0;
+    line-height: 1;
+
+    &--open {
+      transform: rotate(90deg);
+    }
+  }
+
+  &__faq-answer {
+    padding: 0 $spacing-lg $spacing-md;
+    font-size: 0.9rem;
+    color: $color-text;
+    line-height: 1.6;
+    border-radius: 0 0 50px 50px;
+  }
+
+  &__faq-contact {
+    margin-top: $spacing-lg;
+    font-size: 0.9rem;
+    color: $color-text;
+
+    a {
+      color: $color-accent;
+      font-weight: 600;
+    }
+  }
+
+  // CTA Banner
+  &__cta-banner {
+    background: linear-gradient(to bottom, $color-gradient-light, $color-gradient-dark);
+    padding: $spacing-xl;
+    text-align: center;
+  }
+
+  &__cta-banner-headline {
+    font-size: 2rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    color: $color-headline;
+    margin-bottom: $spacing-sm;
+  }
+
+  &__cta-banner-subtext {
+    color: $color-text;
+    margin-bottom: $spacing-md;
+  }
+
+  // Footer
+  &__footer {
+    background-color: $color-white;
+    padding: $spacing-xl;
+    display: grid;
+    grid-template-columns: 2fr repeat(4, 1fr);
+    gap: $spacing-lg;
+    align-items: start;
+  }
+
+  &__footer-brand {
+    display: flex;
+    flex-direction: column;
+    gap: $spacing-sm;
+  }
+
+  &__footer-logo {
+    display: flex;
+    align-items: center;
+    gap: 0.3rem;
+    text-decoration: none;
+    font-weight: 800;
+    font-size: 1rem;
+    color: $color-text;
+    margin-bottom: $spacing-sm;
+  }
+
+  &__footer-logo-master {
+    color: $color-master;
+    margin-left: 0.2rem;
+  }
+
+  &__footer-tagline {
+    font-size: 0.8rem;
+    color: $color-text;
+    opacity: 0.8;
+    line-height: 1.5;
+  }
+
+  &__footer-socials {
+    display: flex;
+    gap: $spacing-sm;
+  }
+
+  &__footer-social {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background-color: $color-text;
+    color: $color-white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.75rem;
+    font-weight: 700;
+  }
+
+  &__footer-column {
+    display: flex;
+    flex-direction: column;
+    gap: $spacing-sm;
+
+    ul {
+      display: flex;
+      flex-direction: column;
+      gap: $spacing-xs;
+    }
+
+    a {
+      font-size: 0.85rem;
+      color: $color-text;
+      opacity: 0.8;
+
+      &:hover {
+        opacity: 1;
+      }
+    }
+  }
+
+  &__footer-column-heading {
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: $color-text;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+  }
+
+  &__footer-copyright {
+    grid-column: 1 / -1;
+    font-size: 0.8rem;
+    color: $color-text;
+    opacity: 0.6;
+    border-top: 1px solid rgba(0, 0, 0, 0.1);
+    padding-top: $spacing-md;
   }
 }
