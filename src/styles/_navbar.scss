@@ -21,16 +21,17 @@
     &-icon {
       display: flex;
       align-items: center;
-      margin-right: 0.2rem;
+      margin-right: -8px;
 
       img {
-        height: 50px;
+        height: 40px;
         width: auto;
       }
     }
 
     &-homeschool {
       color: $color-text;
+      margin-left: 0px;
     }
 
     &-master {
