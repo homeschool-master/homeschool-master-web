@@ -111,39 +111,32 @@ export const LANDING_CONTENT = {
     headline: 'Things Parents Ask Before They Sign Up',
     items: [
       {
-        question: 'Will Homeschool Master work for any approach to homeschool?',
-        answer:
-          'Yes. The app flexes around any approach, whether you are structured or relaxed, single-subject or multi-track. Whenever your family leads, the app keeps up.',
+        question: 'Will Homeschool Master work for the way we homeschool?',
+        answer: 'Yes. We built it to flex around any methodology: classical, Charlotte Mason, eclectic, unschooling, or your own mix.',
       },
       {
         question: 'Can I track multiple kids in one account?',
-        answer:
-          'Yes, unlimited kids per account. Each child has their own profile, schedule, and gradebook.',
+        answer: 'Yes. Add as many kids as you have. Each gets their own profile, schedule, grades, and records.',
       },
       {
-        question: 'Does it work on iPhone and iPad?',
-        answer:
-          'Yes, Homeschool Master is available on iOS and Android, with full support for iPhone and iPad.',
+        question: 'Does it work on iPhone and Android?',
+        answer: 'Both. Download from the App Store or Google Play. Your data syncs across all your devices.',
       },
       {
         question: 'Can I generate official transcripts for high schoolers?',
-        answer:
-          'Yes. You can generate and export transcripts formatted for college applications and official records.',
+        answer: 'Yes. Generate transcripts, report cards, and progress reports in seconds, formatted for college applications and state requirements.',
       },
       {
-        question: 'Is my family data private?',
-        answer:
-          'Completely. Your data is never sold or shared. It belongs to your family, full stop.',
+        question: "Is my family's data private?",
+        answer: "Always. We don't sell your data, run ads, or share anything with third parties.",
       },
       {
         question: 'Can I cancel anytime?',
-        answer:
-          'Yes, no contracts, no commitments. Cancel anytime directly from your account settings.',
+        answer: 'Yes. Cancel through your App Store account whenever you want. No contracts, no fees.',
       },
       {
         question: 'Can I export my data if I leave?',
-        answer:
-          'Yes. You can export your full data at any time in standard formats.',
+        answer: 'Yes. Download all your data: events, grades, transcripts, and expenses. Anytime.',
       },
     ],
     contactText: 'Still have questions?',
@@ -156,7 +149,7 @@ export const LANDING_CONTENT = {
     availability: 'Available on iOS and Android.',
   },
   footer: {
-    tagline: 'The modern homeschool planner your family actually needs.',
+    tagline: 'THE MODERN HOMESCHOOL PLANNER',
     socials: ['facebook', 'instagram', 'youtube', 'twitter', 'linkedin'],
     columns: [
       {
@@ -165,17 +158,20 @@ export const LANDING_CONTENT = {
       },
       {
         heading: 'Resources',
-        links: ['Help', 'FAQ', 'Blog', 'Privacy', 'Terms'],
+        links: ['Help/Docs', 'FAQ', 'Free Resources', 'Blog'],
       },
       {
         heading: 'Company',
-        links: ['About Us', 'Contact', 'Press'],
-      },
-      {
-        heading: 'Mobile',
-        links: ['iOS App', 'Android App'],
+        links: ['About Us', 'Contact'],
       },
     ],
-    copyright: '© 2025 Homeschool Master. All rights reserved.',
+    newsletter: {
+      heading: 'Newsletter',
+      subtext: 'Homeschooling tips in your inbox.',
+      placeholder: 'enter email here',
+      buttonText: 'Subscribe',
+    },
+    legalLinks: ['Terms', 'Privacy', 'Cookies', 'Refund'],
+    copyright: '© 2026 Homeschool Master. All rights reserved.',
   },
 }

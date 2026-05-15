@@ -25,7 +25,7 @@ const testimonialPhotos: Record<string, string> = {
 }
 
 const LandingPage = () => {
-  const { hero, founders, features, testimonials, pricing, faq, ctaBanner, footer } = LANDING_CONTENT
+  const { hero, founders, features, testimonials, pricing, faq, ctaBanner } = LANDING_CONTENT
   const [openFaq, setOpenFaq] = useState<number | null>(null)
 
   return (
