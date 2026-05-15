@@ -1,0 +1,253 @@
+@use 'variables' as *;
+@use 'mixins' as *;
+
+.footer {
+  font-family: $font-family-base;
+
+  &__main {
+    background-color: $color-white;
+    padding: $spacing-xl 0;
+    border-top: 1px solid rgba(0, 0, 0, 0.08);
+  }
+
+  &__inner {
+    @include container;
+    display: grid;
+    grid-template-columns: 2fr 1fr 1fr 1fr 1.5fr;
+    gap: $spacing-lg;
+    align-items: start;
+  }
+
+  &__brand {
+    display: flex;
+    flex-direction: column;
+    gap: $spacing-sm;
+  }
+
+  &__logo {
+    display: flex;
+    align-items: center;
+    gap: 0.3rem;
+    text-decoration: none;
+    font-weight: 800;
+    font-size: 1rem;
+
+    img {
+      height: 24px;
+      width: auto;
+    }
+  }
+
+  &__logo-homeschool {
+    color: $color-text;
+  }
+
+  &__logo-master {
+    color: $color-master;
+  }
+
+  &__tagline {
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: $color-text;
+    opacity: 0.6;
+    letter-spacing: 0.5px;
+  }
+
+  &__socials {
+    display: flex;
+    gap: $spacing-sm;
+    margin-top: $spacing-xs;
+  }
+
+  &__social {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background-color: $color-accent;
+    color: $color-white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-decoration: none;
+
+    &:hover {
+      background-color: #c06e09;
+    }
+  }
+
+  &__column {
+    display: flex;
+    flex-direction: column;
+    gap: $spacing-sm;
+
+    ul {
+      display: flex;
+      flex-direction: column;
+      gap: $spacing-xs;
+      list-style: none;
+    }
+
+    a {
+      font-size: 0.85rem;
+      color: $color-text;
+      opacity: 0.75;
+      text-decoration: none;
+
+      &:hover {
+        opacity: 1;
+        color: $color-accent;
+      }
+    }
+  }
+
+  &__column-heading {
+    font-size: 0.8rem;
+    font-weight: 700;
+    color: $color-text;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: $spacing-xs;
+  }
+
+  &__newsletter {
+    display: flex;
+    flex-direction: column;
+    gap: $spacing-sm;
+  }
+
+  &__newsletter-subtext {
+    font-size: 0.85rem;
+    color: $color-text;
+    opacity: 0.75;
+    line-height: 1.4;
+  }
+
+  &__newsletter-form {
+    display: flex;
+    flex-direction: column;
+    gap: $spacing-xs;
+  }
+
+  &__newsletter-input {
+    padding: 0.5rem 0.75rem;
+    border: 1.5px solid $color-gradient-dark;
+    border-radius: 8px;
+    font-size: 0.85rem;
+    font-family: $font-family-base;
+    color: $color-text;
+    background: $color-white;
+    outline: none;
+
+    &:focus {
+      border-color: $color-accent;
+    }
+
+    &::placeholder {
+      color: $color-text;
+      opacity: 0.4;
+      font-style: italic;
+    }
+  }
+
+  &__newsletter-btn {
+    padding: 0.5rem 1rem;
+    background-color: $color-accent;
+    color: $color-white;
+    border: none;
+    border-radius: 8px;
+    font-size: 0.8rem;
+    font-weight: 700;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    cursor: pointer;
+    font-family: $font-family-base;
+    align-self: flex-start;
+
+    &:hover {
+      background-color: #c06e09;
+    }
+  }
+
+  &__bottom {
+    background-color: $color-gradient-dark;
+    padding: $spacing-sm 0;
+  }
+
+  &__bottom-inner {
+    @include container;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  &__copyright {
+    font-size: 0.75rem;
+    color: $color-text;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    opacity: 0.8;
+  }
+
+  &__legal {
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+    font-size: 0.75rem;
+
+    a {
+      color: $color-text;
+      text-decoration: none;
+      font-weight: 500;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      opacity: 0.8;
+
+      &:hover {
+        opacity: 1;
+      }
+    }
+  }
+
+  &__legal-dot {
+    opacity: 0.5;
+  }
+
+  // Responsive
+  @include respond-to(mobile) {
+    &__inner {
+      grid-template-columns: 1fr 1fr;
+    }
+
+    &__brand {
+      grid-column: 1 / -1;
+    }
+
+    &__newsletter {
+      grid-column: 1 / -1;
+    }
+
+    &__bottom-inner {
+      flex-direction: column;
+      gap: $spacing-sm;
+      text-align: center;
+    }
+  }
+
+  @include respond-to(tablet) {
+    &__inner {
+      grid-template-columns: 1fr 1fr 1fr;
+    }
+
+    &__brand {
+      grid-column: 1 / -1;
+    }
+
+    &__newsletter {
+      grid-column: 1 / -1;
+    }
+  }
+}
