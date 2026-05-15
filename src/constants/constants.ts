@@ -71,21 +71,21 @@ export const LANDING_CONTENT = {
         quote:
           'I tried four other homeschool apps before this one. Homeschool Master is the first that actually works when your kids have three different schedules.',
         name: 'Sara M.',
-        rating: 5,
+        role: 'Mom of 3',
         photo: 'testimonial-1',
       },
       {
         quote:
           'Generating my high schooler transcript took five minutes. The planner and an entire semester organized in under two hours.',
-        name: 'Mom of 3',
-        rating: 5,
+        name: 'Jennifer L.',
+        role: 'Mom of 3',
         photo: 'testimonial-2',
       },
       {
         quote:
           'For the first time, my husband can pull up the app and see exactly what each kid is working on. We are finally on the same page.',
-        name: 'Carrie L.',
-        rating: 5,
+        name: 'Lauren K.',
+        role: 'Mom of 2',
         photo: 'testimonial-3',
       },
     ],

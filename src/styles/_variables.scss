@@ -18,3 +18,16 @@ $spacing-sm: 0.5rem;
 $spacing-md: 1rem;
 $spacing-lg: 2rem;
 $spacing-xl: 4rem;
+$spacing-xxl: 8rem;
+
+// Breakpoints
+$bp-mobile: 375px;
+$bp-tablet: 768px;
+$bp-laptop: 1024px;
+$bp-desktop: 1280px;
+
+// Container
+$container-max-width: 1280px;
+$container-padding-mobile: 1rem;
+$container-padding-tablet: 2rem;
+$container-padding-desktop: 4rem;

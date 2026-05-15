@@ -18,30 +18,32 @@ const Navbar = () => {
 
   return (
     <nav className='navbar'>
-      <Link to='/' className='navbar__logo'>
-        <span className='navbar__logo-icon'><img src={logo} alt='Homeschool Master' /></span>
-        <span className='navbar__logo-homeschool'>HOMESCHOOL</span>
-        <span className='navbar__logo-master'>MASTER</span>
-      </Link>
-      <ul className='navbar__links'>
-        <li><Link to='/'>Home</Link></li>
-        <li><a href='#features'>Features</a></li>
-        <li><a href='#pricing'>Pricing</a></li>
-        <li><Link to='/about'>About Us</Link></li>
-        <li><a href='#contact'>Contact</a></li>
-      </ul>
-      <div className='navbar__actions'>
-        {user ? (
-          <>
-            <Link to='/dashboard' className='navbar__btn navbar__btn--outline'>Dashboard</Link>
-            <button className='navbar__btn navbar__btn--filled' onClick={handleLogout}>Logout</button>
-          </>
-        ) : (
-          <>
-            <Link to='/login' className='navbar__btn navbar__btn--outline'>Log In</Link>
-            <Link to='/download' className='navbar__btn navbar__btn--filled'>Download</Link>
-          </>
-        )}
+      <div className='navbar__inner'>
+        <Link to='/' className='navbar__logo'>
+          <span className='navbar__logo-icon'><img src={logo} alt='Homeschool Master' /></span>
+          <span className='navbar__logo-homeschool'>HOMESCHOOL</span>
+          <span className='navbar__logo-master'>MASTER</span>
+        </Link>
+        <ul className='navbar__links'>
+          <li><Link to='/'>Home</Link></li>
+          <li><a href='#features'>Features</a></li>
+          <li><a href='#pricing'>Pricing</a></li>
+          <li><Link to='/about'>About Us</Link></li>
+          <li><a href='#contact'>Contact</a></li>
+        </ul>
+        <div className='navbar__actions'>
+          {user ? (
+            <>
+              <Link to='/dashboard' className='navbar__btn navbar__btn--outline'>Dashboard</Link>
+              <button className='navbar__btn navbar__btn--filled' onClick={handleLogout}>Logout</button>
+            </>
+          ) : (
+            <>
+              <Link to='/login' className='navbar__btn navbar__btn--outline'>Log In</Link>
+              <Link to='/download' className='navbar__btn navbar__btn--filled'>Download</Link>
+            </>
+          )}
+        </div>
       </div>
     </nav>
   )
