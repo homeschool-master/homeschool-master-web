@@ -705,4 +705,149 @@
     border-top: 1px solid rgba(0, 0, 0, 0.1);
     padding-top: $spacing-md;
   }
+
+  // Responsive
+  @include respond-to(mobile) {
+    &__hero-inner {
+      flex-direction: column;
+      text-align: center;
+      padding-top: $spacing-lg;
+      padding-bottom: $spacing-lg;
+    }
+
+    &__hero-content {
+      max-width: 100%;
+    }
+
+    &__hero-headline {
+      font-size: 1.5rem;
+    }
+
+    &__hero-screenshot {
+      width: 200px;
+    }
+
+    &__founders-inner {
+      flex-direction: column;
+      text-align: center;
+    }
+
+    &__quote {
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+    }
+
+    &__values {
+      align-items: center;
+    }
+
+    &__features-headline {
+      font-size: 1.25rem;
+    }
+
+    &__features-list {
+      padding: 0;
+    }
+
+    &__feature {
+      flex-direction: column;
+      text-align: center;
+
+      &--reverse {
+        flex-direction: column;
+      }
+    }
+
+    &__feature-phone {
+      width: 100%;
+    }
+
+    &__feature-screenshot {
+      max-width: 220px;
+    }
+
+    &__testimonials-grid {
+      grid-template-columns: 1fr;
+    }
+
+    &__testimonials-headline {
+      font-size: 1.25rem;
+    }
+
+    &__pricing-layout {
+      flex-direction: column;
+      align-items: center;
+    }
+
+    &__pricing-headline {
+      font-size: 1.25rem;
+    }
+
+    &__faq-headline {
+      font-size: 1.25rem;
+    }
+
+    &__cta-banner-headline {
+      font-size: 1.4rem;
+    }
+
+    &__footer-inner {
+      grid-template-columns: 1fr 1fr;
+      gap: $spacing-md;
+    }
+
+    &__footer-brand {
+      grid-column: 1 / -1;
+    }
+
+    &__footer-copyright {
+      grid-column: 1 / -1;
+    }
+  }
+
+  @include respond-to(tablet) {
+    &__hero-headline {
+      font-size: 1.75rem;
+    }
+
+    &__hero-inner {
+      flex-direction: column;
+      text-align: center;
+    }
+
+    &__hero-content {
+      max-width: 100%;
+    }
+
+    &__testimonials-grid {
+      grid-template-columns: 1fr;
+    }
+
+    &__feature {
+      gap: $spacing-md;
+    }
+
+    &__footer-inner {
+      grid-template-columns: 1fr 1fr 1fr;
+    }
+
+    &__footer-brand {
+      grid-column: 1 / -1;
+    }
+
+    &__footer-copyright {
+      grid-column: 1 / -1;
+    }
+  }
+
+  @include respond-to(laptop) {
+    &__hero-headline {
+      font-size: 2rem;
+    }
+
+    &__testimonials-grid {
+      grid-template-columns: repeat(3, 1fr);
+    }
+  }
 }

@@ -1,0 +1,28 @@
+@use 'variables' as *;
+
+@mixin container {
+  width: 100%;
+  max-width: $container-max-width;
+  margin: 0 auto;
+  padding: 0 $container-padding-mobile;
+
+  @media (min-width: $bp-tablet) {
+    padding: 0 $container-padding-tablet;
+  }
+
+  @media (min-width: $bp-desktop) {
+    padding: 0 $container-padding-desktop;
+  }
+}
+
+@mixin respond-to($bp) {
+  @if $bp == mobile {
+    @media (max-width: #{$bp-tablet - 1px}) { @content; }
+  } @else if $bp == tablet {
+    @media (min-width: $bp-tablet) and (max-width: #{$bp-laptop - 1px}) { @content; }
+  } @else if $bp == laptop {
+    @media (min-width: $bp-laptop) and (max-width: #{$bp-desktop - 1px}) { @content; }
+  } @else if $bp == desktop {
+    @media (min-width: $bp-desktop) { @content; }
+  }
+}

@@ -1,6 +1,4 @@
 @use 'variables' as *;
-
-@use 'variables' as *;
 @use 'mixins' as *;
 
 .navbar {
@@ -39,7 +37,6 @@
 
     &-homeschool {
       color: $color-text;
-      margin-left: 0px;
     }
 
     &-master {
@@ -99,6 +96,16 @@
       &:hover {
         background-color: #c06e09;
       }
+    }
+  }
+
+  @include respond-to(mobile) {
+    &__links {
+      display: none;
+    }
+
+    &__actions {
+      margin-left: auto;
     }
   }
 }
