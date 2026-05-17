@@ -49,15 +49,16 @@
   &__tagline {
     font-size: 0.75rem;
     font-weight: 600;
-    color: $color-text;
-    opacity: 0.6;
+    color: #231f20;
     letter-spacing: 0.5px;
+    padding-left: 28px;
   }
 
   &__socials {
     display: flex;
     gap: $spacing-sm;
     margin-top: $spacing-xs;
+    padding-left: 28px;
   }
 
   &__social {
@@ -92,13 +93,11 @@
 
     a {
       font-size: 0.85rem;
-      color: $color-text;
-      opacity: 0.75;
+      color: #d97b0a;
       text-decoration: none;
 
       &:hover {
-        opacity: 1;
-        color: $color-accent;
+        opacity: 0.7;
       }
     }
   }
@@ -106,7 +105,7 @@
   &__column-heading {
     font-size: 0.8rem;
     font-weight: 700;
-    color: $color-text;
+    color: #231f20;
     text-transform: uppercase;
     letter-spacing: 1px;
     margin-bottom: $spacing-xs;
@@ -120,8 +119,7 @@
 
   &__newsletter-subtext {
     font-size: 0.85rem;
-    color: $color-text;
-    opacity: 0.75;
+    color: #231f20;
     line-height: 1.4;
   }
 
@@ -132,14 +130,15 @@
   }
 
   &__newsletter-input {
-    padding: 0.5rem 0.75rem;
+    padding: 0.5rem 1rem;
     border: 1.5px solid $color-gradient-dark;
-    border-radius: 8px;
+    border-radius: 50px;
     font-size: 0.85rem;
     font-family: $font-family-base;
     color: $color-text;
     background: $color-white;
     outline: none;
+    width: 100%;
 
     &:focus {
       border-color: $color-accent;
@@ -153,11 +152,10 @@
   }
 
   &__newsletter-btn {
-    padding: 0.5rem 1rem;
-    background-color: $color-accent;
-    color: $color-white;
+    padding: 0;
+    background: none;
     border: none;
-    border-radius: 8px;
+    color: $color-accent;
     font-size: 0.8rem;
     font-weight: 700;
     letter-spacing: 1px;
@@ -165,9 +163,10 @@
     cursor: pointer;
     font-family: $font-family-base;
     align-self: flex-start;
+    text-decoration: none;
 
     &:hover {
-      background-color: #c06e09;
+      opacity: 0.7;
     }
   }
 
@@ -185,11 +184,10 @@
 
   &__copyright {
     font-size: 0.75rem;
-    color: $color-text;
+    color: #ffffff;
     font-weight: 500;
     text-transform: uppercase;
     letter-spacing: 0.5px;
-    opacity: 0.8;
   }
 
   &__legal {
@@ -199,20 +197,20 @@
     font-size: 0.75rem;
 
     a {
-      color: $color-text;
+      color: #ffffff;
       text-decoration: none;
       font-weight: 500;
       text-transform: uppercase;
       letter-spacing: 0.5px;
-      opacity: 0.8;
 
       &:hover {
-        opacity: 1;
+        opacity: 0.7;
       }
     }
   }
 
   &__legal-dot {
+    color: #ffffff;
     opacity: 0.5;
   }
 

@@ -36,7 +36,7 @@ const LandingPage = () => {
           <div className='landing__hero-content'>
             <h1 className='landing__hero-headline'>{hero.headline}</h1>
             <p className='landing__hero-sub'>{hero.subline1}</p>
-            <p className='landing__hero-sub'>{hero.subline2}</p>
+            <p className='landing__hero-now-it-does'>{hero.subline2}</p>
             <button className='landing__hero-cta'>{hero.getAppTxt}</button>
             <p className='landing__hero-availability'>{hero.availability}</p>
           </div>
