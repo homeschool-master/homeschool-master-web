@@ -43,6 +43,7 @@ const RegisterPage = () => {
       setError('root', { message: 'Registration failed. Please try again.' })
     }
   }
+
   return (
     <div>
       <h1>Register</h1>
