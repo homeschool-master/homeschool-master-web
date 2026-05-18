@@ -1,5 +1,5 @@
 ## Status
-This project is currently in active development. The application is not yet launched publicly. As of 05/18/2026 the only feature currently working are registration and login/logout, the dashboard will retrieve your first and last name from the db. 
+This project is currently in active development. The application is not yet launched publicly. As of 05/18/2026 the only features currently working are registration and login/logout, the dashboard will retrieve your first and last name from the db. 
 
 current version of the app can be found here: https://homeschool-master-web.vercel.app/
 
