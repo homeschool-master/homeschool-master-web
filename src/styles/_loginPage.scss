@@ -110,6 +110,12 @@
     gap: $spacing-sm;
   }
 
+  &__password-wrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+  }
+
   &__input {
     padding: 1rem $spacing-lg;
     border: 2px solid #d4a574;
@@ -141,6 +147,34 @@
       &:focus {
         box-shadow: 0 0 0 3px rgba(231, 76, 60, 0.1);
       }
+    }
+  }
+
+  &__password-toggle {
+    position: absolute;
+    right: 1rem;
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: #999;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
+    transition: color 0.2s ease;
+
+    &:hover:not(:disabled) {
+      color: $color-master;
+    }
+
+    &:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+    }
+
+    svg {
+      width: 18px;
+      height: 18px;
     }
   }
 
@@ -197,11 +231,11 @@
     margin-top: $spacing-md;
     font-family: $font-family-base;
 
-  &:hover:not(:disabled) {
-    background: #cc9450;
-    transform: translateY(-2px);
-    box-shadow: 0 8px 16px rgba(224, 166, 96, 0.3);
-  }
+    &:hover:not(:disabled) {
+      background: #cc9450;
+      transform: translateY(-2px);
+      box-shadow: 0 8px 16px rgba(224, 166, 96, 0.3);
+    }
 
     &:active:not(:disabled) {
       transform: translateY(0);
@@ -215,7 +249,7 @@
 
   &__divider {
     width: 1px;
-  background: #eaa346;
+    background: #eaa346;
     min-height: 300px;
     display: none;
 
