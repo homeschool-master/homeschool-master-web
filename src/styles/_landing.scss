@@ -12,13 +12,16 @@
     background: linear-gradient(to bottom, $color-gradient-light, $color-gradient-dark);
     
     &-inner {
-      @include container;
       display: flex;
       align-items: center;
       justify-content: space-between;
       padding-top: $spacing-xl;
       padding-bottom: $spacing-xl;
       gap: $spacing-lg;
+
+      @include respond-to(laptop) {
+        @include container;
+      }
     }
   }
 
@@ -144,12 +147,15 @@
     background-color: #fbf7ee;
 
     &-inner {
-      @include container;
       display: flex;
       align-items: center;
       padding-top: $spacing-xl;
       padding-bottom: $spacing-xl;
       gap: $spacing-xl;
+
+      @include respond-to(laptop) {
+        @include container;
+      }
     }
   }
 
@@ -212,14 +218,21 @@
   // Features
   &__features {
     &-inner {
-      @include container;
       padding-top: $spacing-xl;
       padding-bottom: 0;
+
+      @include respond-to(laptop) {
+        @include container;
+      }
     }
   }
 
   &__features-list {
-    padding: 0 14rem;
+    padding: 0;
+
+    @include respond-to(laptop) {
+      padding: 0 14rem;
+    }
   }
 
   &__features-label {
@@ -304,10 +317,13 @@
     background-color: $color-gradient-light;
 
     &-inner {
-      @include container;
       padding-top: $spacing-xl;
       padding-bottom: $spacing-xl;
       text-align: center;
+
+      @include respond-to(laptop) {
+        @include container;
+      }
     }
   }
 
@@ -335,11 +351,20 @@
   }
 
   &__testimonials-grid {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
+    display: flex;
+    flex-direction: column;
     gap: $spacing-lg;
-    max-width: 1200px;
+    max-width: 100%;
     margin: 0 auto;
+
+    @include respond-to(tablet) {
+      display: grid;
+      grid-template-columns: 1fr;
+    }
+
+    @include respond-to(laptop) {
+      grid-template-columns: repeat(3, 1fr);
+    }
   }
 
   &__testimonial-card {
@@ -381,17 +406,28 @@
 
   // Pricing
   &__pricing {
-    padding: $spacing-xl;
+    padding: 0;
     max-width: 800px;
     margin: 0 auto;
     text-align: center;
+
+    @include respond-to(tablet) {
+      padding: $spacing-xl;
+    }
   }
 
   &__pricing-layout {
     display: flex;
-    align-items: center;
-    gap: $spacing-xl;
+    flex-direction: column;
+    align-items: stretch;
+    gap: $spacing-md;
     margin-bottom: $spacing-lg;
+
+    @include respond-to(tablet) {
+      flex-direction: row;
+      align-items: center;
+      gap: $spacing-xl;
+    }
   }
 
   &__pricing-price-box {
@@ -410,10 +446,13 @@
     background-color: #fbf7ee;
 
     &-inner {
-      @include container;
       padding-top: $spacing-xl;
       padding-bottom: $spacing-xl;
       text-align: center;
+
+      @include respond-to(laptop) {
+        @include container;
+      }
     }
   }
 
@@ -506,10 +545,13 @@
   // FAQ
   &__faq {
     &-inner {
-      @include container;
       padding-top: $spacing-xl;
       padding-bottom: $spacing-xl;
       text-align: center;
+
+      @include respond-to(laptop) {
+        @include container;
+      }
     }
   }
 
@@ -598,10 +640,13 @@
     background: linear-gradient(to bottom, $color-gradient-light, $color-gradient-dark);
 
     &-inner {
-      @include container;
       padding-top: $spacing-xl;
       padding-bottom: $spacing-xl;
       text-align: center;
+
+      @include respond-to(laptop) {
+        @include container;
+      }
     }
   }
 
