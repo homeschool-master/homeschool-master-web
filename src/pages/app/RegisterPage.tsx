@@ -13,6 +13,10 @@ const registerSchema = z.object({
     .string()
     .min(8, { message: 'Password must be at least 8 characters' })
     .regex(/\d/, { message: 'Password must contain at least one number' }),
+  confirmPassword: z.string().min(8, { message: 'Password must be at least 8 characters' }),
+}).refine((data) => data.password === data.confirmPassword, {
+  message: 'Passwords do not match',
+  path: ['confirmPassword'],
 })
 
 type RegisterFormData = z.infer<typeof registerSchema>
@@ -20,6 +24,7 @@ type RegisterFormData = z.infer<typeof registerSchema>
 const RegisterPage = () => {
   const navigate = useNavigate()
   const [showPassword, setShowPassword] = useState(false)
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false)
 
   const {
     register,
@@ -33,7 +38,8 @@ const RegisterPage = () => {
 
   const onSubmit = async (data: RegisterFormData) => {
     try {
-      await api.post('/api/v1/auth/register', data)
+      const { confirmPassword, ...registerData } = data
+      await api.post('/api/v1/auth/register', registerData)
       navigate('/login')
     } catch (error: any) {
       setError('root', {
@@ -140,6 +146,39 @@ const RegisterPage = () => {
                 <span className="register-page__password-hint">8+ characters with at least one number</span>
                 {errors.password && (
                   <span className="register-page__error-message">{errors.password.message}</span>
+                )}
+              </div>
+
+              <div className="register-page__form-group">
+                <div className="register-page__password-wrapper">
+                  <input
+                    type={showConfirmPassword ? 'text' : 'password'}
+                    placeholder="Confirm Password"
+                    {...register('confirmPassword')}
+                    className={`register-page__input ${errors.confirmPassword ? 'register-page__input--error' : ''}`}
+                    disabled={isSubmitting}
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                    className="register-page__password-toggle"
+                    disabled={isSubmitting}
+                  >
+                    {showConfirmPassword ? (
+                      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                        <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                        <circle cx="12" cy="12" r="3"></circle>
+                      </svg>
+                    ) : (
+                      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                        <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"></path>
+                        <line x1="1" y1="1" x2="23" y2="23"></line>
+                      </svg>
+                    )}
+                  </button>
+                </div>
+                {errors.confirmPassword && (
+                  <span className="register-page__error-message">{errors.confirmPassword.message}</span>
                 )}
               </div>
 
