@@ -1,0 +1,328 @@
+@use 'variables' as *;
+@use 'mixins' as *;
+
+.login-page {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+
+  &__hero {
+    background: linear-gradient(180deg, #ecbb77 0%, #f4d99f 100%);
+    padding: $spacing-xl $spacing-lg;
+
+    @include respond-to(mobile) {
+      padding: $spacing-xl $spacing-md;
+    }
+  }
+
+  &__hero-content {
+    @include container;
+    text-align: center;
+  }
+
+  &__hero-label {
+    font-size: 1.40625rem;
+    font-weight: 600;
+    letter-spacing: 2px;
+    color: #d97b0a;
+    margin-bottom: $spacing-md;
+    text-transform: uppercase;
+  }
+
+  &__hero-title {
+    font-size: 2.09375rem;
+    font-weight: 700;
+    color: #231f20;
+    margin-bottom: $spacing-md;
+    letter-spacing: -1px;
+
+    @include respond-to(mobile) {
+      font-size: 1.875rem;
+    }
+  }
+
+  &__hero-subtitle {
+    font-size: 1.40625rem;
+    color: #474747;
+    line-height: $line-height-base;
+    font-weight: 700;
+
+    @include respond-to(mobile) {
+      font-size: 1.25rem;
+    }
+  }
+
+  &__form-section {
+    flex: 1;
+    background: #fbf7ee;
+    padding: $spacing-xl $spacing-lg;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+
+    @include respond-to(mobile) {
+      padding: $spacing-xl $spacing-md;
+    }
+  }
+
+  &__form-wrapper {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: $spacing-xl;
+    width: 100%;
+    @include container;
+
+    @media (min-width: 1024px) {
+      flex-direction: row;
+      align-items: flex-start;
+      justify-content: center;
+    }
+  }
+
+  &__form-column {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    max-width: 400px;
+  }
+
+  &__form-title {
+    font-size: 1.75rem;
+    font-weight: 700;
+    color: #231f20;
+    margin-bottom: $spacing-xl;
+    letter-spacing: -0.5px;
+  }
+
+  &__form {
+    display: flex;
+    flex-direction: column;
+    gap: $spacing-lg;
+    width: 100%;
+    max-width: 400px;
+  }
+
+  &__form-group {
+    display: flex;
+    flex-direction: column;
+    gap: $spacing-sm;
+  }
+
+  &__input {
+    padding: 1rem $spacing-lg;
+    border: 2px solid #d4a574;
+    border-radius: 24px;
+    font-size: 1rem;
+    font-family: $font-family-base;
+    background: white;
+    color: #231f20;
+    transition: all 0.2s ease;
+    outline: none;
+
+    &::placeholder {
+      color: #999;
+    }
+
+    &:focus {
+      border-color: $color-master;
+      box-shadow: 0 0 0 3px rgba(224, 166, 96, 0.1);
+    }
+
+    &:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+    }
+
+    &--error {
+      border-color: #e74c3c;
+
+      &:focus {
+        box-shadow: 0 0 0 3px rgba(231, 76, 60, 0.1);
+      }
+    }
+  }
+
+  &__error-message {
+    font-size: 0.8125rem;
+    color: #e74c3c;
+    font-weight: 500;
+  }
+
+  &__forgot-link {
+    align-self: center;
+    background: none;
+    border: none;
+    color: #231f20;
+    font-size: 0.9375rem;
+    cursor: pointer;
+    padding: 0;
+    transition: color 0.2s ease;
+    font-weight: 500;
+    font-family: $font-family-base;
+
+    &:hover:not(:disabled) {
+      color: $color-master;
+    }
+
+    &:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+    }
+  }
+
+  &__api-error {
+    padding: $spacing-md $spacing-lg;
+    background-color: #fee;
+    border-left: 4px solid #e74c3c;
+    color: #c0392b;
+    border-radius: 4px;
+    font-size: 0.875rem;
+    line-height: $line-height-base;
+  }
+
+  &__submit {
+    padding: 0.875rem $spacing-lg;
+    background: $color-master;
+    color: white;
+    border: none;
+    border-radius: 24px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-top: $spacing-md;
+    font-family: $font-family-base;
+
+  &:hover:not(:disabled) {
+    background: #cc9450;
+    transform: translateY(-2px);
+    box-shadow: 0 8px 16px rgba(224, 166, 96, 0.3);
+  }
+
+    &:active:not(:disabled) {
+      transform: translateY(0);
+    }
+
+    &:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+    }
+  }
+
+  &__divider {
+    width: 1px;
+  background: #eaa346;
+    min-height: 300px;
+    display: none;
+
+    @media (min-width: 1024px) {
+      display: block;
+    }
+  }
+
+  &__social-column {
+    display: flex;
+    flex-direction: column;
+    gap: $spacing-md;
+    width: 100%;
+    max-width: 400px;
+    margin-top: 6.50rem;
+
+    @include respond-to(mobile) {
+      max-width: 100%;
+      margin-top: 0;
+    }
+  }
+
+  &__social-btn {
+    padding: 0.875rem $spacing-lg;
+    border: none;
+    border-radius: 24px;
+    font-size: 0.9375rem;
+    font-weight: 600;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: $spacing-md;
+    transition: all 0.3s ease;
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
+    font-family: $font-family-base;
+
+    svg {
+      width: 18px;
+      height: 18px;
+    }
+
+    &:hover:not(:disabled) {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+    }
+
+    &:active:not(:disabled) {
+      transform: translateY(0);
+    }
+
+    &:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+    }
+
+    &--apple {
+      background: #000;
+      color: white;
+
+      &:hover:not(:disabled) {
+        background: #222;
+        box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+      }
+    }
+
+    &--google {
+      background: white;
+      color: #231f20;
+      border: 2px solid #ddd;
+
+      &:hover:not(:disabled) {
+        border-color: $color-master;
+        background: #fafafa;
+      }
+    }
+  }
+
+  &__signup-prompt {
+    margin-top: $spacing-xxl;
+    text-align: center;
+
+    @include respond-to(mobile) {
+      margin-top: $spacing-xl;
+    }
+  }
+
+  &__signup-link {
+    background: none;
+    border: none;
+    color: #231f20;
+    font-size: 1.03125rem;
+    font-weight: 700;
+    cursor: pointer;
+    padding: 0;
+    text-decoration: none;
+    transition: color 0.2s ease;
+    font-family: $font-family-base;
+    display: inline;
+
+    @include respond-to(mobile) {
+      font-size: 1rem;
+    }
+
+    &:hover {
+      color: $color-master;
+    }
+  }
+}
