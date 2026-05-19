@@ -94,7 +94,7 @@ export const LANDING_CONTENT = {
     label: 'Simple Pricing',
     headline: 'One Plan. Everything Included.',
     subtext: 'No fees, no upsells, no hidden fees.',
-    price: '$10',
+    price: '$6.99',
     billingLabel: 'per month',
     billingNote: 'cancel anytime',
     features: [
