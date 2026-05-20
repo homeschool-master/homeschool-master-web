@@ -16,16 +16,13 @@
     }
     
     &-inner {
+      @include container;
       display: flex;
       align-items: center;
       justify-content: space-between;
       padding-top: $spacing-xl;
       padding-bottom: $spacing-xl;
       gap: $spacing-lg;
-
-      @include respond-to(laptop) {
-        @include container;
-      }
     }
   }
 
@@ -155,14 +152,17 @@
     }
 
     &-inner {
+      @include container;
       display: flex;
       align-items: center;
       padding-top: $spacing-xl;
       padding-bottom: $spacing-xl;
       gap: $spacing-xl;
 
-      @include respond-to(laptop) {
-        @include container;
+      @include respond-to(mobile) {
+        flex-direction: column;
+        align-items: stretch;
+        gap: $spacing-lg;
       }
     }
   }
@@ -172,6 +172,12 @@
     display: flex;
     align-items: flex-start;
     gap: $spacing-md;
+
+    @include respond-to(mobile) {
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+    }
   }
 
   &__quote-photo {
@@ -206,6 +212,12 @@
     display: flex;
     flex-direction: column;
     gap: $spacing-sm;
+
+    @include respond-to(mobile) {
+      flex-direction: row;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
   }
 
   &__value-item {
@@ -225,27 +237,23 @@
 
   // Features
   &__features {
+    @include container;
     @include respond-to(mobile) {
       padding: 0 5px;
     }
 
     &-inner {
+      @include container;
       padding-top: $spacing-xl;
       padding-bottom: 0;
-
-      @include respond-to(laptop) {
-        @include container;
-      }
     }
   }
 
   &__features-list {
+    padding: 0 14rem;
+
     @include respond-to(mobile) {
       padding: 0 5px;
-    }
-
-    @include respond-to(laptop) {
-      padding: 0 14rem;
     }
   }
 
@@ -335,13 +343,10 @@
     }
 
     &-inner {
+      @include container;
       padding-top: $spacing-xl;
       padding-bottom: $spacing-xl;
       text-align: center;
-
-      @include respond-to(laptop) {
-        @include container;
-      }
     }
   }
 
@@ -369,19 +374,16 @@
   }
 
   &__testimonials-grid {
-    display: flex;
-    flex-direction: column;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
     gap: $spacing-lg;
-    max-width: 100%;
+    max-width: 1200px;
     margin: 0 auto;
 
-    @include respond-to(tablet) {
-      display: grid;
-      grid-template-columns: 1fr;
-    }
-
-    @include respond-to(laptop) {
-      grid-template-columns: repeat(3, 1fr);
+    @include respond-to(mobile) {
+      display: flex;
+      flex-direction: column;
+      max-width: 100%;
     }
   }
 
@@ -424,7 +426,7 @@
 
   // Pricing
   &__pricing {
-    padding: 0;
+    padding: $spacing-xl;
     max-width: 800px;
     margin: 0 auto;
     text-align: center;
@@ -432,24 +434,12 @@
     @include respond-to(mobile) {
       padding: 0 5px;
     }
-
-    @include respond-to(tablet) {
-      padding: $spacing-xl;
-    }
   }
 
   &__pricing-layout {
-    display: flex;
-    flex-direction: column;
-    align-items: stretch;
-    gap: $spacing-md;
+    align-items: center;
+    gap: $spacing-xl;
     margin-bottom: $spacing-lg;
-
-    @include respond-to(tablet) {
-      flex-direction: row;
-      align-items: center;
-      gap: $spacing-xl;
-    }
   }
 
   &__pricing-price-box {
@@ -462,19 +452,17 @@
     padding: $spacing-lg $spacing-xl;
     flex-shrink: 0;
     min-width: 200px;
+    margin-bottom: 10px;
   }
 
   &__pricing-wrapper {
     background-color: #fbf7ee;
 
     &-inner {
+      @include container;
       padding-top: $spacing-xl;
       padding-bottom: $spacing-xl;
       text-align: center;
-
-      @include respond-to(laptop) {
-        @include container;
-      }
     }
   }
 
@@ -566,24 +554,20 @@
 
   // FAQ
   &__faq {
-    @include respond-to(mobile) {
-      padding: 0 5px;
-    }
     &-inner {
+      @include container;
       padding-top: $spacing-xl;
       padding-bottom: $spacing-xl;
       text-align: center;
-
-      @include respond-to(laptop) {
-        @include container;
-      }
+    }
+    @include respond-to(mobile) {
+      padding: 0 5px;
     }
   }
 
   &__faq-label {
     color: $color-accent;
     font-size: 1.75rem;
-    // font-weight: 600;
     letter-spacing: 2px;
     text-transform: uppercase;
     margin-bottom: $spacing-sm;
@@ -665,13 +649,10 @@
     background: linear-gradient(to bottom, $color-gradient-light, $color-gradient-dark);
 
     &-inner {
+      @include container;
       padding-top: $spacing-xl;
       padding-bottom: $spacing-xl;
       text-align: center;
-
-      @include respond-to(laptop) {
-        @include container;
-      }
     }
   }
 
