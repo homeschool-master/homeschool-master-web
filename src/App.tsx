@@ -14,6 +14,7 @@ import { setUser } from './store/authSlice'
 import api from './services/api'
 import Navbar from './components/layout/Navbar'
 import Footer from './components/layout/Footer'
+import PricingPage from './pages/marketing/PricingPage'
 
 const App = () => {
   const dispatch = useDispatch<AppDispatch>()
@@ -46,6 +47,7 @@ const App = () => {
         <Route element={<MarketingLayout />}>
           <Route path='/' element={<LandingPage />} />
           <Route path='/about' element={<AboutPage />} />
+          <Route path='/pricing' element={<PricingPage />} />
           <Route path='/download' element={<DownloadPage />} />
           <Route path='/login' element={user ? <Navigate to='/dashboard' /> : <LoginPage />} />
           <Route path='/register' element={user ? <Navigate to='/dashboard' /> : <RegisterPage />} />

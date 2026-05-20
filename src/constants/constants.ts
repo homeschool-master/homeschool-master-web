@@ -175,3 +175,157 @@ export const LANDING_CONTENT = {
     copyright: '© 2026 Homeschool Master. All rights reserved.',
   },
 }
+
+export const PRICING_CONTENT = {
+  hero: {
+    eyebrow: 'Simple Pricing. Everything Included.',
+    subhead: 'One plan, all features, no surprises.',
+  },
+  plan: {
+    name: 'Homeschool Master',
+    price: '$6.99',
+    billingLabel: 'per month',
+    annualNote: 'Annual pricing is also available.',
+    ctaText: 'Get the App',
+    cancelNote: 'cancel anytime',
+    includedHeading: "What's Included?",
+    included: [
+      'Unlimited kids in one account',
+      'Family calendar with color-coded events',
+      'Task tracking with reminders',
+      'Grade book and report cards',
+      'Transcripts ready for college applications',
+      'Expense and reimbursement tracking',
+      'Receipt and document storage',
+      'Cloud sync across all your devices',
+    ],
+  },
+  whatYouGet: {
+    eyebrow: 'What You Get',
+    headline: 'Everything Homeschool Master Does',
+    items: [
+      {
+        title: 'Family Management',
+        icon: 'family',
+        bullets: [
+          'Unlimited kids in one account',
+          'Color-coded profiles for each child',
+          'Switch between students with one tap',
+          'Shared family calendar',
+        ],
+      },
+      {
+        title: 'Daily Planning',
+        icon: 'calendar',
+        bullets: [
+          'Events with reminders',
+          'Task tracker for parent to-dos',
+          'Recurring events for co-ops & practices',
+          "Today's view at a glance",
+        ],
+      },
+      {
+        title: 'Grades & Assignments',
+        icon: 'grades',
+        bullets: [
+          'Assign work to one or multiple kids',
+          'Auto-calculated weighted grades',
+          'Subject-by-subject progress tracking',
+          'Grade book that builds in real time',
+        ],
+      },
+      {
+        title: 'Reports & Transcripts',
+        icon: 'reports',
+        bullets: [
+          'One-tap report card generation',
+          'College-application-ready transcripts',
+          'Progress reports for state compliance',
+          'Custom report templates',
+        ],
+      },
+      {
+        title: 'Expenses & Reimbursements',
+        icon: 'expenses',
+        bullets: [
+          'Categorize spending by kid or type',
+          'Snap receipts on the go',
+          'Track reimbursements and payments',
+          'Year-end tax-ready exports',
+        ],
+      },
+      {
+        title: 'Built-In Trust',
+        icon: 'trust',
+        bullets: [
+          'No ads, ever',
+          "Your family's data stays yours",
+          'Cloud sync and backup across devices',
+          'Cancel anytime',
+        ],
+      },
+    ],
+  },
+  trustStrip: {
+    items: [
+      {
+        icon: 'no-contract',
+        title: 'Cancel Anytime',
+        subtext: 'No contracts, no fees. Cancel at any point.',
+      },
+      {
+        icon: 'no-ads',
+        title: 'No Ads, Ever',
+        subtext: "We don't sell ad space. Period.",
+      },
+      {
+        icon: 'data',
+        title: 'Your Data Is Yours',
+        subtext: 'Export everything anytime. Delete on request.',
+      },
+      {
+        icon: 'family-owned',
+        title: 'Family Owned',
+        subtext: 'Built and run by a homeschool family in Florida.',
+      },
+    ],
+  },
+  faq: {
+    eyebrow: 'Pricing Questions',
+    headline: 'Billing, But Make It Simple',
+    items: [
+      {
+        question: 'How does billing work?',
+        answer: "Homeschool Master is sold through the App Store and Google Play. You're charged monthly through your Apple ID or Google account.",
+      },
+      {
+        question: 'Is there a free trial?',
+        answer: 'Yes. New users get a 14-day free trial. You will not be charged until the trial ends, and you can cancel before then at no cost.',
+      },
+      {
+        question: 'Can I cancel anytime?',
+        answer: 'Yes. Cancel through your App Store or Google Play account whenever you want. No contracts, no cancellation fees.',
+      },
+      {
+        question: 'What happens if I cancel?',
+        answer: 'You keep access until the end of your current billing period. After that your account moves to read-only and you can still export your data.',
+      },
+      {
+        question: 'Do you offer refunds?',
+        answer: 'Refunds are handled by Apple and Google through their store policies. We are happy to walk you through the process if you need help.',
+      },
+      {
+        question: 'Will the price change?',
+        answer: 'If we ever update pricing, existing subscribers keep their current rate for as long as their subscription stays active.',
+      },
+    ],
+    contactText: 'Still have questions?',
+    contactLinkText: 'Contact us.',
+  },
+  finalCta: {
+    headline: 'Ready to Get Started?',
+    subhead: 'Download Homeschool Master and try it free for 14 days.',
+    ctaText: 'Get the App',
+    availability: 'Available on iOS and Android.',
+  },
+}
