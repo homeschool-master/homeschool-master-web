@@ -10,7 +10,10 @@
   // Hero
   &__hero {
     background: linear-gradient(to bottom, $color-gradient-light, $color-gradient-dark);
-    padding: 0 5px;
+    
+    @include respond-to(mobile) {
+      padding: 0 5px;
+    }
     
     &-inner {
       display: flex;
@@ -146,7 +149,10 @@
   // Founders / Quote
   &__founders {
     background-color: #fbf7ee;
-    padding: 0 5px;
+
+    @include respond-to(mobile) {
+      padding: 0 5px;
+    }
 
     &-inner {
       display: flex;
@@ -219,7 +225,10 @@
 
   // Features
   &__features {
-    padding: 0 5px;
+    @include respond-to(mobile) {
+      padding: 0 5px;
+    }
+
     &-inner {
       padding-top: $spacing-xl;
       padding-bottom: 0;
@@ -231,7 +240,9 @@
   }
 
   &__features-list {
-    padding: 0;
+    @include respond-to(mobile) {
+      padding: 0 5px;
+    }
 
     @include respond-to(laptop) {
       padding: 0 14rem;
@@ -318,7 +329,10 @@
   // Testimonials
   &__testimonials {
     background-color: $color-gradient-light;
-    padding: 0 5px;
+
+    @include respond-to(mobile) {
+      padding: 0 5px;
+    }
 
     &-inner {
       padding-top: $spacing-xl;
@@ -414,7 +428,10 @@
     max-width: 800px;
     margin: 0 auto;
     text-align: center;
-    padding: 0 5px;
+
+    @include respond-to(mobile) {
+      padding: 0 5px;
+    }
 
     @include respond-to(tablet) {
       padding: $spacing-xl;
@@ -549,7 +566,9 @@
 
   // FAQ
   &__faq {
-    padding: 0 5px;
+    @include respond-to(mobile) {
+      padding: 0 5px;
+    }
     &-inner {
       padding-top: $spacing-xl;
       padding-bottom: $spacing-xl;
