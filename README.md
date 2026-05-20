@@ -1,5 +1,7 @@
 # Live preview: [homeschool-master-web.vercel.app](https://homeschool-master-web.vercel.app)
 
+The primary purpose of this app is to help my wife with her homeschool tasks, and we hope that it can provide some supplemental income for us in the future while also meeting her homeschool needs.
+
 > [!NOTE]
 > This is an in-progress build, not the final product. See Status below for what's currently functional.
 
