@@ -1,4 +1,3 @@
-import { useState } from 'react'
 import { LANDING_CONTENT } from '../../constants/constants'
 import foundersPhoto from '../../assets/founders.png'
 import testimonial1 from '../../assets/testimonials/testimonial-1.png'
@@ -9,6 +8,7 @@ import screenshotCalendar from '../../assets/screenshots/feature-calendar.png'
 import screenshotTodos from '../../assets/screenshots/feature-todos.png'
 import screenshotGrading from '../../assets/screenshots/feature-grading.png'
 import screenshotExpenses from '../../assets/screenshots/feature-expenses.png'
+import Accordion from '../../components/shared/accordion'
 
 const screenshots: Record<string, string> = {
   'feature-multi-child': screenshotMultiChild,
@@ -26,7 +26,6 @@ const testimonialPhotos: Record<string, string> = {
 
 const LandingPage = () => {
   const { hero, founders, features, testimonials, pricing, faq, ctaBanner } = LANDING_CONTENT
-  const [openFaq, setOpenFaq] = useState<number | null>(null)
 
   return (
     <div className='landing'>
@@ -142,33 +141,13 @@ const LandingPage = () => {
         </section>
       </div>
 
-      <section className='landing__faq'>
-        <div className='landing__faq-inner'>
-          <p className='landing__faq-label'>{faq.label}</p>
-          <h2 className='landing__faq-headline'>{faq.headline}</h2>
-          <div className='landing__faq-list'>
-            {faq.items.map((item, index) => (
-              <div key={index} className='landing__faq-item-wrapper'>
-                <div className='landing__faq-item'>
-                  <button
-                    className='landing__faq-question'
-                    onClick={() => setOpenFaq(openFaq === index ? null : index)}
-                  >
-                    {index + 1}. {item.question}
-                    <span className={`landing__faq-chevron${openFaq === index ? ' landing__faq-chevron--open' : ''}`}>›</span>
-                  </button>
-                </div>
-                {openFaq === index && (
-                  <p className='landing__faq-answer'>{item.answer}</p>
-                )}
-              </div>
-            ))}
-          </div>
-          <p className='landing__faq-contact'>
-            {faq.contactText} <a href='#contact'>{faq.contactLinkText}</a>
-          </p>
-        </div>
-      </section>
+      <Accordion
+        eyebrow={faq.label}
+        headline={faq.headline}
+        items={faq.items}
+        contactText={faq.contactText}
+        contactLinkText={faq.contactLinkText}
+      />
 
       <section className='landing__cta-banner'>
         <div className='landing__cta-banner-inner'>

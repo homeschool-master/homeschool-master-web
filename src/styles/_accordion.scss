@@ -1,0 +1,99 @@
+@use 'variables' as *;
+@use 'mixins' as *;
+
+.accordion {
+  &__inner {
+    @include container;
+    padding-top: $spacing-xl;
+    padding-bottom: $spacing-xl;
+    text-align: center;
+
+    @include respond-to(mobile) {
+      padding-left: 5px;
+      padding-right: 5px;
+    }
+  }
+
+  &__eyebrow {
+    color: $color-accent;
+    font-size: 1.75rem;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    margin-bottom: $spacing-sm;
+  }
+
+  &__headline {
+    font-size: 1.75rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    color: $color-headline;
+    margin-bottom: $spacing-lg;
+  }
+
+  &__list {
+    text-align: left;
+    display: flex;
+    flex-direction: column;
+    gap: $spacing-sm;
+  }
+
+  &__item-wrapper {
+    display: flex;
+    flex-direction: column;
+    gap: $spacing-sm;
+  }
+
+  &__item {
+    background-color: #fef0ca;
+    border: 1.5px solid #eaa346;
+    border-radius: 50px;
+    overflow: hidden;
+  }
+
+  &__label {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.4rem $spacing-lg;
+    font-size: 0.95rem;
+    font-weight: 400;
+    color: $color-text;
+    text-align: left;
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-family: $font-family-base;
+  }
+
+  &__chevron {
+    font-size: 2rem;
+    font-weight: 300;
+    transition: transform 0.2s;
+    flex-shrink: 0;
+    line-height: 1;
+
+    &--open {
+      transform: rotate(90deg);
+    }
+  }
+
+  &__content {
+    padding: 0 $spacing-lg $spacing-md;
+    font-size: 0.9rem;
+    color: $color-text;
+    line-height: 1.6;
+    border-radius: 0 0 50px 50px;
+  }
+
+  &__contact {
+    margin-top: $spacing-lg;
+    font-size: 0.9rem;
+    color: $color-text;
+
+    a {
+      color: $color-accent;
+      font-weight: 600;
+    }
+  }
+}

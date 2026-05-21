@@ -1,5 +1,5 @@
-import { useState } from 'react'
 import { PRICING_CONTENT } from '../../constants/constants'
+import Accordion from '../../components/shared/accordion'
 
 // Inline SVG icons : placeholder set, Carlie's Canva assets will replace these later
 const PricingIcon = ({ name }: { name: string }) => {
@@ -79,7 +79,6 @@ const PricingIcon = ({ name }: { name: string }) => {
 
 const PricingPage = () => {
   const { hero, plan, whatYouGet, trustStrip, faq, finalCta } = PRICING_CONTENT
-  const [openFaq, setOpenFaq] = useState<number | null>(0)
 
   return (
     <div className='pricing-page'>
@@ -152,33 +151,13 @@ const PricingPage = () => {
         </div>
       </section>
 
-      <section className='pricing-page__faq'>
-        <div className='pricing-page__faq-inner'>
-          <p className='pricing-page__faq-eyebrow'>{faq.eyebrow}</p>
-          <h2 className='pricing-page__faq-headline'>{faq.headline}</h2>
-          <div className='pricing-page__faq-list'>
-            {faq.items.map((item, index) => (
-              <div key={item.question} className='pricing-page__faq-item-wrapper'>
-                <div className='pricing-page__faq-item'>
-                  <button
-                    className='pricing-page__faq-question'
-                    onClick={() => setOpenFaq(openFaq === index ? null : index)}
-                  >
-                    <span>{index + 1}. {item.question}</span>
-                    <span className={`pricing-page__faq-chevron${openFaq === index ? ' pricing-page__faq-chevron--open' : ''}`}>›</span>
-                  </button>
-                </div>
-                {openFaq === index && (
-                  <p className='pricing-page__faq-answer'>{item.answer}</p>
-                )}
-              </div>
-            ))}
-          </div>
-          <p className='pricing-page__faq-contact'>
-            {faq.contactText} <a href='#contact'>{faq.contactLinkText}</a>
-          </p>
-        </div>
-      </section>
+      <Accordion
+        eyebrow={faq.eyebrow}
+        headline={faq.headline}
+        items={faq.items}
+        contactText={faq.contactText}
+        contactLinkText={faq.contactLinkText}
+      />
 
       <section className='pricing-page__final-cta'>
         <div className='pricing-page__final-cta-inner'>

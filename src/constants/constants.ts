@@ -111,32 +111,32 @@ export const LANDING_CONTENT = {
     headline: 'Things Parents Ask Before They Sign Up',
     items: [
       {
-        question: 'Will Homeschool Master work for the way we homeschool?',
-        answer: 'Yes. We built it to flex around any methodology: classical, Charlotte Mason, eclectic, unschooling, or your own mix.',
+        label: 'Will Homeschool Master work for the way we homeschool?',
+        content: 'Yes. We built it to flex around any methodology: classical, Charlotte Mason, eclectic, unschooling, or your own mix.',
       },
       {
-        question: 'Can I track multiple kids in one account?',
-        answer: 'Yes. Add as many kids as you have. Each gets their own profile, schedule, grades, and records.',
+        label: 'Can I track multiple kids in one account?',
+        content: 'Yes. Add as many kids as you have. Each gets their own profile, schedule, grades, and records.',
       },
       {
-        question: 'Does it work on iPhone and Android?',
-        answer: 'Both. Download from the App Store or Google Play. Your data syncs across all your devices.',
+        label: 'Does it work on iPhone and Android?',
+        content: 'Both. Download from the App Store or Google Play. Your data syncs across all your devices.',
       },
       {
-        question: 'Can I generate official transcripts for high schoolers?',
-        answer: 'Yes. Generate transcripts, report cards, and progress reports in seconds, formatted for college applications and state requirements.',
+        label: 'Can I generate official transcripts for high schoolers?',
+        content: 'Yes. Generate transcripts, report cards, and progress reports in seconds, formatted for college applications and state requirements.',
       },
       {
-        question: "Is my family's data private?",
-        answer: "Always. We don't sell your data, run ads, or share anything with third parties.",
+        label: "Is my family's data private?",
+        content: "Always. We don't sell your data, run ads, or share anything with third parties.",
       },
       {
-        question: 'Can I cancel anytime?',
-        answer: 'Yes. Cancel through your App Store account whenever you want. No contracts, no fees.',
+        label: 'Can I cancel anytime?',
+        content: 'Yes. Cancel through your App Store account whenever you want. No contracts, no fees.',
       },
       {
-        question: 'Can I export my data if I leave?',
-        answer: 'Yes. Download all your data: events, grades, transcripts, and expenses. Anytime.',
+        label: 'Can I export my data if I leave?',
+        content: 'Yes. Download all your data: events, grades, transcripts, and expenses. Anytime.',
       },
     ],
     contactText: 'Still have questions?',
@@ -295,28 +295,28 @@ export const PRICING_CONTENT = {
     headline: 'Billing, But Make It Simple',
     items: [
       {
-        question: 'How does billing work?',
-        answer: "Homeschool Master is sold through the App Store and Google Play. You're charged monthly through your Apple ID or Google account.",
+        label: 'How does billing work?',
+        content: "Homeschool Master is sold through the App Store and Google Play. You're charged monthly through your Apple ID or Google account.",
       },
       {
-        question: 'Is there a free trial?',
-        answer: 'Yes. New users get a 14-day free trial. You will not be charged until the trial ends, and you can cancel before then at no cost.',
+        label: 'Is there a free trial?',
+        content: 'Yes. New users get a 14-day free trial. You will not be charged until the trial ends, and you can cancel before then at no cost.',
       },
       {
-        question: 'Can I cancel anytime?',
-        answer: 'Yes. Cancel through your App Store or Google Play account whenever you want. No contracts, no cancellation fees.',
+        label: 'Can I cancel anytime?',
+        content: 'Yes. Cancel through your App Store or Google Play account whenever you want. No contracts, no cancellation fees.',
       },
       {
-        question: 'What happens if I cancel?',
-        answer: 'You keep access until the end of your current billing period. After that your account moves to read-only and you can still export your data.',
+        label: 'What happens if I cancel?',
+        content: 'You keep access until the end of your current billing period. After that your account moves to read-only and you can still export your data.',
       },
       {
-        question: 'Do you offer refunds?',
-        answer: 'Refunds are handled by Apple and Google through their store policies. We are happy to walk you through the process if you need help.',
+        label: 'Do you offer refunds?',
+        content: 'Refunds are handled by Apple and Google through their store policies. We are happy to walk you through the process if you need help.',
       },
       {
-        question: 'Will the price change?',
-        answer: 'If we ever update pricing, existing subscribers keep their current rate for as long as their subscription stays active.',
+        label: 'Will the price change?',
+        content: 'If we ever update pricing, existing subscribers keep their current rate for as long as their subscription stays active.',
       },
     ],
     contactText: 'Still have questions?',
