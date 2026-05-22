@@ -47,9 +47,10 @@ const Accordion = ({
             </div>
           ))}
         </div>
-        {contactText && (
+        {(contactText || contactLinkText) && (
           <p className='accordion__contact'>
-            {contactText} <a href={contactHref}>{contactLinkText}</a>
+            {contactText && `${contactText} `}
+            {contactLinkText && <a href={contactHref}>{contactLinkText}</a>}
           </p>
         )}
       </div>

@@ -329,3 +329,41 @@ export const PRICING_CONTENT = {
     availability: 'Available on iOS and Android.',
   },
 }
+
+export const CONTACT_CONTENT = {
+  hero: {
+    headline: "We'd Love to Hear From You",
+    subhead: 'Questions, feedback, or just want to say hi. We read every message and answer back ourselves.',
+  },
+  form: {
+    heading: 'Send Us a Message',
+    subtext: 'We typically respond within 24-48 hours.',
+    namePlaceholder: 'Your name',
+    emailPlaceholder: 'Email address',
+    subjectPlaceholder: "What's this about?",
+    subjectOptions: ['General question', 'Billing', 'Technical support', 'Feedback', 'Other'],
+    messagePlaceholder: 'Your message',
+    submitText: 'Send Message',
+    submittingText: 'Sending...',
+  },
+  success: {
+    heading: 'Message Sent',
+    body: "Thanks for reaching out. We'll get back to you within 24-48 hours.",
+  },
+  info: {
+    intro: "Hi there, we're Robert and Carlie, the family behind Homeschool Master. Every message comes straight to us.",
+    email: 'support@homeschoolmaster.com',
+    socials: ['facebook', 'instagram', 'youtube', 'twitter', 'linkedin'],
+  },
+  faq: {
+    eyebrow: 'Before You Reach Out',
+    headline: 'You Might Find Your Answer Faster Here',
+    items: [
+      { label: 'How does billing work?', content: "Homeschool Master is sold through the App Store and Google Play. You're charged monthly through your Apple ID or Google account." },
+      { label: 'Can I cancel anytime?', content: 'Yes. Cancel through your App Store or Google Play account whenever you want. No contracts, no cancellation fees.' },
+      { label: 'Does it work on iPhone and Android?', content: 'Both. Download from the App Store or Google Play, and your data syncs across all your devices.' },
+    ],
+    linkText: 'See all FAQs →',
+    linkHref: '#',
+  },
+}

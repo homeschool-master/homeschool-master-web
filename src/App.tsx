@@ -15,6 +15,7 @@ import api from './services/api'
 import Navbar from './components/layout/Navbar'
 import Footer from './components/layout/Footer'
 import PricingPage from './pages/marketing/PricingPage'
+import ContactPage from './pages/marketing/ContactPage'
 
 const App = () => {
   const dispatch = useDispatch<AppDispatch>()
@@ -48,6 +49,7 @@ const App = () => {
           <Route path='/' element={<LandingPage />} />
           <Route path='/about' element={<AboutPage />} />
           <Route path='/pricing' element={<PricingPage />} />
+          <Route path='/contact' element={<ContactPage />} />
           <Route path='/download' element={<DownloadPage />} />
           <Route path='/login' element={user ? <Navigate to='/dashboard' /> : <LoginPage />} />
           <Route path='/register' element={user ? <Navigate to='/dashboard' /> : <RegisterPage />} />
