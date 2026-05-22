@@ -3,7 +3,7 @@ import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
 import { CONTACT_CONTENT } from '../../constants/constants'
-import Accordion from '../../components/shared/accordion'
+import Accordion from '../../components/shared/Accordion'
 import Button from '../../components/shared/Button'
 import foundersPhoto from '../../assets/founders.png'
 

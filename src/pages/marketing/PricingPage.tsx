@@ -1,6 +1,6 @@
 import { PRICING_CONTENT } from '../../constants/constants'
 import Button from '../../components/shared/Button'
-import Accordion from '../../components/shared/accordion'
+import Accordion from '../../components/shared/Accordion'
 
 // Inline SVG icons : placeholder set, Carlie's Canva assets will replace these later
 const PricingIcon = ({ name }: { name: string }) => {

@@ -10,7 +10,7 @@ import screenshotGrading from '../../assets/screenshots/feature-grading.png'
 import screenshotExpenses from '../../assets/screenshots/feature-expenses.png'
 
 import Button from '../../components/shared/Button'
-import Accordion from '../../components/shared/accordion'
+import Accordion from '../../components/shared/Accordion'
 
 const screenshots: Record<string, string> = {
   'feature-multi-child': screenshotMultiChild,
