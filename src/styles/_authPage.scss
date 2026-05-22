@@ -7,7 +7,7 @@
   min-height: 100vh;
 
   &__hero {
-    background: linear-gradient(180deg, #ecbb77 0%, #f4d99f 100%);
+    background: $gradient-hero;
     padding: $spacing-xl $spacing-lg;
 
     @include respond-to(mobile) {

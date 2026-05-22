@@ -5,7 +5,7 @@
   font-display: swap;
 }
 
-// Colors: design system
+// Colors
 $color-gradient-light: #fff9d2;
 $color-gradient-dark: #ecbb77;
 $color-text: #494242;
@@ -13,6 +13,10 @@ $color-accent: #d97b0a;
 $color-master: #e0a660;
 $color-headline: #231f20;
 $color-white: #ffffff;
+
+// Gradients
+$gradient-hero: linear-gradient(to bottom, $color-gradient-dark, $color-gradient-light);
+
 
 // Typography: placeholder, designer fills in
 $font-family-base: 'Garet', sans-serif;

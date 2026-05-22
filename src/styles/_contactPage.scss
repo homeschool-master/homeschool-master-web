@@ -8,7 +8,7 @@
 
   // Hero
   &__hero {
-    background: linear-gradient(to bottom, $color-gradient-light, $color-gradient-dark);
+    background: $gradient-hero;    
     padding: 0 5px;
   }
 
