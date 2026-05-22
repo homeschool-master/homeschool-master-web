@@ -7,6 +7,7 @@ import { useState } from 'react'
 import api from '../../services/api'
 import { setUser } from '../../store/authSlice'
 import type { AppDispatch } from '../../store'
+import Button from '../../components/shared/Button'
 
 const loginSchema = z.object({
   email: z.email({ message: 'Enter a valid email address' }),
@@ -131,9 +132,9 @@ const LoginPage = () => {
 
               {errors.root && <div className="login-page__api-error">{errors.root.message}</div>}
 
-              <button type="submit" disabled={isSubmitting} className="login-page__submit">
+              <Button type="submit" disabled={isSubmitting} className='login-page__submit-btn'>
                 {isSubmitting ? 'Signing in...' : 'Sign In'}
-              </button>
+              </Button>
             </form>
           </div>
 

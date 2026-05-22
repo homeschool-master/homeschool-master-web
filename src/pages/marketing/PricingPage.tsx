@@ -1,5 +1,6 @@
 import { PRICING_CONTENT } from '../../constants/constants'
 import Accordion from '../../components/shared/accordion'
+import Button from '../../components/shared/Button'
 
 // Inline SVG icons : placeholder set, Carlie's Canva assets will replace these later
 const PricingIcon = ({ name }: { name: string }) => {
@@ -109,7 +110,7 @@ const PricingPage = () => {
             </div>
           </div>
           <div className='pricing-page__plan-cta'>
-            <button className='pricing-page__cta-btn'>{plan.ctaText}</button>
+            <Button>{plan.ctaText}</Button>
             <p className='pricing-page__plan-cancel'>{plan.cancelNote}</p>
           </div>
         </div>
@@ -163,7 +164,7 @@ const PricingPage = () => {
         <div className='pricing-page__final-cta-inner'>
           <h2 className='pricing-page__final-cta-headline'>{finalCta.headline}</h2>
           <p className='pricing-page__final-cta-subhead'>{finalCta.subhead}</p>
-          <button className='pricing-page__cta-btn'>{finalCta.ctaText}</button>
+          <Button>{finalCta.ctaText}</Button>
           <p className='pricing-page__final-cta-availability'>{finalCta.availability}</p>
         </div>
       </section>

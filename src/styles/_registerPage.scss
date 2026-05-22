@@ -152,6 +152,10 @@
     }
   }
 
+  &__form &__submit-btn {
+    align-self: center;
+  }
+
   &__password-wrapper &__input {
     padding-right: 2.5rem;
   }
@@ -204,37 +208,6 @@
     border-radius: 4px;
     font-size: 0.875rem;
     line-height: $line-height-base;
-  }
-
-  &__submit {
-    padding: 0.875rem $spacing-lg;
-    background: $color-master;
-    color: white;
-    border: none;
-    border-radius: 24px;
-    font-size: 1rem;
-    font-weight: 600;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-    margin-top: $spacing-md;
-    font-family: $font-family-base;
-
-    &:hover:not(:disabled) {
-      background: #cc9450;
-      transform: translateY(-2px);
-      box-shadow: 0 8px 16px rgba(224, 166, 96, 0.3);
-    }
-
-    &:active:not(:disabled) {
-      transform: translateY(0);
-    }
-
-    &:disabled {
-      opacity: 0.6;
-      cursor: not-allowed;
-    }
   }
 
   &__terms-text {

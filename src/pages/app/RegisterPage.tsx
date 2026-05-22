@@ -4,6 +4,7 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
 import { useState } from 'react'
 import api from '../../services/api'
+import Button from '../../components/shared/Button'
 
 const registerSchema = z.object({
   firstName: z.string().min(1, { message: 'First name is required' }),
@@ -184,9 +185,9 @@ const RegisterPage = () => {
 
               {errors.root && <div className="register-page__api-error">{errors.root.message}</div>}
 
-              <button type="submit" disabled={isSubmitting} className="register-page__submit">
+              <Button type='submit' disabled={isSubmitting} className='register-page__submit-btn'>
                 {isSubmitting ? 'Creating Account...' : 'Create Account'}
-              </button>
+              </Button>
 
               <p className="register-page__terms-text">
                 By creating an account, you agree to our{' '}

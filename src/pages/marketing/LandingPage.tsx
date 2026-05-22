@@ -9,6 +9,7 @@ import screenshotTodos from '../../assets/screenshots/feature-todos.png'
 import screenshotGrading from '../../assets/screenshots/feature-grading.png'
 import screenshotExpenses from '../../assets/screenshots/feature-expenses.png'
 import Accordion from '../../components/shared/accordion'
+import Button from '../../components/shared/Button'
 
 const screenshots: Record<string, string> = {
   'feature-multi-child': screenshotMultiChild,
@@ -36,7 +37,7 @@ const LandingPage = () => {
             <h1 className='landing__hero-headline'>{hero.headline}</h1>
             <p className='landing__hero-sub'>{hero.subline1}</p>
             <p className='landing__hero-now-it-does'>{hero.subline2}</p>
-            <button className='landing__hero-cta'>{hero.getAppTxt}</button>
+            <Button>{hero.getAppTxt}</Button>
             <p className='landing__hero-availability'>{hero.availability}</p>
           </div>
           <div className='landing__hero-phone'>
@@ -136,7 +137,7 @@ const LandingPage = () => {
                 ))}
               </ul>
             </div>
-            <button className='landing__hero-cta'>{pricing.getAppTxt}</button>
+            <Button>{pricing.getAppTxt}</Button>
           </div>
         </section>
       </div>
@@ -153,8 +154,7 @@ const LandingPage = () => {
         <div className='landing__cta-banner-inner'>
           <h2 className='landing__cta-banner-headline'>{ctaBanner.headline}</h2>
           <p className='landing__cta-banner-subtext'>{ctaBanner.subtext}</p>
-          <button className='landing__hero-cta'>{ctaBanner.getAppTxt}</button>
-          <p className='landing__hero-availability'>{ctaBanner.availability}</p>
+          <Button>{ctaBanner.getAppTxt}</Button>          <p className='landing__hero-availability'>{ctaBanner.availability}</p>
         </div>
       </section>
     </div>
