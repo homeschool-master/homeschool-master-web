@@ -8,8 +8,9 @@ import screenshotCalendar from '../../assets/screenshots/feature-calendar.png'
 import screenshotTodos from '../../assets/screenshots/feature-todos.png'
 import screenshotGrading from '../../assets/screenshots/feature-grading.png'
 import screenshotExpenses from '../../assets/screenshots/feature-expenses.png'
-import Accordion from '../../components/shared/accordion'
+
 import Button from '../../components/shared/Button'
+import Accordion from '../../components/shared/accordion'
 
 const screenshots: Record<string, string> = {
   'feature-multi-child': screenshotMultiChild,
