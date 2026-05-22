@@ -1,7 +1,7 @@
 @use 'variables' as *;
 @use 'mixins' as *;
 
-.login-page {
+.auth-page {
   display: flex;
   flex-direction: column;
   min-height: 100vh;
@@ -115,6 +115,7 @@
     position: relative;
     display: flex;
     align-items: center;
+    width: 100%;
   }
 
   &__input {
@@ -152,6 +153,14 @@
     }
   }
 
+  &__form &__submit-btn {
+    align-self: center;
+  }
+
+  &__password-wrapper &__input {
+    padding-right: 2.5rem;
+  }
+
   &__password-toggle {
     position: absolute;
     right: 1rem;
@@ -178,10 +187,6 @@
       width: 18px;
       height: 18px;
     }
-  }
-
-  &__form &__submit-btn {
-    align-self: center;
   }
 
   &__error-message {
@@ -212,6 +217,12 @@
     }
   }
 
+  &__password-hint {
+    font-size: 0.8125rem;
+    color: #999;
+    font-weight: 400;
+  }
+
   &__api-error {
     padding: $spacing-md $spacing-lg;
     background-color: #fee;
@@ -220,6 +231,26 @@
     border-radius: 4px;
     font-size: 0.875rem;
     line-height: $line-height-base;
+  }
+
+  &__terms-text {
+    font-size: 0.8125rem;
+    color: #999;
+    text-align: center;
+    line-height: $line-height-base;
+    margin: 0;
+  }
+
+  &__terms-link {
+    color: $color-master;
+    text-decoration: none;
+    font-weight: 600;
+    transition: color 0.2s ease;
+
+    &:hover {
+      color: #cc9450;
+      text-decoration: underline;
+    }
   }
 
   &__divider {
@@ -305,7 +336,7 @@
     }
   }
 
-  &__signup-prompt {
+  &__prompt {
     margin-top: $spacing-xxl;
     text-align: center;
 
@@ -314,7 +345,7 @@
     }
   }
 
-  &__signup-link {
+  &__prompt-link {
     background: none;
     border: none;
     color: #231f20;
