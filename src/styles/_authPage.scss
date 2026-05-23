@@ -366,4 +366,70 @@
       color: $color-master;
     }
   }
+
+  &__reset-request,
+  &__reset-confirm {
+    width: 100%;
+    max-width: 560px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: $spacing-lg;
+  }
+ 
+  &__reset-heading {
+    font-size: 1.75rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    color: $color-headline;
+    line-height: 1.3;
+ 
+    @include respond-to(mobile) {
+      font-size: 1.25rem;
+    }
+  }
+ 
+  &__reset-confirm-title {
+    font-size: 1.75rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    color: $color-headline;
+ 
+    @include respond-to(mobile) {
+      font-size: 1.5rem;
+    }
+  }
+ 
+  &__reset-confirm-body {
+    font-size: 1.25rem;
+    color: $color-text;
+    line-height: 1.6;
+ 
+    @include respond-to(mobile) {
+      font-size: 1rem;
+    }
+  }
+ 
+  &__reset-link {
+    background: none;
+    border: none;
+    color: #231f20;
+    font-size: 1.03125rem;
+    font-weight: 700;
+    cursor: pointer;
+    padding: 0;
+    font-family: $font-family-base;
+    transition: color 0.2s ease;
+ 
+    &:hover {
+      color: $color-master;
+    }
+ 
+    @include respond-to(mobile) {
+      font-size: 1rem;
+    }
+  }
 }
+
+
