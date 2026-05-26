@@ -17,6 +17,7 @@ import Footer from './components/layout/Footer'
 import PricingPage from './pages/marketing/PricingPage'
 import ContactPage from './pages/marketing/ContactPage'
 import ForgotPasswordPage from './components/auth/ForgotPasswordPage'
+import ResetPasswordPage from './components/auth/ResetPasswordPage'
 
 const App = () => {
   const dispatch = useDispatch<AppDispatch>()
@@ -54,6 +55,7 @@ const App = () => {
           <Route path='/download' element={<DownloadPage />} />
           <Route path='/login' element={user ? <Navigate to='/dashboard' /> : <LoginPage />} />
           <Route path='/forgot-password' element={user ? <Navigate to='/dashboard' /> : <ForgotPasswordPage />} />
+          <Route path='/reset-password' element={user ? <Navigate to='/dashboard' /> : <ResetPasswordPage />} />
           <Route path='/register' element={user ? <Navigate to='/dashboard' /> : <RegisterPage />} />
         </Route>
       </Routes>
