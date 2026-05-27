@@ -18,6 +18,8 @@ import PricingPage from './pages/marketing/PricingPage'
 import ContactPage from './pages/marketing/ContactPage'
 import ForgotPasswordPage from './components/auth/ForgotPasswordPage'
 import ResetPasswordPage from './components/auth/ResetPasswordPage'
+import ProfileSection from './components/dashboard/ProfileSection'
+import PlaceholderSection from './components/dashboard/PlaceholderSection'
 
 const App = () => {
   const dispatch = useDispatch<AppDispatch>()
@@ -45,7 +47,14 @@ const App = () => {
       <Navbar />
       <Routes>
         <Route element={<ProtectedRoutes />}>
-          <Route path='/dashboard' element={<DashboardPage />} />
+          <Route path='/dashboard' element={<DashboardPage />}>
+            <Route index element={<Navigate to='profile' replace />} />
+            <Route path='profile' element={<ProfileSection />} />
+            <Route path='family' element={<PlaceholderSection title='Family' />} />
+            <Route path='subscription' element={<PlaceholderSection title='Subscription' />} />
+            <Route path='data-privacy' element={<PlaceholderSection title='Data & Privacy' />} />
+            <Route path='notifications' element={<PlaceholderSection title='Notifications' />} />
+          </Route>
         </Route>
         <Route element={<MarketingLayout />}>
           <Route path='/' element={<LandingPage />} />
