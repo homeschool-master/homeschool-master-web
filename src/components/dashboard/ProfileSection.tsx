@@ -7,7 +7,7 @@ import type { RootState } from '../../store'
 const profileSchema = z.object({
   name: z.string().min(1, { message: 'Name is required' }),
   email: z.email({ message: 'Enter a valid email address' }),
-  password: z.string().min(8, { message: 'Password must be at least 8 characters' }).or(z.literal('')),
+  currentPassword: z.string().min(1, { message: 'Enter your password to save changes' }),
 })
 
 type ProfileFormData = z.infer<typeof profileSchema>
@@ -18,6 +18,7 @@ const ProfileSection = () => {
   const {
     register,
     handleSubmit,
+    reset,
     formState: { errors, isSubmitting },
   } = useForm<ProfileFormData>({
     resolver: zodResolver(profileSchema),
@@ -25,12 +26,15 @@ const ProfileSection = () => {
     defaultValues: {
       name: user ? `${user.firstName} ${user.lastName}` : '',
       email: user?.email ?? '',
-      password: '',
+      currentPassword: '',
     },
   })
 
   const onSubmit = async (_data: ProfileFormData) => {
-    // TODO: PATCH /api/v1/profile (endpoint not yet built). See note re: name split + password handling.
+    // TODO: PATCH /api/v1/profile with { name, email, currentPassword }.
+    // Backend verifies currentPassword before applying name/email changes.
+    // On success, clear the password field so it isn't retained:
+    // reset({ name: data.name, email: data.email, currentPassword: '' })
   }
 
   return (
@@ -67,11 +71,12 @@ const ProfileSection = () => {
           <input
             id='profile-password'
             type='password'
-            placeholder='••••••••'
-            className={`dashboard__input ${errors.password ? 'dashboard__input--error' : ''}`}
-            {...register('password')}
+            placeholder='Enter password to save changes'
+            autoComplete='current-password'
+            className={`dashboard__input ${errors.currentPassword ? 'dashboard__input--error' : ''}`}
+            {...register('currentPassword')}
           />
-          {errors.password && <span className='dashboard__error'>{errors.password.message}</span>}
+          {errors.currentPassword && <span className='dashboard__error'>{errors.currentPassword.message}</span>}
         </div>
       </div>
 
