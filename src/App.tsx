@@ -44,31 +44,35 @@ const App = () => {
 
   return (
     <Router>
-      <Navbar />
-      <Routes>
-        <Route element={<ProtectedRoutes />}>
-          <Route path='/dashboard' element={<DashboardPage />}>
-            <Route index element={<Navigate to='profile' replace />} />
-            <Route path='profile' element={<ProfileSection />} />
-            <Route path='family' element={<PlaceholderSection title='Family' />} />
-            <Route path='subscription' element={<PlaceholderSection title='Subscription' />} />
-            <Route path='data-privacy' element={<PlaceholderSection title='Data & Privacy' />} />
-            <Route path='notifications' element={<PlaceholderSection title='Notifications' />} />
-          </Route>
-        </Route>
-        <Route element={<MarketingLayout />}>
-          <Route path='/' element={<LandingPage />} />
-          <Route path='/about' element={<AboutPage />} />
-          <Route path='/pricing' element={<PricingPage />} />
-          <Route path='/contact' element={<ContactPage />} />
-          <Route path='/download' element={<DownloadPage />} />
-          <Route path='/login' element={user ? <Navigate to='/dashboard' /> : <LoginPage />} />
-          <Route path='/forgot-password' element={user ? <Navigate to='/dashboard' /> : <ForgotPasswordPage />} />
-          <Route path='/reset-password' element={user ? <Navigate to='/dashboard' /> : <ResetPasswordPage />} />
-          <Route path='/register' element={user ? <Navigate to='/dashboard' /> : <RegisterPage />} />
-        </Route>
-      </Routes>
-      <Footer />
+      <div className='app-shell'>
+        <Navbar />
+          <div className='app-shell__main'>
+            <Routes>
+              <Route element={<ProtectedRoutes />}>
+                <Route path='/dashboard' element={<DashboardPage />}>
+                  <Route index element={<Navigate to='profile' replace />} />
+                  <Route path='profile' element={<ProfileSection />} />
+                  <Route path='family' element={<PlaceholderSection title='Family' />} />
+                  <Route path='subscription' element={<PlaceholderSection title='Subscription' />} />
+                  <Route path='data-privacy' element={<PlaceholderSection title='Data & Privacy' />} />
+                  <Route path='notifications' element={<PlaceholderSection title='Notifications' />} />
+                </Route>
+              </Route>
+              <Route element={<MarketingLayout />}>
+                <Route path='/' element={<LandingPage />} />
+                <Route path='/about' element={<AboutPage />} />
+                <Route path='/pricing' element={<PricingPage />} />
+                <Route path='/contact' element={<ContactPage />} />
+                <Route path='/download' element={<DownloadPage />} />
+                <Route path='/login' element={user ? <Navigate to='/dashboard' /> : <LoginPage />} />
+                <Route path='/forgot-password' element={user ? <Navigate to='/dashboard' /> : <ForgotPasswordPage />} />
+                <Route path='/reset-password' element={user ? <Navigate to='/dashboard' /> : <ResetPasswordPage />} />
+                <Route path='/register' element={user ? <Navigate to='/dashboard' /> : <RegisterPage />} />
+              </Route>
+            </Routes>
+          </div>
+        <Footer />
+      </div>
     </Router>
   )
 }
