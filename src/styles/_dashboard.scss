@@ -144,37 +144,75 @@
     }
   }
 
-  // Profile form
-  &__form {
-    display: flex;
-    flex-direction: column;
-    gap: $spacing-lg;
+ // Profile: read view + editable sections
+  &__profile {
     max-width: 520px;
     width: 100%;
     margin: 0 auto;
   }
 
-  &__field {
-    display: flex;
-    align-items: center;
-    gap: $spacing-md;
+  &__section {
+    padding: $spacing-xs 0;
+  }
 
-    @include respond-to(mobile) {
-      flex-direction: column;
-      align-items: stretch;
-      gap: $spacing-xs;
+  &__section-title {
+    font-size: 0.85rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: $color-headline;
+    margin-bottom: $spacing-xs;
+  }
+
+  &__section-value {
+    font-size: 1.1rem;
+    color: $color-text;
+    margin-bottom: $spacing-sm;
+  }
+
+  &__section-link {
+    background: none;
+    border: none;
+    padding: 0;
+    font-family: $font-family-base;
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: $color-accent;
+    cursor: pointer;
+
+    &:hover {
+      text-decoration: underline;
     }
   }
 
+  &__divider {
+    height: 1.5px;
+    background-color: #ecbb77;
+    opacity: 0.5;
+    margin: $spacing-md 0;
+  }
+
+  // Edit forms
+  &__form {
+    display: flex;
+    flex-direction: column;
+    gap: $spacing-md;
+    width: 100%;
+  }
+
+  &__field {
+    display: flex;
+    flex-direction: column;
+    gap: $spacing-xs;
+  }
+
   &__field-label {
-    flex: 0 0 90px;
     font-weight: 700;
+    font-size: 0.9rem;
     color: $color-headline;
-    font-size: 1rem;
   }
 
   &__field-control {
-    flex: 1;
     display: flex;
     flex-direction: column;
     gap: $spacing-xs;
@@ -200,20 +238,61 @@
     }
   }
 
+  &__password-wrapper {
+    position: relative;
+
+    .dashboard__input {
+      padding-right: 2.75rem;
+    }
+  }
+
+  &__password-toggle {
+    position: absolute;
+    top: 50%;
+    right: $spacing-md;
+    transform: translateY(-50%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: none;
+    border: none;
+    padding: 0;
+    color: $color-text;
+    opacity: 0.6;
+    cursor: pointer;
+
+    &:hover:not(:disabled) {
+      opacity: 1;
+    }
+
+    &:disabled {
+      cursor: not-allowed;
+    }
+  }
+
   &__error {
     color: #c0392b;
     font-size: 0.8rem;
   }
 
+  &__api-error {
+    color: #c0392b;
+    font-size: 0.85rem;
+    background-color: rgba(192, 57, 43, 0.08);
+    border-radius: 10px;
+    padding: 0.5rem $spacing-md;
+  }
+
+  &__notice {
+    color: #2e7d32;
+    font-size: 0.9rem;
+    line-height: 1.5;
+  }
+
   &__form-actions {
     display: flex;
-    justify-content: flex-start;
-    padding-left: calc(90px + #{$spacing-md});
-
-    @include respond-to(mobile) {
-      padding-left: 0;
-      justify-content: center;
-    }
+    gap: $spacing-sm;
+    margin-top: $spacing-xs;
   }
 
   &__save-btn {
@@ -230,6 +309,28 @@
 
     &:hover:not(:disabled) {
       background-color: #fde6a8;
+    }
+
+    &:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+    }
+  }
+
+  &__cancel-btn {
+    background: none;
+    border: 1.5px solid #ecbb77;
+    border-radius: 24px;
+    padding: 0.6rem 2rem;
+    font-family: $font-family-base;
+    font-weight: 600;
+    font-size: 1rem;
+    color: $color-headline;
+    cursor: pointer;
+    transition: background-color 0.2s;
+
+    &:hover:not(:disabled) {
+      background-color: rgba(254, 240, 202, 0.4);
     }
 
     &:disabled {
