@@ -28,7 +28,11 @@ const EmailForm = ({ onDone }: { onDone: () => void }) => {
       await api.post('/api/v1/auth/email/change', data)
       setSent(true)
     } catch (error: any) {
-      setError('root', { message: error.response?.data?.message || 'Could not start the email change. Check your password and try again.' })
+      setError('root', {
+        message:
+          error.response?.data?.error?.message ||
+          'Could not update name. Check your password and try again.',
+      })
     }
   }
 

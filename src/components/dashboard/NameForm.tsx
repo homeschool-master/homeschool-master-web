@@ -30,7 +30,11 @@ const NameForm = ({ onDone }: { onDone: () => void }) => {
       dispatch(setUser(res.data.user))
       onDone()
     } catch (error: any) {
-      setError('root', { message: error.response?.data?.message || 'Could not update name. Check your password and try again.' })
+      setError('root', {
+        message:
+          error.response?.data?.error?.message ||
+          'Could not update name. Check your password and try again.',
+      })
     }
   }
 
