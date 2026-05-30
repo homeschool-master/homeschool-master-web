@@ -21,6 +21,7 @@ import ResetPasswordPage from './components/auth/ResetPasswordPage'
 import ProfileSection from './components/dashboard/ProfileSection'
 import PlaceholderSection from './components/dashboard/PlaceholderSection'
 import NotFoundPage from './pages/NotFoundPage'
+import StudentsSection from './components/dashboard/StudentsSection'
 
 const App = () => {
   const dispatch = useDispatch<AppDispatch>()
@@ -53,7 +54,7 @@ const App = () => {
                 <Route path='/dashboard' element={<DashboardPage />}>
                   <Route index element={<Navigate to='profile' replace />} />
                   <Route path='profile' element={<ProfileSection />} />
-                  <Route path='family' element={<PlaceholderSection title='Family' />} />
+                  <Route path='students' element={<StudentsSection />} />
                   <Route path='subscription' element={<PlaceholderSection title='Subscription' />} />
                   <Route path='data-privacy' element={<PlaceholderSection title='Data & Privacy' />} />
                   <Route path='notifications' element={<PlaceholderSection title='Notifications' />} />

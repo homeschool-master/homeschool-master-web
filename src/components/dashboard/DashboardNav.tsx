@@ -37,7 +37,7 @@ const LogoutIcon = () => (
 
 const navItems = [
   { to: 'profile', label: 'Profile', Icon: ProfileIcon },
-  { to: 'family', label: 'Family', Icon: FamilyIcon },
+  { to: 'students', label: 'Students', Icon: FamilyIcon },
   { to: 'subscription', label: 'Subscription', Icon: SubscriptionIcon },
   { to: 'data-privacy', label: 'Data & Privacy', Icon: DataIcon },
   { to: 'notifications', label: 'Notifications', Icon: BellIcon },
