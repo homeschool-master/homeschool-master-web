@@ -20,6 +20,7 @@ import ForgotPasswordPage from './components/auth/ForgotPasswordPage'
 import ResetPasswordPage from './components/auth/ResetPasswordPage'
 import ProfileSection from './components/dashboard/ProfileSection'
 import PlaceholderSection from './components/dashboard/PlaceholderSection'
+import NotFoundPage from './pages/NotFoundPage'
 
 const App = () => {
   const dispatch = useDispatch<AppDispatch>()
@@ -69,6 +70,7 @@ const App = () => {
                 <Route path='/reset-password' element={user ? <Navigate to='/dashboard' /> : <ResetPasswordPage />} />
                 <Route path='/register' element={user ? <Navigate to='/dashboard' /> : <RegisterPage />} />
               </Route>
+              <Route path='*' element={<NotFoundPage />} />
             </Routes>
           </div>
         <Footer />

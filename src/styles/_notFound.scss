@@ -1,0 +1,85 @@
+@use 'variables' as *;
+@use 'mixins' as *;
+
+.not-found {
+  font-family: $font-family-base;
+  color: $color-text;
+
+  &__hero {
+    background: $gradient-hero;
+    padding: 0 5px;
+  }
+
+  &__hero-inner {
+    @include container;
+    padding-top: $spacing-xl;
+    padding-bottom: $spacing-xl;
+    text-align: center;
+  }
+
+  &__eyebrow {
+    color: $color-accent;
+    font-size: 1rem;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    margin-bottom: $spacing-sm;
+  }
+
+  &__headline {
+    font-size: 2.5rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    color: $color-headline;
+
+    @include respond-to(mobile) {
+      font-size: 1.75rem;
+    }
+  }
+
+  &__body {
+    background-color: #fbf7ee;
+    padding: 0 5px;
+  }
+
+  &__body-inner {
+    @include container;
+    padding-top: $spacing-xl;
+    padding-bottom: $spacing-xl;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: $spacing-lg;
+
+      .button {
+        align-self: center;
+      }
+  }
+
+  &__illustration {
+    max-width: 220px;
+    width: 100%;
+
+    @include respond-to(mobile) {
+      max-width: 160px;
+    }
+
+    img {
+      width: 100%;
+      height: auto;
+      display: block;
+    }
+  }
+
+  &__subhead {
+    font-size: 1.5rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    color: $color-headline;
+    margin: 0;
+
+    @include respond-to(mobile) {
+      font-size: 1.25rem;
+    }
+  }
+}
