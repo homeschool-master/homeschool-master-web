@@ -24,6 +24,7 @@ import NotFoundPage from './pages/NotFoundPage'
 import StudentsSection from './components/dashboard/StudentsSection'
 import DataPrivacySection from './components/dashboard/DataPrivacySection'
 import SubscriptionSection from './components/dashboard/SubscriptionSection'
+import ScrollToTop from './components/shared/ScrollToTop'
 
 const App = () => {
   const dispatch = useDispatch<AppDispatch>()
@@ -48,6 +49,7 @@ const App = () => {
 
   return (
     <Router>
+      <ScrollToTop />
       <div className='app-shell'>
         <Navbar />
           <div className='app-shell__main'>
