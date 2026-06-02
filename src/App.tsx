@@ -25,6 +25,7 @@ import StudentsSection from './components/dashboard/StudentsSection'
 import DataPrivacySection from './components/dashboard/DataPrivacySection'
 import SubscriptionSection from './components/dashboard/SubscriptionSection'
 import ScrollToTop from './components/shared/ScrollToTop'
+import BackToTopButton from './components/shared/BakToTopButton'
 
 const App = () => {
   const dispatch = useDispatch<AppDispatch>()
@@ -79,6 +80,7 @@ const App = () => {
             </Routes>
           </div>
         <Footer />
+        <BackToTopButton />
       </div>
     </Router>
   )

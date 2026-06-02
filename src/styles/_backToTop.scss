@@ -1,0 +1,47 @@
+@use 'variables' as *;
+@use 'mixins' as *;
+
+.back-to-top {
+  position: fixed;
+  bottom: $spacing-lg;
+  right: $spacing-lg;
+  z-index: 50;
+
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.6rem 1.1rem;
+  border-radius: 24px;
+  border: 1.5px solid #231f20;
+  background-color: $color-accent;
+  color: $color-white;
+  font-family: $font-family-base;
+  font-weight: 600;
+  font-size: 0.95rem;
+
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(12px);
+  transition: opacity 0.2s, transform 0.2s, visibility 0.2s, background-color 0.2s;
+
+  &:hover:not(:disabled) {
+    background-color: #c06e09;
+  }
+
+  &--visible {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+  }
+
+  &__label {
+    line-height: 1;
+  }
+
+  @include respond-to(mobile) {
+    bottom: $spacing-md;
+    right: $spacing-md;
+    padding: 0.55rem 0.95rem;
+    font-size: 0.9rem;
+  }
+}
