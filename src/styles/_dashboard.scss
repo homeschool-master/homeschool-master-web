@@ -416,4 +416,64 @@
     color: $color-text;
     opacity: 0.7;
   }
+
+  // Subscription: read-only billing summary
+  &__subscription {
+    max-width: 560px;
+    width: 100%;
+    margin: 0 auto;
+  }
+
+  &__sub-row {
+    display: grid;
+    grid-template-columns: 110px 1fr;
+    align-items: center;
+    gap: $spacing-md;
+    padding: $spacing-sm 0;
+
+    @include respond-to(mobile) {
+      grid-template-columns: 1fr;
+      gap: 0.4rem;
+      padding: $spacing-xs 0;
+    }
+  }
+
+  &__sub-label {
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: $color-headline;
+    text-align: right;
+
+    @include respond-to(mobile) {
+      text-align: left;
+    }
+  }
+
+  &__sub-field {
+    padding: 0.85rem $spacing-md;
+    border: 1.5px solid #ecbb77;
+    border-radius: 999px;
+    background-color: #fff8e8;
+    color: $color-text;
+    font-size: 1.05rem;
+  }
+
+  &__sub-manage-wrap {
+    text-align: center;
+  }
+
+  &__sub-manage {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    margin-top: $spacing-lg;
+    font-weight: 700;
+    font-size: 1.05rem;
+    color: $color-headline;
+    text-decoration: none;
+
+    &:hover {
+      color: $color-accent;
+    }
+  }
 }
