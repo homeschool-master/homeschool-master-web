@@ -1,6 +1,6 @@
 import type { ButtonHTMLAttributes, ReactNode } from 'react'
 
-type ButtonColor = 'orange' | 'white' | 'black'
+type ButtonColor = 'orange' | 'white' | 'black' | 'cream' | 'danger'
 type ButtonSize = 'small' | 'large'
 
 interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {

@@ -476,4 +476,69 @@
       color: $color-accent;
     }
   }
+
+  // Data & Privacy
+  &__data-privacy {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: $spacing-lg;
+    max-width: 420px;
+    width: 100%;
+    margin: 0 auto;
+  }
+
+  &__dp-btn {
+    align-self: stretch;
+    padding: 0.85rem 1.5rem;
+    font-size: 1.05rem;
+    text-align: center;
+  }
+
+  &__dp-link {
+    font-weight: 700;
+    font-size: 1.05rem;
+    color: $color-headline;
+    text-decoration: underline;
+
+    &:hover {
+      color: $color-accent;
+    }
+  }
+
+  &__dp-back {
+    align-self: flex-start;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    background: none;
+    border: none;
+    padding: 0;
+    font-family: $font-family-base;
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: $color-accent;
+    cursor: pointer;
+
+    &:hover {
+      text-decoration: underline;
+    }
+  }
+
+  &__dp-heading {
+    font-size: 1.3rem;
+    font-weight: 800;
+    color: $color-headline;
+    text-align: center;
+  }
+
+  &__dp-warning {
+    align-self: stretch;
+    display: flex;
+    flex-direction: column;
+    gap: $spacing-sm;
+    font-size: 0.95rem;
+    line-height: 1.5;
+    color: $color-text;
+  }
 }

@@ -58,4 +58,22 @@
       background-color: #000;
     }
   }
+
+  &--cream {
+    background-color: #fff8e8;
+    color: $color-headline;
+
+    &:hover:not(:disabled) {
+      background-color: #fdeccb;
+    }
+  }
+
+  &--danger {
+    background-color: #fecaca;
+    color: $color-headline;
+
+    &:hover:not(:disabled) {
+      background-color: #fca5a5;
+    }
+  }
 }

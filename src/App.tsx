@@ -23,6 +23,7 @@ import PlaceholderSection from './components/dashboard/PlaceholderSection'
 import NotFoundPage from './pages/NotFoundPage'
 import StudentsSection from './components/dashboard/StudentsSection'
 import SubscriptionSection from './components/dashboard/subscriptionSection'
+import DataPrivacySection from './components/dashboard/DataPrivacySection'
 
 const App = () => {
   const dispatch = useDispatch<AppDispatch>()
@@ -57,7 +58,7 @@ const App = () => {
                   <Route path='profile' element={<ProfileSection />} />
                   <Route path='students' element={<StudentsSection />} />
                   <Route path='subscription' element={<SubscriptionSection />} />
-                  <Route path='data-privacy' element={<PlaceholderSection title='Data & Privacy' />} />
+                  <Route path='data-privacy' element={<DataPrivacySection />} />
                   <Route path='notifications' element={<PlaceholderSection title='Notifications' />} />
                 </Route>
               </Route>
