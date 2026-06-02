@@ -22,8 +22,8 @@ import ProfileSection from './components/dashboard/ProfileSection'
 import PlaceholderSection from './components/dashboard/PlaceholderSection'
 import NotFoundPage from './pages/NotFoundPage'
 import StudentsSection from './components/dashboard/StudentsSection'
-import SubscriptionSection from './components/dashboard/subscriptionSection'
 import DataPrivacySection from './components/dashboard/DataPrivacySection'
+import SubscriptionSection from './components/dashboard/SubscriptionSection'
 
 const App = () => {
   const dispatch = useDispatch<AppDispatch>()
