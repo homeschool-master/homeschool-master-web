@@ -35,7 +35,7 @@ const LoginPage = () => {
   const onSubmit = async (data: LoginFormData) => {
     try {
       const response = await api.post('/api/v1/auth/login', data)
-      dispatch(setUser(response.data.user))
+      dispatch(setUser(response.data.data))
       navigate('/dashboard')
     } catch (error: any) {
       setError('root', {

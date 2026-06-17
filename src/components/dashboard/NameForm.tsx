@@ -27,7 +27,7 @@ const NameForm = ({ onDone }: { onDone: () => void }) => {
   const onSubmit = async (data: FormData) => {
     try {
       const res = await api.patch('/api/v1/profile', data)
-      dispatch(setUser(res.data.user))
+      dispatch(setUser(res.data.data))
       onDone()
     } catch (error: any) {
       setError('root', {

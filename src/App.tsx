@@ -35,7 +35,7 @@ const App = () => {
   useEffect(() => {
     api.get('/api/v1/auth/me')
       .then((response) => {
-        dispatch(setUser(response.data.user))
+        dispatch(setUser(response.data.data))
       })
       .catch((error) => {
         // TODO: handle session restoration errors visually (e.g. toast notification for non-401 errors)
