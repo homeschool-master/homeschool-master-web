@@ -1,14 +1,24 @@
-import { useEffect } from 'react'
+import { useEffect, useRef } from 'react'
 import { useLocation } from 'react-router-dom'
 
-// On a single-page app, the browser keeps the previous scroll position when the
-// route changes, so navigating from the bottom of one page lands you at the
-// bottom of the next. This resets to the top whenever the path changes.
+// Resets scroll to top on route change so navigating from the bottom of one
+// page doesn't land you at the bottom of the next. Exception: navigating
+// between sections inside /dashboard preserves scroll so option clicks feel
+// like tabs, keeping the user's viewport anchored where they were.
 const ScrollToTop = () => {
   const { pathname } = useLocation()
+  const prevPathnameRef = useRef(pathname)
 
   useEffect(() => {
-    window.scrollTo(0, 0)
+    const prev = prevPathnameRef.current
+    prevPathnameRef.current = pathname
+
+    const stayingInDashboard =
+      prev.startsWith('/dashboard') && pathname.startsWith('/dashboard')
+
+    if (!stayingInDashboard) {
+      window.scrollTo(0, 0)
+    }
   }, [pathname])
 
   return null

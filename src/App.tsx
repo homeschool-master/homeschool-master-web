@@ -26,6 +26,7 @@ import DataPrivacySection from './components/dashboard/DataPrivacySection'
 import SubscriptionSection from './components/dashboard/SubscriptionSection'
 import ScrollToTop from './components/shared/ScrollToTop'
 import BackToTopButton from './components/shared/BakToTopButton'
+import NotificationsSection from './components/dashboard/Notifications'
 
 const App = () => {
   const dispatch = useDispatch<AppDispatch>()
@@ -62,7 +63,7 @@ const App = () => {
                   <Route path='students' element={<StudentsSection />} />
                   <Route path='subscription' element={<SubscriptionSection />} />
                   <Route path='data-privacy' element={<DataPrivacySection />} />
-                  <Route path='notifications' element={<PlaceholderSection title='Notifications' />} />
+                  <Route path='notifications' element={<NotificationsSection />} />
                 </Route>
               </Route>
               <Route element={<MarketingLayout />}>
