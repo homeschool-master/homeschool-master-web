@@ -19,14 +19,14 @@ import ContactPage from './pages/marketing/ContactPage'
 import ForgotPasswordPage from './components/auth/ForgotPasswordPage'
 import ResetPasswordPage from './components/auth/ResetPasswordPage'
 import ProfileSection from './components/dashboard/ProfileSection'
-import PlaceholderSection from './components/dashboard/PlaceholderSection'
+
 import NotFoundPage from './pages/NotFoundPage'
 import StudentsSection from './components/dashboard/StudentsSection'
 import DataPrivacySection from './components/dashboard/DataPrivacySection'
 import SubscriptionSection from './components/dashboard/SubscriptionSection'
 import ScrollToTop from './components/shared/ScrollToTop'
 import BackToTopButton from './components/shared/BakToTopButton'
-import NotificationsSection from './components/dashboard/Notifications'
+import NotificationsSection from './components/dashboard/NotificationsSection'
 
 const App = () => {
   const dispatch = useDispatch<AppDispatch>()

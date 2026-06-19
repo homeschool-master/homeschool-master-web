@@ -1,33 +1,43 @@
 import { useState } from 'react'
-
-// TODO: load defaults from the user object once notification preferences live
-// on the teacher record. For now, the section opens with everything on, which
-// matches the canva design.
-const defaultPrefs = {
-  accountUpdates: true,
-  productUpdates: true,
-  homeschoolResources: true,
-}
-
-type Prefs = typeof defaultPrefs
+import { useDispatch, useSelector } from 'react-redux'
+import api from '../../services/api'
+import { setUser } from '../../store/authSlice'
+import type { AppDispatch, RootState } from '../../store'
 
 const NotificationsSection = () => {
-  const [prefs, setPrefs] = useState<Prefs>(defaultPrefs)
+  const user = useSelector((s: RootState) => s.auth.user)
+  const dispatch = useDispatch<AppDispatch>()
+
+  const [prefs, setPrefs] = useState({
+    notifyAccountUpdates: user?.notifyAccountUpdates ?? true,
+    notifyProductUpdates: user?.notifyProductUpdates ?? true,
+    notifyHomeschoolResources: user?.notifyHomeschoolResources ?? true,
+  })
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [savedNotice, setSavedNotice] = useState(false)
+  const [apiError, setApiError] = useState<string | null>(null)
 
-  const toggle = (key: keyof Prefs) => {
+  if (!user) return null
+
+  const toggle = (key: keyof typeof prefs) => {
     setPrefs((p) => ({ ...p, [key]: !p[key] }))
     setSavedNotice(false)
+    setApiError(null)
   }
 
   const handleSave = async () => {
     setIsSubmitting(true)
     setSavedNotice(false)
+    setApiError(null)
     try {
-      // TODO: PATCH /api/v1/notifications with prefs once the endpoint exists.
-      await new Promise((r) => setTimeout(r, 350))
+      const res = await api.patch('/api/v1/notifications', prefs)
+      dispatch(setUser(res.data.data))
       setSavedNotice(true)
+    } catch (error: any) {
+      setApiError(
+        error.response?.data?.error?.message ||
+        'Could not save your preferences. Please try again.'
+      )
     } finally {
       setIsSubmitting(false)
     }
@@ -39,25 +49,26 @@ const NotificationsSection = () => {
         id='notif-account'
         label='Account Updates'
         sublabel='(security, billing)'
-        checked={prefs.accountUpdates}
-        onChange={() => toggle('accountUpdates')}
+        checked={prefs.notifyAccountUpdates}
+        onChange={() => toggle('notifyAccountUpdates')}
       />
       <NotificationToggle
         id='notif-product'
         label='Product updates'
         sublabel='(new features, tips)'
-        checked={prefs.productUpdates}
-        onChange={() => toggle('productUpdates')}
+        checked={prefs.notifyProductUpdates}
+        onChange={() => toggle('notifyProductUpdates')}
       />
       <NotificationToggle
         id='notif-homeschool'
         label='Homeschool resources'
         sublabel='(weekly newsletter)'
-        checked={prefs.homeschoolResources}
-        onChange={() => toggle('homeschoolResources')}
+        checked={prefs.notifyHomeschoolResources}
+        onChange={() => toggle('notifyHomeschoolResources')}
       />
 
       {savedNotice && <p className='dashboard__notice'>Your preferences have been saved.</p>}
+      {apiError && <p className='dashboard__api-error'>{apiError}</p>}
 
       <div className='dashboard__form-actions dashboard__notif-actions'>
         <button
