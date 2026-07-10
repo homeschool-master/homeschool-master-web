@@ -35,8 +35,9 @@ const LoginPage = () => {
   const onSubmit = async (data: LoginFormData) => {
     try {
       const response = await api.post('/api/v1/auth/login', data)
-      dispatch(setUser(response.data.data))
-      navigate('/dashboard')
+      const loggedInUser = response.data.data
+      dispatch(setUser(loggedInUser))
+      navigate(loggedInUser.onboardingCompleted ? '/dashboard' : '/welcome')
     } catch (error: any) {
       setError('root', {
         message: error.response?.data?.message || 'Invalid email or password',

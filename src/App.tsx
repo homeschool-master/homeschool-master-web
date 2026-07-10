@@ -27,6 +27,7 @@ import SubscriptionSection from './components/dashboard/SubscriptionSection'
 import ScrollToTop from './components/shared/ScrollToTop'
 import BackToTopButton from './components/shared/BakToTopButton'
 import NotificationsSection from './components/dashboard/NotificationsSection'
+import OnboardingPage from './pages/app/OnboardingPage'
 
 const App = () => {
   const dispatch = useDispatch<AppDispatch>()
@@ -39,7 +40,7 @@ const App = () => {
         dispatch(setUser(response.data.data))
       })
       .catch((error) => {
-        // TODO: handle session restoration errors visually (e.g. toast notification for non-401 errors)
+        // TODO: handle session restoration errors visually (e.g. toast notification for non 401 errors)
         console.error('Session restoration failed:', error)
       })
       .finally(() => {
@@ -49,6 +50,8 @@ const App = () => {
 
   if (authLoading) return null
 
+  const authedRedirect = user?.onboardingCompleted ? '/dashboard' : '/welcome'
+
   return (
     <Router>
       <ScrollToTop />
@@ -57,6 +60,7 @@ const App = () => {
           <div className='app-shell__main'>
             <Routes>
               <Route element={<ProtectedRoutes />}>
+                <Route path='/welcome' element={<OnboardingPage />} />
                 <Route path='/dashboard' element={<DashboardPage />}>
                   <Route index element={<Navigate to='profile' replace />} />
                   <Route path='profile' element={<ProfileSection />} />
@@ -72,10 +76,10 @@ const App = () => {
                 <Route path='/pricing' element={<PricingPage />} />
                 <Route path='/contact' element={<ContactPage />} />
                 <Route path='/download' element={<DownloadPage />} />
-                <Route path='/login' element={user ? <Navigate to='/dashboard' /> : <LoginPage />} />
-                <Route path='/forgot-password' element={user ? <Navigate to='/dashboard' /> : <ForgotPasswordPage />} />
-                <Route path='/reset-password' element={user ? <Navigate to='/dashboard' /> : <ResetPasswordPage />} />
-                <Route path='/register' element={user ? <Navigate to='/dashboard' /> : <RegisterPage />} />
+                <Route path='/login' element={user ? <Navigate to={authedRedirect} /> : <LoginPage />} />
+                <Route path='/forgot-password' element={user ? <Navigate to={authedRedirect} /> : <ForgotPasswordPage />} />
+                <Route path='/reset-password' element={user ? <Navigate to={authedRedirect} /> : <ResetPasswordPage />} />
+                <Route path='/register' element={user ? <Navigate to={authedRedirect} /> : <RegisterPage />} />
               </Route>
               <Route path='*' element={<NotFoundPage />} />
             </Routes>
