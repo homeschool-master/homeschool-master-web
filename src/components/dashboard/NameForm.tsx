@@ -8,6 +8,7 @@ import type { AppDispatch, RootState } from '../../store'
 
 const schema = z.object({
   firstName: z.string().min(1, { message: 'First name is required' }),
+  middleName: z.string(),
   lastName: z.string().min(1, { message: 'Last name is required' }),
   currentPassword: z.string().min(1, { message: 'Enter your password to confirm' }),
 })
@@ -21,7 +22,12 @@ const NameForm = ({ onDone }: { onDone: () => void }) => {
   const { register, handleSubmit, setError, formState: { errors, isSubmitting } } = useForm<FormData>({
     resolver: zodResolver(schema),
     mode: 'onBlur',
-    defaultValues: { firstName: user?.firstName ?? '', lastName: user?.lastName ?? '', currentPassword: '' },
+    defaultValues: {
+      firstName: user?.firstName ?? '',
+      middleName: user?.middleName ?? '',
+      lastName: user?.lastName ?? '',
+      currentPassword: '',
+    },
   })
 
   const onSubmit = async (data: FormData) => {
@@ -47,6 +53,17 @@ const NameForm = ({ onDone }: { onDone: () => void }) => {
             className={`dashboard__input ${errors.firstName ? 'dashboard__input--error' : ''}`}
             {...register('firstName')} />
           {errors.firstName && <span className='dashboard__error'>{errors.firstName.message}</span>}
+        </div>
+      </div>
+
+      <div className='dashboard__field'>
+        <label className='dashboard__field-label' htmlFor='name-middle'>Middle Name</label>
+        <div className='dashboard__field-control'>
+          <input id='name-middle' type='text' autoComplete='additional-name'
+            placeholder='Optional'
+            className={`dashboard__input ${errors.middleName ? 'dashboard__input--error' : ''}`}
+            {...register('middleName')} />
+          {errors.middleName && <span className='dashboard__error'>{errors.middleName.message}</span>}
         </div>
       </div>
 

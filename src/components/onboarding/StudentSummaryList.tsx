@@ -42,7 +42,10 @@ const StudentSummaryList = ({
           const canSelect = (isComplete || isNextUp) && !isCurrent && !disabled
 
           const name = student.firstName.trim()
-            ? `${student.firstName} ${student.lastName}`.trim()
+            ? [student.firstName, student.middleName, student.lastName]
+                .map((part) => part.trim())
+                .filter(Boolean)
+                .join(' ')
             : `Student ${index + 1}`
 
           const classes = [

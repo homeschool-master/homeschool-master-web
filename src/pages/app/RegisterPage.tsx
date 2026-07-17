@@ -9,6 +9,7 @@ import AuthLayout from '../../components/auth/AuthLayout'
 
 const registerSchema = z.object({
   firstName: z.string().min(1, { message: 'First name is required' }),
+  middleName: z.string().optional(),
   lastName: z.string().min(1, { message: 'Last name is required' }),
   email: z.email({ message: 'Enter a valid email address' }),
   password: z
@@ -85,6 +86,19 @@ const RegisterPage = () => {
           />
           {errors.firstName && (
             <span className="auth-page__error-message">{errors.firstName.message}</span>
+          )}
+        </div>
+
+        <div className="auth-page__form-group">
+          <input
+            type="text"
+            placeholder="Middle Name (optional)"
+            {...register('middleName')}
+            className={`auth-page__input ${errors.middleName ? 'auth-page__input--error' : ''}`}
+            disabled={isSubmitting}
+          />
+          {errors.middleName && (
+            <span className="auth-page__error-message">{errors.middleName.message}</span>
           )}
         </div>
 

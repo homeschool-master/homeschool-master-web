@@ -8,6 +8,7 @@ import type { StudentDetailsValues, StudentDraft } from '../../../pages/app/Onbo
 
 const schema = z.object({
   firstName: z.string().trim().min(1, { message: 'First name is required' }),
+  middleName: z.string().trim(),
   lastName: z.string().trim().min(1, { message: 'Last name is required' }),
   gradeLevel: z.string().min(1, { message: 'Select a grade level' }),
   color: z.string().min(1, { message: 'Select a color' }),
@@ -34,6 +35,7 @@ const StudentDetailsStep = ({ student, onBack, onNext }: StudentDetailsStepProps
     mode: 'onBlur',
     defaultValues: {
       firstName: student.firstName,
+      middleName: student.middleName,
       lastName: student.lastName,
       gradeLevel: student.gradeLevel,
       color: student.color,
@@ -68,6 +70,23 @@ const StudentDetailsStep = ({ student, onBack, onNext }: StudentDetailsStepProps
         />
         {errors.firstName && (
           <span className='onboarding-step__error'>{errors.firstName.message}</span>
+        )}
+      </div>
+
+      <div className='onboarding-step__field'>
+        <label className='onboarding-step__sr-only' htmlFor='student-middle-name'>
+          Student Middle Name
+        </label>
+        <input
+          id='student-middle-name'
+          type='text'
+          autoComplete='off'
+          placeholder='Student Middle Name (optional)'
+          className={`onboarding-step__input ${errors.middleName ? 'onboarding-step__input--error' : ''}`}
+          {...register('middleName')}
+        />
+        {errors.middleName && (
+          <span className='onboarding-step__error'>{errors.middleName.message}</span>
         )}
       </div>
 

@@ -14,6 +14,7 @@ import StudentPhotoStep from '../../components/onboarding/steps/StudentPhotoStep
 
 export interface StudentDetailsValues {
   firstName: string
+  middleName: string
   lastName: string
   gradeLevel: string
   color: string
@@ -29,6 +30,7 @@ type Phase = 'profile' | 'count' | 'student-details' | 'student-photo'
 const emptyStudent = (): StudentDraft => ({
   id: null,
   firstName: '',
+  middleName: '',
   lastName: '',
   gradeLevel: '',
   color: '',
@@ -70,6 +72,7 @@ const OnboardingPage = () => {
         const saved: StudentDraft[] = res.data.data.map((s: any) => ({
           id: s.id,
           firstName: s.firstName,
+          middleName: s.middleName ?? '',
           lastName: s.lastName,
           gradeLevel: s.gradeLevel ?? '',
           color: s.color ?? '',
