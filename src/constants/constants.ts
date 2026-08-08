@@ -154,15 +154,28 @@ export const LANDING_CONTENT = {
     columns: [
       {
         heading: 'Product',
-        links: ['Features', 'Pricing', 'Download', 'Changelog'],
+        links: [
+          { label: 'Features', path: '/features' },
+          { label: 'Pricing', path: '/pricing' },
+          { label: 'Download', path: '/download' },
+          { label: 'Changelog', path: '/changelog' },
+        ],
       },
       {
         heading: 'Resources',
-        links: ['Help/Docs', 'FAQ', 'Free Resources', 'Blog'],
+        links: [
+          { label: 'Help/Docs', path: '/help' },
+          { label: 'FAQ', path: '/faq' },
+          { label: 'Free Resources', path: '/free-resources' },
+          { label: 'Blog', path: '/blog' },
+        ],
       },
       {
         heading: 'Company',
-        links: ['About Us', 'Contact'],
+        links: [
+          { label: 'About Us', path: '/about' },
+          { label: 'Contact', path: '/contact' },
+        ],
       },
     ],
     newsletter: {
@@ -171,7 +184,12 @@ export const LANDING_CONTENT = {
       placeholder: 'enter email here',
       buttonText: 'Subscribe',
     },
-    legalLinks: ['Terms', 'Privacy', 'Cookies', 'Refund'],
+    legalLinks: [
+      { label: 'Terms', path: '/terms' },
+      { label: 'Privacy', path: '/privacy' },
+      { label: 'Cookies', path: '/cookies' },
+      { label: 'Refund', path: '/refund' },
+    ],
     copyright: '© 2026 Homeschool Master. All rights reserved.',
   },
 }

@@ -43,9 +43,7 @@ const Navbar = () => {
         </button>
         <ul className={`navbar__links ${menuOpen ? 'navbar__links--open' : ''}`}>
           <li><Link to='/' onClick={closeMenu}>Home</Link></li>
-          <li><a href='#features' onClick={closeMenu}>Features</a></li>
-          <li><Link to='/pricing' onClick={closeMenu}>Pricing</Link></li>          
-          <li><Link to='/about' onClick={closeMenu}>About Us</Link></li>
+          <li><Link to='/pricing' onClick={closeMenu}>Pricing</Link></li>
           <li><Link to='/contact' onClick={closeMenu}>Contact</Link></li>
           <li className='navbar__links-divider'></li>
           {user ? (

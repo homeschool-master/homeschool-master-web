@@ -29,7 +29,7 @@ const Footer = () => {
               <h4 className='footer__column-heading'>{col.heading}</h4>
               <ul>
                 {col.links.map((link) => (
-                  <li key={link}><a href='#'>{link}</a></li>
+                  <li key={link.path}><Link to={link.path}>{link.label}</Link></li>
                 ))}
               </ul>
             </div>
@@ -53,8 +53,8 @@ const Footer = () => {
           <p className='footer__copyright'>{footer.copyright}</p>
           <div className='footer__legal'>
             {footer.legalLinks.map((link, index) => (
-              <span key={link}>
-                <a href='#'>{link}</a>
+              <span key={link.path}>
+                <Link to={link.path}>{link.label}</Link>
                 {index < footer.legalLinks.length - 1 && <span className='footer__legal-dot'> · </span>}
               </span>
             ))}

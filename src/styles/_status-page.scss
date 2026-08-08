@@ -1,0 +1,61 @@
+@use 'variables' as *;
+@use 'mixins' as *;
+
+.status-page {
+  background: $gradient-hero;
+
+  &__inner {
+    @include container;
+    min-height: 60vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding-top: $spacing-xl;
+    padding-bottom: $spacing-xl;
+  }
+
+  &__eyebrow {
+    color: $color-accent;
+    font-size: 1rem;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    margin-bottom: $spacing-sm;
+  }
+
+  &__headline {
+    font-size: 2.5rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    color: $color-headline;
+    margin-bottom: $spacing-md;
+
+    @include respond-to(mobile) {
+      font-size: 1.75rem;
+    }
+  }
+
+  &__body {
+    font-size: 1.25rem;
+    color: $color-text;
+    line-height: 1.6;
+    max-width: 560px;
+    margin-bottom: $spacing-lg;
+
+    @include respond-to(mobile) {
+      font-size: 1rem;
+    }
+  }
+
+  &__link {
+    font-size: 1rem;
+    font-weight: 700;
+    color: $color-accent;
+    text-decoration: underline;
+
+    &:hover {
+      color: #c06e09;
+    }
+  }
+}

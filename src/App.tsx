@@ -21,6 +21,7 @@ import ResetPasswordPage from './components/auth/ResetPasswordPage'
 import ProfileSection from './components/dashboard/ProfileSection'
 
 import NotFoundPage from './pages/NotFoundPage'
+import UnderConstructionPage from './pages/UnderConstructionPage'
 import StudentsSection from './components/dashboard/StudentsSection'
 import DataPrivacySection from './components/dashboard/DataPrivacySection'
 import SubscriptionSection from './components/dashboard/SubscriptionSection'
@@ -76,6 +77,19 @@ const App = () => {
                 <Route path='/pricing' element={<PricingPage />} />
                 <Route path='/contact' element={<ContactPage />} />
                 <Route path='/download' element={<DownloadPage />} />
+
+                {/* Registered but not yet built: show the under construction page */}
+                <Route path='/features' element={<UnderConstructionPage />} />
+                <Route path='/changelog' element={<UnderConstructionPage />} />
+                <Route path='/help' element={<UnderConstructionPage />} />
+                <Route path='/faq' element={<UnderConstructionPage />} />
+                <Route path='/free-resources' element={<UnderConstructionPage />} />
+                <Route path='/blog' element={<UnderConstructionPage />} />
+                <Route path='/terms' element={<UnderConstructionPage />} />
+                <Route path='/privacy' element={<UnderConstructionPage />} />
+                <Route path='/cookies' element={<UnderConstructionPage />} />
+                <Route path='/refund' element={<UnderConstructionPage />} />
+
                 <Route path='/login' element={user ? <Navigate to={authedRedirect} /> : <LoginPage />} />
                 <Route path='/forgot-password' element={user ? <Navigate to={authedRedirect} /> : <ForgotPasswordPage />} />
                 <Route path='/reset-password' element={user ? <Navigate to={authedRedirect} /> : <ResetPasswordPage />} />
