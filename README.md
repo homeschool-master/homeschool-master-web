@@ -4,9 +4,10 @@
 
 ## Status
 
-This project is in active development and not yet launched publicly. As of
-06/12/2026, the working features are user registration, login, logout, updating
-your profile name, and changing your password while logged in. The
+This project is in active development and not yet launched publicly. The working
+features are user registration, login, logout, a post-signup onboarding wizard,
+full student management, updating your profile name (including middle name), and
+changing your password while logged in. The
 forgot-password reset flow is built, but email delivery is limited for now: the
 app uses Resend's free tier, which only delivers to the owner's verified
 address, so reset emails won't reach real users until the domain is verified and
@@ -18,6 +19,42 @@ us page has a form, but it doesn't send email yet: clicking "Send message"
 currently logs the form details to the console instead.
 
 Once logged in, you can view the dashboard with several options to click into.
+
+## Getting Started
+
+Prerequisites: Node.js (v20+) and npm.
+
+Install dependencies:
+
+```
+npm install
+```
+
+Create a `.env.local` file in the project root (it is git-ignored, so each
+environment sets its own) with the API base URL:
+
+```
+VITE_API_URL=http://localhost:3000
+```
+
+Start the dev server:
+
+```
+npm run dev
+```
+
+Vite serves the app at `http://localhost:5173` with hot reload.
+
+The frontend talks to the Rails API, so the API must be running too. Start it
+from the homeschool-master-api repo (`rails s`, which serves on port 3000)
+before signing in, or any authenticated request will fail.
+
+### Scripts
+
+- `npm run dev` — start the Vite dev server with hot reload
+- `npm run build` — type-check and build the production bundle
+- `npm run preview` — serve the production build locally
+- `npm run lint` — run ESLint
 
 ## What's next
 
