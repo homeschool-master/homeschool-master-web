@@ -385,3 +385,40 @@ export const CONTACT_CONTENT = {
     linkHref: '#',
   },
 }
+
+export const DOWNLOAD_CONTENT = {
+  hero: {
+    eyebrow: 'Account',
+    headline: 'Welcome to Homeschool Master!',
+    subhead: "Let's get the app on your phone.",
+  },
+  scan: {
+    heading: 'Scan to install on your phone',
+    subtext: "Open your phone's camera and scan the right code below.",
+    comingSoonText: 'Coming soon',
+  },
+  platforms: [
+    {
+      title: 'iPhone',
+      url: import.meta.env.VITE_IOS_INSTALL_URL,
+      caption: 'Installs via TestFlight',
+      note: 'Requires the free TestFlight app from Apple.',
+    },
+    {
+      title: 'Android',
+      url: import.meta.env.VITE_ANDROID_INSTALL_URL,
+      caption: 'Direct Download',
+      note: "You'll be prompted to allow installs from your browser.",
+    },
+  ],
+  account: {
+    text: 'Manage your account and subscription in the meantime.',
+    linkText: 'Go to Account Settings',
+    path: '/dashboard',
+  },
+  help: {
+    text: 'Need help getting set up?',
+    linkText: 'Contact us →',
+    path: '/contact',
+  },
+}
