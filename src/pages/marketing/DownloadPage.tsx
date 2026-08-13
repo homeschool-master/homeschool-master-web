@@ -1,6 +1,6 @@
 import { Link } from 'react-router-dom'
 import { DOWNLOAD_CONTENT } from '../../constants/constants'
-import InstallQrCard from './InstallQRCard'
+import InstallQrCard from './InstallQrCard'
 
 const DownloadPage = () => {
   const { hero, scan, platforms, account, help } = DOWNLOAD_CONTENT
