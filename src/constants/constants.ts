@@ -218,72 +218,6 @@ export const PRICING_CONTENT = {
       'Cloud sync across all your devices',
     ],
   },
-  whatYouGet: {
-    eyebrow: 'What You Get',
-    headline: 'Everything Homeschool Master Does',
-    items: [
-      {
-        title: 'Family Management',
-        icon: 'family',
-        bullets: [
-          'Unlimited kids in one account',
-          'Color-coded profiles for each child',
-          'Switch between students with one tap',
-          'Shared family calendar',
-        ],
-      },
-      {
-        title: 'Daily Planning',
-        icon: 'calendar',
-        bullets: [
-          'Events with reminders',
-          'Task tracker for parent to-dos',
-          'Recurring events for co-ops & practices',
-          "Today's view at a glance",
-        ],
-      },
-      {
-        title: 'Grades & Assignments',
-        icon: 'grades',
-        bullets: [
-          'Assign work to one or multiple kids',
-          'Auto-calculated weighted grades',
-          'Subject-by-subject progress tracking',
-          'Grade book that builds in real time',
-        ],
-      },
-      {
-        title: 'Reports & Transcripts',
-        icon: 'reports',
-        bullets: [
-          'One-tap report card generation',
-          'College-application-ready transcripts',
-          'Progress reports for state compliance',
-          'Custom report templates',
-        ],
-      },
-      {
-        title: 'Expenses & Reimbursements',
-        icon: 'expenses',
-        bullets: [
-          'Categorize spending by kid or type',
-          'Snap receipts on the go',
-          'Track reimbursements and payments',
-          'Year-end tax-ready exports',
-        ],
-      },
-      {
-        title: 'Built-In Trust',
-        icon: 'trust',
-        bullets: [
-          'No ads, ever',
-          "Your family's data stays yours",
-          'Cloud sync and backup across devices',
-          'Cancel anytime',
-        ],
-      },
-    ],
-  },
   trustStrip: {
     items: [
       {
@@ -420,5 +354,78 @@ export const DOWNLOAD_CONTENT = {
     text: 'Need help getting set up?',
     linkText: 'Contact us →',
     path: '/contact',
+  },
+}
+
+export const FEATURES_CONTENT = {
+  hero: {
+    eyebrow: 'Every Feature. One App.',
+    subhead: 'Everything your homeschool needs, in one place.',
+  },
+  whatYouGet: {
+    eyebrow: 'What You Get',
+    headline: 'Everything Homeschool Master Does',
+    items: [
+      {
+        title: 'Family Management',
+        icon: 'family',
+        bullets: [
+          'Unlimited kids in one account',
+          'Color-coded profiles for each child',
+          'Switch between students with one tap',
+          'Shared family calendar',
+        ],
+      },
+      {
+        title: 'Daily Planning',
+        icon: 'calendar',
+        bullets: [
+          'Events with reminders',
+          'Task tracker for parent to-dos',
+          'Recurring events for co-ops & practices',
+          "Today's view at a glance",
+        ],
+      },
+      {
+        title: 'Grades & Assignments',
+        icon: 'grades',
+        bullets: [
+          'Assign work to one or multiple kids',
+          'Auto-calculated weighted grades',
+          'Subject-by-subject progress tracking',
+          'Grade book that builds in real time',
+        ],
+      },
+      {
+        title: 'Reports & Transcripts',
+        icon: 'reports',
+        bullets: [
+          'One-tap report card generation',
+          'College-application-ready transcripts',
+          'Progress reports for state compliance',
+          'Custom report templates',
+        ],
+      },
+      {
+        title: 'Expenses & Reimbursements',
+        icon: 'expenses',
+        bullets: [
+          'Categorize spending by kid or type',
+          'Snap receipts on the go',
+          'Track reimbursements and payments',
+          'Year-end tax-ready exports',
+        ],
+      },
+      {
+        title: 'Built-In Trust',
+        icon: 'trust',
+        bullets: [
+          'No ads, ever',
+          "Your family's data stays yours",
+          'Cloud sync and backup across devices',
+          'Cancel anytime',
+        ],
+      },
+    ],
   },
 }

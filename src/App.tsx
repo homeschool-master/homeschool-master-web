@@ -28,6 +28,7 @@ import ScrollToTop from './components/shared/ScrollToTop'
 import BackToTopButton from './components/shared/BakToTopButton'
 import NotificationsSection from './components/dashboard/NotificationsSection'
 import OnboardingPage from './pages/app/OnboardingPage'
+import FeaturesPage from './pages/marketing/FeaturesPage'
 
 const App = () => {
   const dispatch = useDispatch<AppDispatch>()
@@ -78,7 +79,7 @@ const App = () => {
                 <Route path='/download' element={<DownloadPage />} />
 
                 {/* Registered but not yet built: show the under construction page */}
-                <Route path='/features' element={<UnderConstructionPage />} />
+                <Route path='/features' element={<FeaturesPage />} />
                 <Route path='/changelog' element={<UnderConstructionPage />} />
                 <Route path='/help' element={<UnderConstructionPage />} />
                 <Route path='/faq' element={<UnderConstructionPage />} />
