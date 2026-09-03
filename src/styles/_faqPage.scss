@@ -1,0 +1,87 @@
+@use 'variables' as *;
+@use 'mixins' as *;
+
+.faq-page {
+  font-family: $font-family-base;
+  color: $color-text;
+
+  // Hero
+  &__hero {
+    background: $gradient-hero;
+    padding: 0 5px;
+  }
+
+  &__hero-inner {
+    @include container;
+    padding-top: $spacing-xl;
+    padding-bottom: $spacing-xl;
+    text-align: center;
+  }
+
+  &__hero-eyebrow {
+    font-size: 2rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    color: $color-headline;
+    margin-bottom: $spacing-sm;
+
+    @include respond-to(mobile) {
+      font-size: 1.5rem;
+    }
+  }
+
+  &__hero-subhead {
+    font-size: 1.125rem;
+    color: $color-text;
+  }
+
+  // Groups
+  &__groups {
+    padding-top: $spacing-xl;
+    padding-bottom: $spacing-xl;
+  }
+
+  &__group {
+    // The Accordion supplies its own container, so only its vertical rhythm
+    // needs adjusting when it sits under a group heading.
+    .accordion__inner {
+      padding-top: 0;
+      padding-bottom: $spacing-lg;
+    }
+  }
+
+  &__group-heading {
+    @include container;
+    font-size: 1.5rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: $color-headline;
+    text-align: center;
+    margin-bottom: $spacing-md;
+
+    @include respond-to(mobile) {
+      font-size: 1.25rem;
+      padding-left: 5px;
+      padding-right: 5px;
+    }
+  }
+
+  &__contact {
+    @include container;
+    font-size: 0.9rem;
+    color: $color-text;
+    text-align: center;
+    margin-top: $spacing-md;
+
+    @include respond-to(mobile) {
+      padding-left: 5px;
+      padding-right: 5px;
+    }
+  }
+
+  &__contact-link {
+    color: $color-accent;
+    font-weight: 600;
+  }
+}

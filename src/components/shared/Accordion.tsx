@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { Link } from 'react-router-dom'
 
 interface AccordionItem {
   label: string
@@ -6,8 +7,8 @@ interface AccordionItem {
 }
 
 interface AccordionProps {
-  eyebrow: string
-  headline: string
+  eyebrow?: string
+  headline?: string
   items: AccordionItem[]
   contactText?: string
   contactLinkText?: string
@@ -20,15 +21,15 @@ const Accordion = ({
   items,
   contactText,
   contactLinkText,
-  contactHref = '#contact',
+  contactHref = '/contact',
 }: AccordionProps) => {
   const [openItem, setOpenItem] = useState<number | null>(null)
 
   return (
     <section className='accordion'>
       <div className='accordion__inner'>
-        <p className='accordion__eyebrow'>{eyebrow}</p>
-        <h2 className='accordion__headline'>{headline}</h2>
+        {eyebrow && <p className='accordion__eyebrow'>{eyebrow}</p>}
+        {headline && <h2 className='accordion__headline'>{headline}</h2>}
         <div className='accordion__list'>
           {items.map((item, index) => (
             <div key={item.label} className='accordion__item-wrapper'>
@@ -50,7 +51,7 @@ const Accordion = ({
         {(contactText || contactLinkText) && (
           <p className='accordion__contact'>
             {contactText && `${contactText} `}
-            {contactLinkText && <a href={contactHref}>{contactLinkText}</a>}
+            {contactLinkText && <Link to={contactHref}>{contactLinkText}</Link>}
           </p>
         )}
       </div>

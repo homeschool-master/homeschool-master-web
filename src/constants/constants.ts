@@ -272,7 +272,8 @@ export const PRICING_CONTENT = {
       },
     ],
     contactText: 'Still have questions?',
-    contactLinkText: 'Contact us.',
+    contactLinkText: 'See all FAQs →',
+    contactLinkHref: '/faq',
   },
   finalCta: {
     headline: 'Ready to Get Started?',
@@ -316,7 +317,7 @@ export const CONTACT_CONTENT = {
       { label: 'Does it work on iPhone and Android?', content: 'Both. Download from the App Store or Google Play, and your data syncs across all your devices.' },
     ],
     linkText: 'See all FAQs →',
-    linkHref: '#',
+    linkHref: '/faq',
   },
 }
 
@@ -734,5 +735,139 @@ export const LEGAL_CONTENT: Record<LegalSlug, LegalDocument> = {
         ],
       },
     ],
+  },
+}
+
+// TODO: FAQ answers are placeholder copy for Carlie to revise.
+export const FAQ_CONTENT = {
+  hero: {
+    eyebrow: 'Frequently Asked Questions',
+    subhead: 'The questions homeschool families ask us most, answered plainly.',
+  },
+  groups: [
+    {
+      heading: 'Getting Started',
+      items: [
+        {
+          label: 'What is Homeschool Master?',
+          content: 'A homeschool planner for your whole family in one app: students, calendar, assignments, grades, report cards, transcripts, and expenses. It replaces the pile of spreadsheets, paper planners, and sticky notes most of us start out with.',
+        },
+        {
+          label: 'Does it work on iPhone and Android?',
+          content: 'Both. Download from the App Store or Google Play, and your data syncs across all your devices.',
+        },
+        {
+          label: 'Can I use it on my computer?',
+          content: 'The planning happens in the mobile app. This website is where you manage your account, profile, subscription, and notification settings. Student records on the web are view only.',
+        },
+        {
+          label: 'How do I set up my family?',
+          content: 'Create your account, then add a student profile for each child with a name, color, and grade level. From there you can add subjects, put events on the calendar, and start assigning work. Most families are up and running in about ten minutes.',
+        },
+        {
+          label: 'How many kids can I add?',
+          content: 'As many as you have. Every plan includes unlimited student profiles under one family account, at one price.',
+        },
+        {
+          label: 'Can my kids have their own logins?',
+          content: 'Not yet. Today the adult account holder signs in and manages every student profile. Students see their own work through the parent account.',
+        },
+      ],
+    },
+    {
+      heading: 'Billing',
+      items: [
+        {
+          label: 'How does billing work?',
+          content: "Homeschool Master is sold through the App Store and Google Play. You're charged monthly through your Apple ID or Google account.",
+        },
+        {
+          label: 'Is there a free trial?',
+          content: 'Yes. New users get a 14-day free trial. You will not be charged until the trial ends, and you can cancel before then at no cost.',
+        },
+        {
+          label: 'Can I cancel anytime?',
+          content: 'Yes. Cancel through your App Store or Google Play account whenever you want. No contracts, no cancellation fees.',
+        },
+        {
+          label: 'What happens if I cancel?',
+          content: 'You keep access until the end of your current billing period. After that your account moves to read-only and you can still export your data.',
+        },
+        {
+          label: 'Do you offer refunds?',
+          content: 'Refunds are handled by Apple and Google through their store policies. We are happy to walk you through the process if you need help.',
+        },
+        {
+          label: 'Will the price change?',
+          content: 'If we ever update pricing, existing subscribers keep their current rate for as long as their subscription stays active.',
+        },
+        {
+          label: 'Is there a separate charge for each child?',
+          content: 'No. One subscription covers your whole family, however many students you add.',
+        },
+      ],
+    },
+    {
+      heading: 'Features',
+      items: [
+        {
+          label: 'Can I plan for several kids at once?',
+          content: 'Yes. Assign the same work to one child or to several at the same time, then switch between students with a tap to see each one on their own.',
+        },
+        {
+          label: 'How does grading work?',
+          content: 'Assign work, check it off as it is finished, and enter a grade. Homeschool Master calculates weighted grades by subject and builds the grade book as you go, so nothing has to be added up at the end of the year.',
+        },
+        {
+          label: 'Can it produce report cards and transcripts?',
+          content: 'Yes. Report cards and high school transcripts are generated from the grades you have already entered, so they are ready when you need them for your records or a college application.',
+        },
+        {
+          label: 'Can I track homeschool expenses?',
+          content: 'Yes. Log curriculum, supplies, and field trips as you spend, sort them by child or category, and mark which ones are reimbursed so you know what is still owed to you.',
+        },
+        {
+          label: 'Does it tell me what my state requires?',
+          content: 'No. Homeschool requirements vary by state and change over time, so we do not give legal or compliance advice. Homeschool Master keeps clear records that make it much easier to produce what your state asks for.',
+        },
+        {
+          label: 'Can I get my information out of the app?',
+          content: 'Yes. You can export your family data at any time, including while your account is read-only after a cancellation.',
+        },
+      ],
+    },
+    {
+      heading: 'Privacy and Data',
+      items: [
+        {
+          label: 'Who can see my family data?',
+          content: 'You can. Every request is scoped to your own family account, so no other customer can reach your records. A small number of people on our team can access production data, and only to operate the service or to help with a support request you send us.',
+        },
+        {
+          label: 'Do you sell my data or show ads?',
+          content: "No, and we do not plan to. There is no ad space in Homeschool Master and we do not sell or share your family's information with data brokers or advertisers. The subscription is how we make money.",
+        },
+        {
+          label: 'Do you track me with analytics?',
+          content: 'No. We do not run third party analytics or behavioral tracking in the app or on this site. Our servers keep short lived request logs that we use to fix errors and stop abuse.',
+        },
+        {
+          label: 'How do you keep my account secure?',
+          content: 'Traffic is encrypted in transit, passwords are stored only as a salted hash, and your login session uses a cookie that page scripts cannot read.',
+        },
+        {
+          label: 'What happens to my data if I delete my account?',
+          content: 'We remove your family and student records from our live database within 30 days, and backups roll off after that on their own cycle. Export anything you want to keep before you close the account.',
+        },
+        {
+          label: 'How much information do I have to enter about my kids?',
+          content: 'Only what you find useful. A first name and a grade level are enough to use the app. Nothing requires a full legal name, a birth date, or an address.',
+        },
+      ],
+    },
+  ],
+  contact: {
+    text: 'Still cannot find your answer?',
+    linkText: 'Contact us →',
   },
 }

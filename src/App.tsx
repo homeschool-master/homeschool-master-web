@@ -30,6 +30,7 @@ import NotificationsSection from './components/dashboard/NotificationsSection'
 import OnboardingPage from './pages/app/OnboardingPage'
 import FeaturesPage from './pages/marketing/FeaturesPage'
 import LegalPage from './pages/marketing/LegalPage'
+import FaqPage from './pages/marketing/FaqPage'
 
 const App = () => {
   const dispatch = useDispatch<AppDispatch>()
@@ -83,7 +84,7 @@ const App = () => {
                 <Route path='/features' element={<FeaturesPage />} />
                 <Route path='/changelog' element={<UnderConstructionPage />} />
                 <Route path='/help' element={<UnderConstructionPage />} />
-                <Route path='/faq' element={<UnderConstructionPage />} />
+                <Route path='/faq' element={<FaqPage />} />
                 <Route path='/free-resources' element={<UnderConstructionPage />} />
                 <Route path='/blog' element={<UnderConstructionPage />} />
 

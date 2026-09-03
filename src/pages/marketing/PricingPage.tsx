@@ -97,6 +97,7 @@ const PricingPage = () => {
         items={faq.items}
         contactText={faq.contactText}
         contactLinkText={faq.contactLinkText}
+        contactHref={faq.contactLinkHref}
       />
 
       <section className='pricing-page__final-cta'>
