@@ -29,6 +29,7 @@ import BackToTopButton from './components/shared/BakToTopButton'
 import NotificationsSection from './components/dashboard/NotificationsSection'
 import OnboardingPage from './pages/app/OnboardingPage'
 import FeaturesPage from './pages/marketing/FeaturesPage'
+import LegalPage from './pages/marketing/LegalPage'
 
 const App = () => {
   const dispatch = useDispatch<AppDispatch>()
@@ -85,10 +86,11 @@ const App = () => {
                 <Route path='/faq' element={<UnderConstructionPage />} />
                 <Route path='/free-resources' element={<UnderConstructionPage />} />
                 <Route path='/blog' element={<UnderConstructionPage />} />
-                <Route path='/terms' element={<UnderConstructionPage />} />
-                <Route path='/privacy' element={<UnderConstructionPage />} />
-                <Route path='/cookies' element={<UnderConstructionPage />} />
-                <Route path='/refund' element={<UnderConstructionPage />} />
+
+                <Route path='/terms' element={<LegalPage slug='terms' />} />
+                <Route path='/privacy' element={<LegalPage slug='privacy' />} />
+                <Route path='/cookies' element={<LegalPage slug='cookies' />} />
+                <Route path='/refund' element={<LegalPage slug='refund' />} />
 
                 <Route path='/login' element={user ? <Navigate to={authedRedirect} /> : <LoginPage />} />
                 <Route path='/forgot-password' element={user ? <Navigate to={authedRedirect} /> : <ForgotPasswordPage />} />

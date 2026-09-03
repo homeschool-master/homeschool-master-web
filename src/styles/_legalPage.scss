@@ -1,0 +1,86 @@
+@use 'variables' as *;
+@use 'mixins' as *;
+
+.legal-page {
+  font-family: $font-family-base;
+  color: $color-text;
+
+  // Hero
+  &__hero {
+    background: $gradient-hero;
+    padding: 0 5px;
+  }
+
+  &__hero-inner {
+    @include container;
+    padding-top: $spacing-xl;
+    padding-bottom: $spacing-xl;
+    text-align: center;
+  }
+
+  &__hero-title {
+    font-size: 2rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    color: $color-headline;
+    margin-bottom: $spacing-sm;
+
+    @include respond-to(mobile) {
+      font-size: 1.5rem;
+    }
+  }
+
+  &__hero-updated {
+    font-size: 0.9rem;
+    color: $color-text;
+  }
+
+  // Prose
+  &__body {
+    background-color: #fbf7ee;
+    padding: 0 5px;
+  }
+
+  &__body-inner {
+    @include container;
+    max-width: 720px;
+    padding-top: $spacing-xl;
+    padding-bottom: $spacing-xl;
+    text-align: left;
+  }
+
+  &__intro {
+    font-size: 1.0625rem;
+    line-height: 1.7;
+    color: $color-text;
+    padding-bottom: $spacing-lg;
+    border-bottom: 1.5px solid $color-gradient-dark;
+
+    @include respond-to(mobile) {
+      font-size: 1rem;
+    }
+  }
+
+  &__section {
+    margin-top: $spacing-lg;
+  }
+
+  &__section-heading {
+    font-size: 1rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: $color-headline;
+    margin-bottom: $spacing-md;
+  }
+
+  &__paragraph {
+    font-size: 0.95rem;
+    line-height: 1.75;
+    color: $color-text;
+
+    & + & {
+      margin-top: $spacing-md;
+    }
+  }
+}

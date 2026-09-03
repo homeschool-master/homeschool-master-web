@@ -429,3 +429,310 @@ export const FEATURES_CONTENT = {
     ],
   },
 }
+
+// TODO: this legal copy is placeholder and has not been reviewed by an attorney.
+// Replace every string in LEGAL_CONTENT with reviewed language before launch.
+export type LegalSlug = 'terms' | 'privacy' | 'cookies' | 'refund'
+
+export type LegalSection = {
+  heading: string
+  body: string[]
+}
+
+export type LegalDocument = {
+  title: string
+  lastUpdated: string
+  intro: string
+  sections: LegalSection[]
+}
+
+export const LEGAL_CONTENT: Record<LegalSlug, LegalDocument> = {
+  terms: {
+    title: 'Terms of Service',
+    lastUpdated: 'September 2, 2026',
+    intro:
+      'These terms cover your use of Homeschool Master, including the mobile apps, this website, and the account you sign in with. By creating an account or using the app you agree to what follows. If you do not agree, please do not use the service.',
+    sections: [
+      {
+        heading: 'Who We Are',
+        body: [
+          'Homeschool Master is built and operated by a family owned business based in Florida. Throughout these terms, "we", "us", and "our" refer to Homeschool Master, and "you" refers to the person who holds the account.',
+          'You can reach us any time at support@homeschoolmaster.com.',
+        ],
+      },
+      {
+        heading: 'Your Account',
+        body: [
+          'You need an account to use Homeschool Master. You agree to give us accurate information when you register and to keep it current. You are responsible for everything that happens under your account, including anything done by family members you give access to.',
+          'One adult holds the family account. Student profiles inside that account are created and managed by the account holder, not by the students themselves. Keep your password private, and tell us right away if you think someone else has gotten into your account.',
+          'You must be old enough to enter into a contract where you live in order to hold an account.',
+        ],
+      },
+      {
+        heading: 'Subscriptions and Billing',
+        body: [
+          'Homeschool Master is a paid subscription. New accounts start with a 14 day free trial. After the trial, the subscription renews automatically at the price shown at purchase until you cancel.',
+          'All subscriptions are sold and billed through the Apple App Store or Google Play, depending on where you downloaded the app. We do not collect or store your card number. Your payment method, renewal date, and billing history live with Apple or Google.',
+          'Cancel any time from your Apple ID subscription settings or your Google Play subscription settings. Canceling stops the next renewal. See our Refund Policy for how refunds work.',
+        ],
+      },
+      {
+        heading: 'What You Can and Cannot Do',
+        body: [
+          "Use Homeschool Master for planning and recording your own family's homeschool. That is what it is for.",
+          'Please do not: resell or sublicense access to the service, try to break into other accounts or our systems, scrape or bulk export data that is not yours, upload anything unlawful, or interfere with the service for other families.',
+          'We may suspend or close an account that is being used in these ways.',
+        ],
+      },
+      {
+        heading: 'Your Content',
+        body: [
+          'The lesson plans, assignments, grades, calendar entries, expenses, and notes you enter belong to you. We do not claim ownership of them.',
+          'You give us permission to store, back up, and display that content for the purpose of running the service for you: syncing it between your devices, generating your report cards and transcripts, and letting you export it. That permission ends when you delete the content or close your account.',
+          'You are responsible for the accuracy of what you record. Homeschool Master is a record keeping tool, not a legal, tax, or educational advisor. Homeschool reporting requirements differ by state and it is up to you to know and meet the ones that apply to your family.',
+        ],
+      },
+      {
+        heading: 'Service Availability',
+        body: [
+          'We work to keep Homeschool Master running, but we do not promise uninterrupted service. We may take the service down for maintenance, and features may change, improve, or be retired over time.',
+          'If we make a change that meaningfully reduces what your subscription includes, we will tell you by email before it takes effect.',
+        ],
+      },
+      {
+        heading: 'Ending Your Account',
+        body: [
+          'You can close your account at any time from your account settings or by emailing us. Closing your account does not by itself cancel a subscription billed by Apple or Google: cancel that through the store as well.',
+          'When a subscription lapses, your account moves to read only. Your records stay available to view and export for the retention period described in our Privacy Policy.',
+          'We may close an account that violates these terms, and will normally give you notice and a chance to export your data first.',
+        ],
+      },
+      {
+        heading: 'Disclaimers and Liability',
+        body: [
+          'The service is provided as is, without warranties of any kind to the extent the law allows. We do not warrant that the service will be error free or that it will meet any particular state reporting standard.',
+          'To the extent the law allows, our total liability to you for any claim relating to the service is limited to the amount you paid us for the subscription in the twelve months before the claim. We are not liable for indirect or consequential losses.',
+          'Keep your own copies of anything you cannot afford to lose. The export tools in the app are there for exactly that.',
+        ],
+      },
+      {
+        heading: 'Changes to These Terms',
+        body: [
+          'We may update these terms as the product changes. When we do, we will update the date at the top of this page, and for significant changes we will email the address on your account before the new terms take effect.',
+          'Continuing to use Homeschool Master after an update means you accept the updated terms.',
+        ],
+      },
+      {
+        heading: 'Contact',
+        body: [
+          'Questions about these terms can go to support@homeschoolmaster.com. A real person reads that inbox.',
+        ],
+      },
+    ],
+  },
+
+  privacy: {
+    title: 'Privacy Policy',
+    lastUpdated: 'September 2, 2026',
+    intro:
+      'This policy explains what Homeschool Master collects, why we collect it, where it is stored, and what control you have over it. We built this app for our own family first, so the short version is: we collect what the app needs to work, we do not sell it, and there are no ads.',
+    sections: [
+      {
+        heading: 'What We Collect',
+        body: [
+          'Account information: your name, email address, and password. Passwords are stored only as a salted hash, never as readable text.',
+          'Family and student records: the student profiles, subjects, assignments, grades, calendar events, tasks, expenses, and notes you enter. Student profiles hold only what you choose to type in, typically a first name, a grade level, and school work.',
+          'Support messages: if you email us or use the contact form, we keep the message and your reply address so we can answer you.',
+          'Basic technical records: our servers keep short lived request logs that include IP address and browser or device type. We use them to diagnose errors and abuse.',
+          'We do not run advertising trackers, third party analytics, or behavioral profiling in the app or on this site.',
+        ],
+      },
+      {
+        heading: 'How We Use It',
+        body: [
+          'To run the service: signing you in, syncing your records between devices, and generating your report cards and transcripts.',
+          'To bill your subscription, by confirming with the app store that your subscription is active.',
+          'To contact you about the account: password resets, receipts, trial and renewal notices, and important service changes.',
+          'To keep the service working and secure: fixing bugs, investigating abuse, and preventing fraud.',
+          'We do not sell your information, and we do not share it with data brokers or advertisers.',
+        ],
+      },
+      {
+        heading: 'Where Your Data Lives',
+        body: [
+          'Homeschool Master runs on a Rails API hosted on Heroku, with your records stored in a PostgreSQL database. Data is stored on servers in the United States.',
+          'Traffic between the app and our API is encrypted in transit with TLS. Database backups are managed by our hosting provider.',
+          'A small number of people on our team can reach production data, and only to operate the service or to help you with a support request.',
+        ],
+      },
+      {
+        heading: 'Sessions and Cookies',
+        body: [
+          'When you sign in, we set a session cookie that carries a signed JWT. The cookie is what keeps you logged in as you move between pages. It is HTTP only, so page scripts cannot read it, and it is sent over HTTPS.',
+          'We use cookies only for signing in and for basic security. We do not set advertising or analytics cookies. Our Cookie Policy has the details.',
+        ],
+      },
+      {
+        heading: 'Service Providers',
+        body: [
+          'Heroku hosts our API and PostgreSQL database.',
+          'Resend delivers our transactional email: password resets, receipts, and account notices. Resend receives your email address and the contents of those messages so it can send them.',
+          'Apple and Google process subscription payments. They tell us whether a subscription is active. We never receive your full payment details.',
+          'These providers handle data on our behalf under their own terms, and we do not authorize them to use your information for their own marketing.',
+        ],
+      },
+      {
+        heading: 'Students and Family Members',
+        body: [
+          'Student records inside a family account are created and controlled by the adult account holder. Students do not sign up on their own, and we do not market to students.',
+          'The account holder can view, edit, export, or delete any student record from the app at any time. If you would rather we handle a deletion for you, email us and we will take care of it.',
+          "Please enter only what you actually need for your records. There is no requirement to include a student's full legal name, birth date, or address in order to use the app.",
+        ],
+      },
+      {
+        heading: 'How Long We Keep It',
+        body: [
+          'We keep your records for as long as your account is open, so that your history, grades, and transcripts stay available to you year over year.',
+          'If you close your account, we delete your family and student records from the production database within 30 days. Encrypted backups roll off on their own cycle, generally within 90 days.',
+          'We keep a minimal billing and support record after deletion where we need it for tax and accounting purposes.',
+        ],
+      },
+      {
+        heading: 'Your Choices',
+        body: [
+          'Access and export: you can view and export your family data from the app at any time.',
+          'Correction: you can edit any record you have entered directly in the app.',
+          'Deletion: you can delete individual records, or ask us to delete your entire account.',
+          'Email: account and security emails are part of the service, but you can opt out of any newsletter from the link in its footer.',
+          'To make any of these requests by hand, email support@homeschoolmaster.com from the address on your account.',
+        ],
+      },
+      {
+        heading: 'Security',
+        body: [
+          'We use encrypted transport, hashed passwords, HTTP only session cookies, and access controls that scope every request to the family account that made it.',
+          'No system is perfectly secure. If we ever discover a breach affecting your data, we will notify affected account holders by email and describe what happened and what we are doing about it.',
+        ],
+      },
+      {
+        heading: 'Changes to This Policy',
+        body: [
+          'We will update this page when our practices change, and we will change the date at the top. For material changes we will email the address on your account.',
+        ],
+      },
+      {
+        heading: 'Contact',
+        body: [
+          'Privacy questions go to support@homeschoolmaster.com and we will answer them ourselves.',
+        ],
+      },
+    ],
+  },
+
+  cookies: {
+    title: 'Cookie Policy',
+    lastUpdated: 'September 2, 2026',
+    intro:
+      'This page explains the cookies Homeschool Master sets and why. It is a short page on purpose: we use cookies to keep you signed in and to keep the app secure, and for nothing else.',
+    sections: [
+      {
+        heading: 'What a Cookie Is',
+        body: [
+          'A cookie is a small piece of text a site stores in your browser and sends back on later requests. It lets the server recognize your browser from one page to the next.',
+        ],
+      },
+      {
+        heading: 'The Cookies We Set',
+        body: [
+          'Session cookie: when you sign in, we set a cookie containing a signed JWT that identifies your account. Without it you would have to log in again on every page. It is marked HTTP only so page scripts cannot read it, restricted to HTTPS, and scoped to our own domain.',
+          'The session cookie expires when the token expires or when you sign out, whichever comes first. Signing out clears it immediately.',
+          'That is the complete list. We do not set cookies for advertising, retargeting, third party analytics, or cross site tracking, and no outside company sets cookies through our site.',
+        ],
+      },
+      {
+        heading: 'Cookies From Payments',
+        body: [
+          'Subscriptions are purchased inside the App Store and Google Play, not on this website, so no payment provider sets a cookie here.',
+        ],
+      },
+      {
+        heading: 'Managing Cookies',
+        body: [
+          'Every major browser lets you view, block, or delete cookies in its settings. You are free to block ours.',
+          'Be aware that blocking or clearing the session cookie signs you out and prevents you from signing back in, since it is how the app knows who you are. The marketing pages of this site work fine without it.',
+        ],
+      },
+      {
+        heading: 'Changes to This Policy',
+        body: [
+          'If we ever add a cookie, we will list it here and update the date at the top before it goes live.',
+        ],
+      },
+      {
+        heading: 'Contact',
+        body: [
+          'Questions about cookies can go to support@homeschoolmaster.com.',
+        ],
+      },
+    ],
+  },
+
+  refund: {
+    title: 'Refund Policy',
+    lastUpdated: 'September 2, 2026',
+    intro:
+      'Homeschool Master subscriptions are sold through the Apple App Store and Google Play, which means Apple and Google handle the money, including refunds. Here is how that works and what we can do to help.',
+    sections: [
+      {
+        heading: 'Try It Free First',
+        body: [
+          'Every new account gets a 14 day free trial with every feature turned on. You are not charged during the trial, and canceling before it ends costs nothing.',
+          'The trial exists so you can decide whether the app fits your family before any money changes hands. We would rather you cancel during the trial than pay for a month you did not want.',
+        ],
+      },
+      {
+        heading: 'Who Issues Refunds',
+        body: [
+          'Because your subscription is billed by Apple or Google, we cannot issue a refund directly. The charge never passes through our systems, so there is nothing on our side to reverse.',
+          "Refunds are granted at the store's discretion under its own policy. In our experience both stores are reasonable about accidental and duplicate charges.",
+        ],
+      },
+      {
+        heading: 'Requesting a Refund From Apple',
+        body: [
+          'Go to reportaproblem.apple.com and sign in with the Apple ID used for the purchase, find the Homeschool Master charge, and choose the request refund option.',
+          'You can also open Settings on your device, tap your name, then Subscriptions, to see the purchase in question.',
+        ],
+      },
+      {
+        heading: 'Requesting a Refund From Google',
+        body: [
+          'Open the Google Play Store, go to your order history under Payments and subscriptions, find the Homeschool Master charge, and choose the refund option. Requests made soon after the charge are generally handled fastest.',
+          'You can also submit a request from play.google.com/store/account/orderhistory in a browser.',
+        ],
+      },
+      {
+        heading: 'Canceling a Subscription',
+        body: [
+          'Canceling and refunding are separate actions. Deleting the app does not cancel a subscription.',
+          'On iOS: Settings, then your name, then Subscriptions, then Homeschool Master, then Cancel Subscription.',
+          'On Android: Play Store, then your profile icon, then Payments and subscriptions, then Subscriptions, then Homeschool Master, then Cancel.',
+          'Cancellation stops the next renewal. You keep access through the end of the period you already paid for, and after that your account becomes read only so you can still view and export your records.',
+        ],
+      },
+      {
+        heading: 'How We Can Help',
+        body: [
+          "Email support@homeschoolmaster.com and we will walk you through the store's process, confirm what was charged and when, and write a short note you can attach to your request explaining the situation.",
+          'If a charge looks like a genuine mistake on our end, tell us. We will look into it and back up your refund request with the store.',
+        ],
+      },
+      {
+        heading: 'Changes to This Policy',
+        body: [
+          'We will update this page if our billing arrangements change, and we will change the date at the top when we do.',
+        ],
+      },
+    ],
+  },
+}
