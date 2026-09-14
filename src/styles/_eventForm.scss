@@ -1,0 +1,287 @@
+@use 'variables' as *;
+@use 'mixins' as *;
+
+.event-form {
+  font-family: $font-family-base;
+  color: $color-text;
+  background-color: $color-white;
+  padding-bottom: $spacing-xl;
+
+  // Header bar: Cancel, title, Save
+  &__bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: $spacing-md;
+    background-color: $color-master;
+    padding: $spacing-md $spacing-lg;
+
+    @include respond-to(mobile) {
+      padding: $spacing-sm $spacing-md;
+    }
+  }
+
+  &__heading {
+    font-size: 1.75rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    color: $color-white;
+    margin: 0;
+    text-align: center;
+
+    @include respond-to(mobile) {
+      font-size: 1.25rem;
+    }
+  }
+
+  &__cancel {
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-family: $font-family-base;
+    font-size: 1.125rem;
+    font-weight: 700;
+    color: $color-text;
+
+    &:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+    }
+
+    &:focus-visible {
+      outline: 2px solid $color-headline;
+      outline-offset: 2px;
+    }
+  }
+
+  &__save {
+    border: none;
+    cursor: pointer;
+    font-family: $font-family-base;
+    font-size: 1.125rem;
+    font-weight: 700;
+    color: $color-text;
+    background-color: $color-gradient-light;
+    border-radius: 999px;
+    padding: $spacing-sm $spacing-lg;
+
+    &:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+    }
+
+    &:focus-visible {
+      outline: 2px solid $color-headline;
+      outline-offset: 2px;
+    }
+  }
+
+  &__error {
+    @include container;
+    margin-top: $spacing-md;
+    color: #b3261e;
+    text-align: center;
+  }
+
+  &__status {
+    color: $color-text;
+    margin: 0;
+  }
+
+  // Cards
+  &__card {
+    @include container;
+    max-width: 52rem;
+    background-color: $color-surface;
+    border: 2px solid $color-master;
+    border-radius: 1.5rem;
+    padding: $spacing-lg;
+    margin-top: $spacing-lg;
+    display: flex;
+    flex-direction: column;
+    gap: $spacing-md;
+
+    @include respond-to(mobile) {
+      padding: $spacing-md;
+      border-radius: 1rem;
+    }
+  }
+
+  // Rows hold one or two shared form fields side by side. The label sits above
+  // its control, so rows line up on their bottom edge.
+  &__row {
+    display: flex;
+    align-items: flex-end;
+    gap: $spacing-md;
+
+    @include respond-to(mobile) {
+      flex-wrap: wrap;
+      gap: $spacing-sm;
+    }
+  }
+
+  &__row .form-field {
+    flex: 1;
+  }
+
+  &__row--times {
+    flex-wrap: wrap;
+
+    .form-field {
+      flex: 0 1 10rem;
+    }
+  }
+
+  &__row--recurrence .form-field {
+    flex: 0 1 22rem;
+  }
+
+  &__label {
+    font-size: 1.125rem;
+    color: $color-text;
+
+    @include respond-to(mobile) {
+      font-size: 1rem;
+    }
+  }
+
+  &__area {
+    resize: vertical;
+  }
+
+  &__all-day {
+    display: inline-flex;
+    align-items: center;
+    gap: $spacing-sm;
+    flex-shrink: 0;
+    cursor: pointer;
+    padding-bottom: $spacing-sm;
+  }
+
+  &__checkbox {
+    width: 24px;
+    height: 24px;
+    accent-color: $color-master;
+    cursor: pointer;
+  }
+
+  &__all-day-text {
+    text-transform: uppercase;
+    font-size: 1rem;
+  }
+
+  // Attendees
+  &__attendees-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: $spacing-md;
+    padding-bottom: $spacing-md;
+    border-bottom: 1px solid $color-gradient-light;
+  }
+
+  &__attendees {
+    display: flex;
+    flex-wrap: wrap;
+    gap: $spacing-md;
+
+    @include respond-to(mobile) {
+      gap: $spacing-sm;
+    }
+  }
+
+  &__toggle-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: $spacing-sm;
+    background-color: $color-gradient-light;
+    border-radius: 999px;
+    padding: $spacing-xs $spacing-md $spacing-xs $spacing-xs;
+    cursor: pointer;
+    min-width: 12rem;
+    // Student pills set their own text color from their fill, so the label
+    // inherits rather than forcing one that a dark fill would swallow.
+    color: $color-text;
+
+    @include respond-to(mobile) {
+      min-width: 9rem;
+    }
+  }
+
+  &__toggle-pill--all {
+    background-color: $color-master;
+    min-width: 0;
+  }
+
+  &__toggle-text {
+    font-size: 1.125rem;
+    color: inherit;
+
+    @include respond-to(mobile) {
+      font-size: 1rem;
+    }
+  }
+
+  // Toggle switch, matching the dashboard control
+  &__toggle {
+    position: relative;
+    display: inline-flex;
+    width: 52px;
+    height: 28px;
+    flex-shrink: 0;
+  }
+
+  &__toggle-input {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    margin: 0;
+    opacity: 0;
+    cursor: pointer;
+    z-index: 1;
+  }
+
+  // The track is dark and sits on the student's colour, so a dark pill would
+  // otherwise run straight into it with no edge. The white border draws inside
+  // the 52x28 box, so the switch keeps its footprint and the knob its position.
+  &__toggle-track {
+    position: absolute;
+    inset: 0;
+    background-color: #4a4442;
+    border: 2px solid $color-white;
+    border-radius: 999px;
+    transition: background-color 0.2s;
+    pointer-events: none;
+  }
+
+  &__toggle-knob {
+    position: absolute;
+    top: 3px;
+    left: 3px;
+    width: 22px;
+    height: 22px;
+    background-color: $color-white;
+    border-radius: 50%;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.15);
+    transition: transform 0.2s;
+    pointer-events: none;
+  }
+
+  &__toggle-input:checked ~ &__toggle-track {
+    background-color: #57b84a;
+  }
+
+  &__toggle-input:checked ~ &__toggle-knob {
+    transform: translateX(24px);
+  }
+
+  &__toggle-input:disabled ~ &__toggle-track {
+    opacity: 0.7;
+  }
+
+  &__toggle-input:focus-visible ~ &__toggle-track {
+    outline: 2px solid $color-headline;
+    outline-offset: 2px;
+  }
+}

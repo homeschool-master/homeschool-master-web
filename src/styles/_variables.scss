@@ -13,6 +13,10 @@ $color-accent: #d97b0a;
 $color-master: #e0a660;
 $color-headline: #231f20;
 $color-white: #ffffff;
+// The cream panel the marketing and authenticated pages sit content on, taken
+// from .contact-page__content where it was written as a bare hex. Named here so
+// the calendar cards can reuse it instead of repeating the value.
+$color-surface: #fbf7ee;
 
 // Gradients
 $gradient-hero: linear-gradient(to bottom, $color-gradient-dark, $color-gradient-light);

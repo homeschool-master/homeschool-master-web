@@ -26,3 +26,38 @@
     @media (min-width: $bp-desktop) { @content; }
   }
 }
+
+// The app's standard form field: a label above a white control with an orange
+// border. Shared by the profile forms and the shared FormField component so
+// the pattern lives in one place.
+@mixin form-field-stack {
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-xs;
+}
+
+@mixin form-field-label {
+  font-weight: 700;
+  font-size: 0.9rem;
+  color: $color-headline;
+}
+
+@mixin form-control {
+  width: 100%;
+  padding: 0.75rem $spacing-md;
+  border: 1.5px solid $color-accent;
+  border-radius: 14px;
+  background-color: $color-white;
+  color: $color-text;
+  font-family: $font-family-base;
+  font-size: 1rem;
+
+  &:focus {
+    outline: none;
+    border-color: $color-headline;
+  }
+}
+
+@mixin form-control-error {
+  border-color: #c0392b;
+}

@@ -1,0 +1,26 @@
+@use 'variables' as *;
+@use 'mixins' as *;
+
+// Shared field used by the calendar form. The profile forms keep their own
+// dashboard classes but draw from the same mixins, so the look has one source.
+.form-field {
+  @include form-field-stack;
+  min-width: 0;
+
+  &__label {
+    @include form-field-label;
+  }
+
+  &__control {
+    @include form-control;
+
+    &--error {
+      @include form-control-error;
+    }
+
+    &:disabled {
+      opacity: 0.8;
+      cursor: not-allowed;
+    }
+  }
+}

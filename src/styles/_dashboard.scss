@@ -260,15 +260,11 @@
   }
 
   &__field {
-    display: flex;
-    flex-direction: column;
-    gap: $spacing-xs;
+    @include form-field-stack;
   }
 
   &__field-label {
-    font-weight: 700;
-    font-size: 0.9rem;
-    color: $color-headline;
+    @include form-field-label;
   }
 
   &__field-control {
@@ -278,22 +274,10 @@
   }
 
   &__input {
-    width: 100%;
-    padding: 0.75rem $spacing-md;
-    border: 1.5px solid $color-accent;
-    border-radius: 14px;
-    background-color: $color-white;
-    color: $color-text;
-    font-family: $font-family-base;
-    font-size: 1rem;
-
-    &:focus {
-      outline: none;
-      border-color: $color-headline;
-    }
+    @include form-control;
 
     &--error {
-      border-color: #c0392b;
+      @include form-control-error;
     }
   }
 
