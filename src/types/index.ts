@@ -44,6 +44,15 @@ export interface CalendarEvent {
  * stores them as sent and never converts, so build them from local input with
  * toISOString.
  */
+/** The fields the students endpoint accepts from web: no photo upload yet. */
+export interface StudentInput {
+  firstName: string
+  middleName: string
+  lastName: string
+  gradeLevel: string
+  color: string
+}
+
 export interface CalendarEventInput {
   title: string
   notes: string | null
@@ -54,6 +63,9 @@ export interface CalendarEventInput {
   student_ids: string[]
   created_time_zone: string
 }
+
+/** Update takes the same fields minus created_time_zone, which is create only. */
+export type CalendarEventUpdateInput = Omit<CalendarEventInput, 'created_time_zone'>
 
 export interface CalendarEventRange {
   startDate: string

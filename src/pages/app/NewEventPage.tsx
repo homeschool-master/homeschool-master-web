@@ -1,13 +1,26 @@
 import { useEffect, useMemo, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { useNavigate, useSearchParams } from 'react-router-dom'
+import { useNavigate, useParams, useSearchParams } from 'react-router-dom'
 import type { AppDispatch, RootState } from '../../store'
-import { createCalendarEvent, clearCreateError } from '../../store/calendarEventsSlice'
+import {
+  clearCreateError,
+  clearCurrentEvent,
+  clearDeleteError,
+  clearUpdateError,
+  createCalendarEvent,
+  deleteCalendarEvent,
+  fetchCalendarEvent,
+  updateCalendarEvent,
+} from '../../store/calendarEventsSlice'
 import { fetchStudents } from '../../store/studentsSlice'
 import FormField, { FormInput, FormSelect, FormTextarea } from '../../components/shared/FormField'
+import EventDeleteConfirm from '../../components/calendar/EventDeleteConfirm'
 import { CALENDAR_CONTENT, NEUTRAL_EVENT_COLOR } from '../../constants/calendar'
 import {
   browserTimeZone,
+  isoToDateKey,
+  isoToMonthKey,
+  isoToTimeValue,
   localDayEndIso,
   localDayStartIso,
   localToUtcIso,
@@ -20,12 +33,30 @@ import { readableTextColor } from '../../utils/studentColor'
 const DEFAULT_START_TIME = '09:00'
 const DEFAULT_END_TIME = '10:00'
 
+/**
+ * Serves both /calendar/new and /calendar/:id/edit: an id in the route puts it
+ * in edit mode, where it prefills from the event and patches instead of
+ * posting.
+ */
 const NewEventPage = () => {
   const dispatch = useDispatch<AppDispatch>()
   const navigate = useNavigate()
   const [searchParams] = useSearchParams()
+  const { id } = useParams()
+  const isEditing = Boolean(id)
 
-  const { creating, createError } = useSelector((state: RootState) => state.calendarEvents)
+  const {
+    creating,
+    createError,
+    current,
+    currentLoading,
+    currentError,
+    currentNotFound,
+    updating,
+    updateError,
+    deletingId,
+    deleteError,
+  } = useSelector((state: RootState) => state.calendarEvents)
   const { items: students, loading: studentsLoading } = useSelector(
     (state: RootState) => state.students
   )
@@ -56,13 +87,43 @@ const NewEventPage = () => {
   const [location, setLocation] = useState('')
   const [notes, setNotes] = useState('')
   const [validationError, setValidationError] = useState<string | null>(null)
+  const [confirmingDelete, setConfirmingDelete] = useState(false)
 
   useEffect(() => {
     dispatch(fetchStudents())
     return () => {
       dispatch(clearCreateError())
+      dispatch(clearUpdateError())
+      dispatch(clearDeleteError())
     }
   }, [dispatch])
+
+  useEffect(() => {
+    if (!id) return
+    dispatch(fetchCalendarEvent(id))
+    return () => {
+      dispatch(clearCurrentEvent())
+    }
+  }, [dispatch, id])
+
+  // Seeded once per event, adjusting state during render rather than in an
+  // effect: React's own answer for state derived from data that just arrived,
+  // and it never overwrites the teacher's edits on a later render.
+  const [prefilledId, setPrefilledId] = useState<string | null>(null)
+  if (id && current && current.id === id && prefilledId !== id) {
+    setPrefilledId(id)
+    setTitle(current.title)
+    setDate(isoToDateKey(current.startTime))
+    setAllDay(current.allDay)
+    // An all day event is stored as the day's bounds. Showing 00:00 and 23:59
+    // in the pickers would be noise, so the defaults stand by until the teacher
+    // turns all day off.
+    setStartTime(current.allDay ? DEFAULT_START_TIME : isoToTimeValue(current.startTime))
+    setEndTime(current.allDay ? DEFAULT_END_TIME : isoToTimeValue(current.endTime))
+    setSelectedIds(current.attendees.map((attendee) => attendee.id))
+    setLocation(current.location ?? '')
+    setNotes(current.notes ?? '')
+  }
 
   const toggleStudent = (id: string) => {
     setValidationError(null)
@@ -102,25 +163,59 @@ const NewEventPage = () => {
     }
     setValidationError(null)
 
+    // The submitted attendee list replaces the set outright, so it is always
+    // the full intended roster for the event rather than a delta.
     const attendeeIds = allStudents ? students.map((student) => student.id) : selectedIds
 
+    const fields = {
+      title: title.trim(),
+      notes: notes.trim() || null,
+      location: location.trim() || null,
+      start_time: allDay ? localDayStartIso(date) : localToUtcIso(date, startTime),
+      end_time: allDay ? localDayEndIso(date) : localToUtcIso(date, endTime),
+      all_day: allDay,
+      student_ids: attendeeIds,
+    }
+
+    if (isEditing && id) {
+      // created_time_zone is create only and is deliberately absent here.
+      const result = await dispatch(updateCalendarEvent({ id, input: fields }))
+      if (updateCalendarEvent.fulfilled.match(result)) navigate(`/calendar/${id}`)
+      return
+    }
+
     const result = await dispatch(
-      createCalendarEvent({
-        title: title.trim(),
-        notes: notes.trim() || null,
-        location: location.trim() || null,
-        start_time: allDay ? localDayStartIso(date) : localToUtcIso(date, startTime),
-        end_time: allDay ? localDayEndIso(date) : localToUtcIso(date, endTime),
-        all_day: allDay,
-        student_ids: attendeeIds,
-        created_time_zone: browserTimeZone(),
-      })
+      createCalendarEvent({ ...fields, created_time_zone: browserTimeZone() })
     )
 
     if (createCalendarEvent.fulfilled.match(result)) {
       const [year, month] = date.split('-').map(Number)
       navigate(`/calendar?month=${monthKey(year, month - 1)}`)
     }
+  }
+
+  const handleDelete = async () => {
+    if (!id || !current) return
+    const month = isoToMonthKey(current.startTime)
+    const result = await dispatch(deleteCalendarEvent(id))
+    if (deleteCalendarEvent.fulfilled.match(result)) navigate(`/calendar?month=${month}`)
+  }
+
+  const saving = isEditing ? updating : creating
+  const submitError = isEditing ? updateError : createError
+
+  // Editing waits for the record: the form would otherwise flash empty fields
+  // and then fill them in underneath the teacher.
+  if (isEditing && currentLoading) {
+    return <p className='event-form__status event-form__status--page'>{CALENDAR_CONTENT.form.loadingEvent}</p>
+  }
+
+  if (isEditing && (currentNotFound || currentError)) {
+    return (
+      <p className='event-form__error' role='alert'>
+        {currentNotFound ? CALENDAR_CONTENT.detail.notFound : currentError}
+      </p>
+    )
   }
 
   return (
@@ -130,19 +225,21 @@ const NewEventPage = () => {
           type='button'
           className='event-form__cancel'
           onClick={() => navigate(-1)}
-          disabled={creating}
+          disabled={saving}
         >
           {CALENDAR_CONTENT.form.cancel}
         </button>
-        <h1 className='event-form__heading'>{CALENDAR_CONTENT.form.heading}</h1>
-        <button type='submit' className='event-form__save' disabled={creating}>
-          {creating ? CALENDAR_CONTENT.form.saving : CALENDAR_CONTENT.form.save}
+        <h1 className='event-form__heading'>
+          {isEditing ? CALENDAR_CONTENT.form.editHeading : CALENDAR_CONTENT.form.heading}
+        </h1>
+        <button type='submit' className='event-form__save' disabled={saving}>
+          {saving ? CALENDAR_CONTENT.form.saving : CALENDAR_CONTENT.form.save}
         </button>
       </header>
 
-      {(validationError || createError) && (
+      {(validationError || submitError) && (
         <p className='event-form__error' role='alert'>
-          {validationError ?? createError}
+          {validationError ?? submitError}
         </p>
       )}
 
@@ -311,6 +408,32 @@ const NewEventPage = () => {
           </FormField>
         </div>
       </section>
+
+      {isEditing && current && (
+        <div className='event-form__danger'>
+          {confirmingDelete ? (
+            <EventDeleteConfirm
+              title={current.title || CALENDAR_CONTENT.grid.untitledEvent}
+              deleting={deletingId === current.id}
+              error={deleteError}
+              onConfirm={handleDelete}
+              onCancel={() => {
+                dispatch(clearDeleteError())
+                setConfirmingDelete(false)
+              }}
+            />
+          ) : (
+            <button
+              type='button'
+              className='event-detail__delete'
+              onClick={() => setConfirmingDelete(true)}
+              disabled={saving}
+            >
+              {CALENDAR_CONTENT.form.delete}
+            </button>
+          )}
+        </div>
+      )}
     </form>
   )
 }

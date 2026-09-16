@@ -107,6 +107,31 @@ export const groupEventsByDay = (events: CalendarEvent[]): Record<string, Calend
   return grouped
 }
 
+/** The month an event belongs to, for returning to the grid it came from. */
+export const isoToMonthKey = (iso: string): string => {
+  const date = new Date(iso)
+  return monthKey(date.getFullYear(), date.getMonth())
+}
+
+/** A long, readable local date: the detail view's spelling. */
+export const formatLongDate = (iso: string): string =>
+  new Date(iso).toLocaleDateString(undefined, {
+    weekday: 'long',
+    month: 'long',
+    day: 'numeric',
+    year: 'numeric',
+  })
+
+/** A readable local clock time, matching the browser's locale. */
+export const formatTime = (iso: string): string =>
+  new Date(iso).toLocaleTimeString(undefined, { hour: 'numeric', minute: '2-digit' })
+
+/** The local HH:MM an ISO timestamp falls at, for a time input. */
+export const isoToTimeValue = (iso: string): string => {
+  const date = new Date(iso)
+  return `${pad(date.getHours())}:${pad(date.getMinutes())}`
+}
+
 /** Combines a YYYY-MM-DD date and an HH:MM time into a UTC ISO string. */
 export const localToUtcIso = (dateValue: string, timeValue: string): string => {
   const [year, month, day] = dateValue.split('-').map(Number)

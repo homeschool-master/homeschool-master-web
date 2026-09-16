@@ -16,6 +16,9 @@
 
   @include respond-to(mobile) {
     flex-direction: column;
+    // Stacked, the strip and the page need separating: the same gap the
+    // dashboard puts between its own two panels when they stack here.
+    gap: $spacing-lg;
   }
 }
 

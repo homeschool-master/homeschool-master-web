@@ -1,9 +1,4 @@
-import type {
-  InputHTMLAttributes,
-  ReactNode,
-  SelectHTMLAttributes,
-  TextareaHTMLAttributes,
-} from 'react'
+import type { ComponentPropsWithRef, ReactNode } from 'react'
 
 interface FormFieldProps {
   /** Visible label, rendered above the control. */
@@ -32,18 +27,17 @@ const FormField = ({ label, htmlFor, className = '', children }: FormFieldProps)
   </div>
 )
 
-export const FormInput = ({ className, ...rest }: InputHTMLAttributes<HTMLInputElement>) => (
+// Props carry ref through, so an uncontrolled form library can register the
+// control: React 19 passes ref like any other prop.
+export const FormInput = ({ className, ...rest }: ComponentPropsWithRef<'input'>) => (
   <input className={controlClasses(className)} {...rest} />
 )
 
-export const FormTextarea = ({
-  className,
-  ...rest
-}: TextareaHTMLAttributes<HTMLTextAreaElement>) => (
+export const FormTextarea = ({ className, ...rest }: ComponentPropsWithRef<'textarea'>) => (
   <textarea className={controlClasses(className)} {...rest} />
 )
 
-export const FormSelect = ({ className, ...rest }: SelectHTMLAttributes<HTMLSelectElement>) => (
+export const FormSelect = ({ className, ...rest }: ComponentPropsWithRef<'select'>) => (
   <select className={controlClasses(className)} {...rest} />
 )
 

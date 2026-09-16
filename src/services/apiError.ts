@@ -15,6 +15,10 @@ interface ApiErrorBody {
   }
 }
 
+/** True when the API said the record is not there, rather than that it failed. */
+export const isNotFoundError = (error: unknown): boolean =>
+  isAxiosError(error) && error.response?.status === 404
+
 /** Flattens an API failure into a single sentence suitable for display. */
 export const apiErrorMessage = (error: unknown, fallback: string): string => {
   if (!isAxiosError<ApiErrorBody>(error)) return fallback

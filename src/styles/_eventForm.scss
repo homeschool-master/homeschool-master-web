@@ -88,6 +88,20 @@
     margin: 0;
   }
 
+  &__status--page {
+    @include container;
+    margin-top: $spacing-xl;
+    text-align: center;
+  }
+
+  &__danger {
+    @include container;
+    max-width: 52rem;
+    margin-top: $spacing-lg;
+    display: flex;
+    justify-content: center;
+  }
+
   // Cards
   &__card {
     @include container;

@@ -168,6 +168,9 @@
 
   &__event {
     display: block;
+    // Pills are links to the event: they need to look and behave like controls.
+    cursor: pointer;
+    text-decoration: none;
     border-radius: 999px;
     padding: 2px $spacing-sm;
     font-size: 0.8125rem;
@@ -180,6 +183,15 @@
     @include respond-to(mobile) {
       font-size: 0.625rem;
       padding: 1px $spacing-xs;
+    }
+
+    &:hover {
+      filter: brightness(0.95);
+    }
+
+    &:focus-visible {
+      outline: 2px solid $color-headline;
+      outline-offset: 1px;
     }
 
     // Desktop caps the cell at three pills. The rest are counted in the

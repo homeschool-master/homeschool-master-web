@@ -31,6 +31,7 @@ import NotificationsSection from './components/dashboard/NotificationsSection'
 import OnboardingPage from './pages/app/OnboardingPage'
 import CalendarPage from './pages/app/CalendarPage'
 import NewEventPage from './pages/app/NewEventPage'
+import EventDetailPage from './pages/app/EventDetailPage'
 import FeaturesPage from './pages/marketing/FeaturesPage'
 import LegalPage from './pages/marketing/LegalPage'
 import FaqPage from './pages/marketing/FaqPage'
@@ -73,6 +74,8 @@ const App = () => {
                 <Route element={<AppLayout />}>
                   <Route path='/calendar' element={<CalendarPage />} />
                   <Route path='/calendar/new' element={<NewEventPage />} />
+                  <Route path='/calendar/:id' element={<EventDetailPage />} />
+                  <Route path='/calendar/:id/edit' element={<NewEventPage />} />
                   <Route path='/dashboard' element={<DashboardPage />}>
                     <Route index element={<Navigate to='profile' replace />} />
                     <Route path='profile' element={<ProfileSection />} />

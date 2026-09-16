@@ -182,17 +182,76 @@
     margin: 0 auto;
   }
 
+  // Chips size to their names and wrap: a grid track made a lone student
+  // stretch across half the panel.
+  // Roster: a card per student on a fixed column grid, so rows line up at any
+  // count and a short last row stays left aligned instead of centring.
   &__students-grid {
     display: grid;
-    grid-template-columns: repeat(2, 1fr);
+    grid-template-columns: repeat(auto-fill, minmax(9.5rem, 1fr));
     gap: $spacing-md;
     margin: 0;
     padding: 0;
     list-style: none;
 
     @include respond-to(mobile) {
-      grid-template-columns: 1fr;
+      grid-template-columns: repeat(auto-fill, minmax(8rem, 1fr));
+      gap: $spacing-sm;
     }
+  }
+
+  // Border, radius and surface follow the panels this sits inside: white on the
+  // panel's cream, the way the inputs read against it.
+  &__student-card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: $spacing-xs;
+    // Lets a long name truncate rather than widening its track.
+    min-width: 0;
+    padding: $spacing-md $spacing-sm;
+    border: 1.5px solid $color-gradient-dark;
+    border-radius: 16px;
+    background-color: $color-white;
+    text-align: center;
+  }
+
+  &__student-avatar {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    width: 64px;
+    height: 64px;
+    border-radius: 50%;
+    // Covers the photo case without distorting it once uploads exist.
+    object-fit: cover;
+    background-color: $color-gradient-light;
+    color: $color-headline;
+    font-size: 1.35rem;
+    font-weight: 700;
+
+    @include respond-to(mobile) {
+      width: 56px;
+      height: 56px;
+      font-size: 1.15rem;
+    }
+  }
+
+  &__student-name {
+    max-width: 100%;
+    font-size: 1rem;
+    font-weight: 700;
+    color: $color-headline;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  &__student-grade {
+    font-size: 0.8rem;
+    color: $color-text;
+    opacity: 0.75;
   }
 
   &__student-chip {
@@ -207,6 +266,134 @@
     font-size: 1.1rem;
     font-weight: 500;
     text-align: center;
+  }
+
+  &__student-actions {
+    display: inline-flex;
+    gap: $spacing-sm;
+    margin-top: $spacing-xs;
+  }
+
+  &__student-action {
+    background: none;
+    border: none;
+    padding: 0;
+    font-family: $font-family-base;
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: $color-headline;
+    text-decoration: underline;
+    cursor: pointer;
+
+    &:hover {
+      color: $color-accent;
+    }
+  }
+
+  &__students-actions {
+    display: flex;
+    justify-content: center;
+    margin-top: $spacing-lg;
+  }
+
+  &__student-form {
+    margin-top: $spacing-lg;
+    padding-top: $spacing-lg;
+    border-top: 1.5px solid $color-gradient-dark;
+  }
+
+  // Colour picker: swatches behave as a radio group, with the chip preview
+  // underneath showing what the roster and calendar will render.
+  &__color-field {
+    border: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: $spacing-xs;
+  }
+
+  &__color-legend {
+    @include form-field-label;
+    padding: 0;
+  }
+
+  &__color-hint {
+    font-size: 0.85rem;
+    color: $color-text;
+    opacity: 0.75;
+  }
+
+  &__color-swatches {
+    display: flex;
+    flex-wrap: wrap;
+    gap: $spacing-sm;
+    margin-top: $spacing-xs;
+  }
+
+  &__color-swatch {
+    display: inline-flex;
+    align-items: center;
+    gap: $spacing-xs;
+    padding: 0.35rem $spacing-sm;
+    border: 1.5px solid transparent;
+    border-radius: 999px;
+    background-color: $color-white;
+    cursor: pointer;
+
+    &:hover {
+      border-color: $color-gradient-dark;
+    }
+
+    &--selected {
+      border-color: $color-accent;
+      background-color: $color-gradient-light;
+    }
+  }
+
+  &__color-input {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    margin: -1px;
+    padding: 0;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+  }
+
+  &__color-dot {
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+
+  &__color-name {
+    font-size: 0.85rem;
+    color: $color-headline;
+  }
+
+  &__color-preview {
+    align-self: flex-start;
+    margin-top: $spacing-sm;
+  }
+
+  &__students-confirm {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: $spacing-sm;
+    margin-top: $spacing-lg;
+    padding-top: $spacing-lg;
+    border-top: 1.5px solid $color-gradient-dark;
+    text-align: center;
+  }
+
+  &__students-confirm-body {
+    color: $color-text;
+    line-height: 1.5;
   }
 
   &__students-empty {

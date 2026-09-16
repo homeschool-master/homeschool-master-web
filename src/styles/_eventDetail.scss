@@ -1,0 +1,220 @@
+@use 'variables' as *;
+@use 'mixins' as *;
+
+// Read only view of one event. Cards follow the event form's treatment so the
+// detail and the form read as the same object seen two ways.
+.event-detail {
+  font-family: $font-family-base;
+  color: $color-text;
+  background-color: $color-white;
+  padding-bottom: $spacing-xl;
+
+  &__bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: $spacing-md;
+    background-color: $color-master;
+    padding: $spacing-md $spacing-lg;
+
+    @include respond-to(mobile) {
+      padding: $spacing-sm $spacing-md;
+    }
+  }
+
+  &__heading {
+    font-size: 1.75rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    color: $color-white;
+    margin: 0;
+    text-align: center;
+
+    @include respond-to(mobile) {
+      font-size: 1.25rem;
+    }
+  }
+
+  &__back,
+  &__edit {
+    font-size: 1.125rem;
+    font-weight: 700;
+    color: $color-text;
+    text-decoration: none;
+
+    &:hover {
+      color: $color-headline;
+      text-decoration: underline;
+    }
+
+    &:focus-visible {
+      outline: 2px solid $color-headline;
+      outline-offset: 2px;
+    }
+  }
+
+  &__edit {
+    background-color: $color-gradient-light;
+    border-radius: 999px;
+    padding: $spacing-sm $spacing-lg;
+  }
+
+  // Holds the bar's layout steady before the event has loaded.
+  &__edit-placeholder {
+    display: inline-block;
+    width: 4rem;
+  }
+
+  &__card {
+    @include container;
+    max-width: 52rem;
+    background-color: $color-surface;
+    border: 2px solid $color-master;
+    border-radius: 1.5rem;
+    padding: $spacing-lg;
+    margin-top: $spacing-lg;
+    display: flex;
+    flex-direction: column;
+    gap: $spacing-md;
+
+    @include respond-to(mobile) {
+      padding: $spacing-md;
+      border-radius: 1rem;
+    }
+  }
+
+  &__title {
+    font-size: 1.75rem;
+    font-weight: 800;
+    color: $color-headline;
+    margin: 0;
+
+    @include respond-to(mobile) {
+      font-size: 1.375rem;
+    }
+  }
+
+  &__row {
+    display: flex;
+    align-items: baseline;
+    gap: $spacing-md;
+
+    @include respond-to(mobile) {
+      flex-direction: column;
+      gap: $spacing-xs;
+    }
+  }
+
+  &__block {
+    display: flex;
+    flex-direction: column;
+    gap: $spacing-xs;
+  }
+
+  &__label {
+    @include form-field-label;
+    flex-shrink: 0;
+  }
+
+  &__value {
+    font-size: 1.125rem;
+    color: $color-text;
+    white-space: pre-wrap;
+
+    @include respond-to(mobile) {
+      font-size: 1rem;
+    }
+  }
+
+  &__attendees {
+    display: flex;
+    flex-wrap: wrap;
+    gap: $spacing-sm;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  &__attendee {
+    border-radius: 999px;
+    padding: $spacing-xs $spacing-md;
+    font-size: 1rem;
+    font-weight: 600;
+  }
+
+  &__status,
+  &__error {
+    @include container;
+    max-width: 52rem;
+    margin-top: $spacing-lg;
+    text-align: center;
+  }
+
+  &__error {
+    color: #b3261e;
+  }
+
+  &__actions {
+    @include container;
+    max-width: 52rem;
+    margin-top: $spacing-lg;
+    display: flex;
+    justify-content: center;
+  }
+
+  &__delete {
+    background: none;
+    border: none;
+    padding: 0;
+    font-family: $font-family-base;
+    font-size: 1rem;
+    font-weight: 700;
+    color: #b3261e;
+    text-decoration: underline;
+    cursor: pointer;
+
+    &:hover:not(:disabled) {
+      color: #8c1d18;
+    }
+
+    &:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+    }
+  }
+
+  // The same in page confirmation the student roster uses.
+  &__confirm {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: $spacing-sm;
+    width: 100%;
+    padding-top: $spacing-lg;
+    border-top: 1.5px solid $color-gradient-dark;
+    text-align: center;
+  }
+
+  &__confirm-heading {
+    font-weight: 700;
+    font-size: 1.125rem;
+    color: $color-headline;
+  }
+
+  &__confirm-title {
+    font-weight: 600;
+    color: $color-headline;
+  }
+
+  &__confirm-body {
+    color: $color-text;
+    line-height: 1.5;
+    max-width: 34rem;
+  }
+
+  &__confirm-actions {
+    display: flex;
+    gap: $spacing-sm;
+    margin-top: $spacing-xs;
+  }
+}

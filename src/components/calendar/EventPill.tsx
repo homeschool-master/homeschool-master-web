@@ -1,3 +1,4 @@
+import { Link } from 'react-router-dom'
 import type { CalendarEvent } from '../../types'
 import { CALENDAR_CONTENT, NEUTRAL_EVENT_COLOR } from '../../constants/calendar'
 import { readableTextColor } from '../../utils/studentColor'
@@ -19,13 +20,23 @@ const EventPill = ({ event }: EventPillProps) => {
   const background = pillColor(event)
 
   return (
-    <span
+    <Link
+      to={`/calendar/${event.id}`}
       className='calendar__event'
       style={{ backgroundColor: background, color: readableTextColor(background) }}
       title={attendeeNames ? `${title} (${attendeeNames})` : title}
+      // A link carries the href that lets a pill be opened in a new tab, but it
+      // only activates on Enter: pills read as controls in the grid, so Space
+      // activates them too.
+      onKeyDown={(keyEvent) => {
+        if (keyEvent.key === ' ' || keyEvent.key === 'Spacebar') {
+          keyEvent.preventDefault()
+          keyEvent.currentTarget.click()
+        }
+      }}
     >
       {title}
-    </span>
+    </Link>
   )
 }
 
