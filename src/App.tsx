@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom'
 import ProtectedRoutes from './components/app/ProtectedRoute'
+import AppLayout from './components/app/AppLayout'
 import DashboardPage from './pages/app/DashboardPage'
 import LoginPage from './pages/app/LoginPage'
 import RegisterPage from './pages/app/RegisterPage'
@@ -65,16 +66,21 @@ const App = () => {
           <div className='app-shell__main'>
             <Routes>
               <Route element={<ProtectedRoutes />}>
+                {/* Onboarding is a linear first run flow with its own exits, so
+                    it stays outside the app nav: protected, but no sidebar. */}
                 <Route path='/welcome' element={<OnboardingPage />} />
-                <Route path='/calendar' element={<CalendarPage />} />
-                <Route path='/calendar/new' element={<NewEventPage />} />
-                <Route path='/dashboard' element={<DashboardPage />}>
-                  <Route index element={<Navigate to='profile' replace />} />
-                  <Route path='profile' element={<ProfileSection />} />
-                  <Route path='students' element={<StudentsSection />} />
-                  <Route path='subscription' element={<SubscriptionSection />} />
-                  <Route path='data-privacy' element={<DataPrivacySection />} />
-                  <Route path='notifications' element={<NotificationsSection />} />
+
+                <Route element={<AppLayout />}>
+                  <Route path='/calendar' element={<CalendarPage />} />
+                  <Route path='/calendar/new' element={<NewEventPage />} />
+                  <Route path='/dashboard' element={<DashboardPage />}>
+                    <Route index element={<Navigate to='profile' replace />} />
+                    <Route path='profile' element={<ProfileSection />} />
+                    <Route path='students' element={<StudentsSection />} />
+                    <Route path='subscription' element={<SubscriptionSection />} />
+                    <Route path='data-privacy' element={<DataPrivacySection />} />
+                    <Route path='notifications' element={<NotificationsSection />} />
+                  </Route>
                 </Route>
               </Route>
               <Route element={<MarketingLayout />}>

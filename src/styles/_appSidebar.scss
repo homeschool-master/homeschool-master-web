@@ -1,0 +1,118 @@
+@use 'variables' as *;
+@use 'mixins' as *;
+
+// Shell for an authenticated page: sections on the left, the page on the right.
+// The page keeps its own full width behaviour inside its column, so nothing
+// about the existing pages had to move.
+.app-layout {
+  display: flex;
+  align-items: flex-start;
+  background-color: $color-white;
+  // A page level band reaches back under the sidebar to meet the viewport edge.
+  // Where the platform draws a classic scrollbar that reach overshoots by the
+  // scrollbar's width, so the overhang is clipped: clip, unlike hidden, creates
+  // no scroll container and leaves the sticky column sticking to the viewport.
+  overflow-x: clip;
+
+  @include respond-to(mobile) {
+    flex-direction: column;
+  }
+}
+
+.app-layout__sidebar {
+  flex: 0 0 16rem;
+  padding: $spacing-lg 0 $spacing-lg $spacing-lg;
+  position: sticky;
+  top: $spacing-lg;
+  // Both this column and a full bleed page band are positioned with an auto
+  // z-index, and the band comes later in the document: without this the band
+  // would paint over the panel.
+  z-index: 1;
+
+  @include respond-to(mobile) {
+    // The strip scrolls away with the page: sticky would eat vertical room that
+    // a phone does not have.
+    position: static;
+    flex: 0 0 auto;
+    width: 100%;
+    padding: $spacing-md $spacing-md 0;
+  }
+}
+
+.app-layout__content {
+  flex: 1;
+  min-width: 0;
+
+  @include respond-to(mobile) {
+    width: 100%;
+  }
+}
+
+// Same panel and rows as the profile settings nav, through the shared mixins.
+.app-nav {
+  @include nav-panel;
+
+  @include respond-to(mobile) {
+    // Mobile lays the sections out as a strip above the content, the same move
+    // the settings nav makes at this breakpoint.
+    flex-direction: row;
+    gap: $spacing-xs;
+    padding: $spacing-xs;
+  }
+}
+
+.app-nav__item {
+  @include nav-item;
+
+  &--active {
+    @include nav-item-active;
+  }
+
+  // Placeholders read as unavailable rather than merely unselected: muted ink,
+  // a "soon" badge, no hover response and a cursor that refuses.
+  &--disabled {
+    color: rgba($color-headline, 0.4);
+    cursor: not-allowed;
+
+    &:hover {
+      background-color: transparent;
+    }
+  }
+
+  @include respond-to(mobile) {
+    flex: 1;
+    flex-direction: column;
+    gap: 2px;
+    padding: $spacing-xs;
+    font-size: 0.8125rem;
+    text-align: center;
+  }
+}
+
+.app-nav__icon {
+  @include nav-icon;
+
+  @include respond-to(mobile) {
+    width: 22px;
+    height: 22px;
+  }
+}
+
+.app-nav__badge {
+  margin-left: auto;
+  flex-shrink: 0;
+  padding: 2px $spacing-sm;
+  border-radius: 999px;
+  background-color: rgba($color-headline, 0.08);
+  color: rgba($color-headline, 0.55);
+  font-size: 0.6875rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+
+  @include respond-to(mobile) {
+    margin-left: 0;
+    font-size: 0.5625rem;
+    padding: 1px $spacing-xs;
+  }
+}

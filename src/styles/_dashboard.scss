@@ -6,14 +6,31 @@
   color: $color-text;
   background-color: $color-white;
 
-  // Hero band
+  // Hero band. The gradient is painted by a pseudo element that reaches back
+  // under the app sidebar, so the band spans the viewport while the text stays
+  // in the content column beside it. The hero's right edge is the viewport's
+  // right edge, so whatever the hero is not covering is exactly the reach it
+  // needs: no sidebar width is hard coded, and on mobile, or anywhere the hero
+  // is already full width, the reach resolves to nothing.
   &__hero {
-    background: $gradient-hero;
+    position: relative;
     padding: 0 5px;
+
+    &::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      right: 0;
+      bottom: 0;
+      left: calc(-1 * (100vw - 100%));
+      background: $gradient-hero;
+    }
   }
 
   &__hero-inner {
     @include container;
+    // Positioned so the copy paints over the band rather than under it.
+    position: relative;
     padding-top: $spacing-xl;
     padding-bottom: $spacing-xl;
     text-align: center;
@@ -67,16 +84,11 @@
     }
   }
 
-  // Left nav panel
+  // Left nav panel. The look lives in the mixins so the app sidebar can share
+  // it: this block keeps only what is specific to the settings column.
   &__nav {
+    @include nav-panel;
     flex: 0 0 34%;
-    display: flex;
-    flex-direction: column;
-    gap: $spacing-xs;
-    background-color: #fbf7ee;
-    border: 1.5px solid #ecbb77;
-    border-radius: 24px;
-    padding: $spacing-md;
 
     @include respond-to(mobile) {
       flex-basis: auto;
@@ -84,44 +96,15 @@
   }
 
   &__nav-item {
-    display: flex;
-    align-items: center;
-    gap: $spacing-md;
-    width: 100%;
-    padding: 0.875rem $spacing-md;
-    border: none;
-    border-radius: 16px;
-    background: none;
-    color: $color-headline;
-    font-family: $font-family-base;
-    font-size: 1.25rem;
-    font-weight: 500;
-    text-align: left;
-    text-decoration: none;
-    cursor: pointer;
-    transition: background-color 0.15s;
-
-    &:hover {
-      background-color: rgba(254, 240, 202, 0.55);
-    }
+    @include nav-item;
 
     &--active {
-      background-color: #fef0ca;
+      @include nav-item-active;
     }
   }
 
   &__nav-icon {
-    flex-shrink: 0;
-    width: 28px;
-    height: 28px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-
-    svg {
-      width: 100%;
-      height: 100%;
-    }
+    @include nav-icon;
   }
 
   &__nav-logout {
