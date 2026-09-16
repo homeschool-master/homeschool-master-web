@@ -110,7 +110,7 @@
 
   // Founders / Quote
   &__founders {
-    background-color: #fbf7ee;
+    background-color: $color-surface;
 
     @include respond-to(mobile) {
       padding: 0 5px;
@@ -421,7 +421,7 @@
   }
 
   &__pricing-wrapper {
-    background-color: #fbf7ee;
+    background-color: $color-surface;
 
     &-inner {
       @include container;
