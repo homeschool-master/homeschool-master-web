@@ -38,7 +38,7 @@ const DEFAULT_END_TIME = '10:00'
  * in edit mode, where it prefills from the event and patches instead of
  * posting.
  */
-const NewEventPage = () => {
+const EventFormPage = () => {
   const dispatch = useDispatch<AppDispatch>()
   const navigate = useNavigate()
   const [searchParams] = useSearchParams()
@@ -438,4 +438,4 @@ const NewEventPage = () => {
   )
 }
 
-export default NewEventPage
+export default EventFormPage
