@@ -305,7 +305,7 @@ export const CONTACT_CONTENT = {
   },
   info: {
     intro: "Hi there, we're Robert and Carlie, the family behind Homeschool Master. Every message comes straight to us.",
-    email: 'support@homeschoolmaster.com',
+    email: 'support@myhomeschoolmaster.com',
     socials: ['facebook', 'instagram', 'youtube', 'twitter', 'linkedin'],
   },
   faq: {
@@ -458,7 +458,7 @@ export const LEGAL_CONTENT: Record<LegalSlug, LegalDocument> = {
         heading: 'Who We Are',
         body: [
           'Homeschool Master is built and operated by a family owned business based in Florida. Throughout these terms, "we", "us", and "our" refer to Homeschool Master, and "you" refers to the person who holds the account.',
-          'You can reach us any time at support@homeschoolmaster.com.',
+          'You can reach us any time at support@myhomeschoolmaster.com.',
         ],
       },
       {
@@ -526,7 +526,7 @@ export const LEGAL_CONTENT: Record<LegalSlug, LegalDocument> = {
       {
         heading: 'Contact',
         body: [
-          'Questions about these terms can go to support@homeschoolmaster.com. A real person reads that inbox.',
+          'Questions about these terms can go to support@myhomeschoolmaster.com. A real person reads that inbox.',
         ],
       },
     ],
@@ -605,7 +605,7 @@ export const LEGAL_CONTENT: Record<LegalSlug, LegalDocument> = {
           'Correction: you can edit any record you have entered directly in the app.',
           'Deletion: you can delete individual records, or ask us to delete your entire account.',
           'Email: account and security emails are part of the service, but you can opt out of any newsletter from the link in its footer.',
-          'To make any of these requests by hand, email support@homeschoolmaster.com from the address on your account.',
+          'To make any of these requests by hand, email support@myhomeschoolmaster.com from the address on your account.',
         ],
       },
       {
@@ -624,7 +624,7 @@ export const LEGAL_CONTENT: Record<LegalSlug, LegalDocument> = {
       {
         heading: 'Contact',
         body: [
-          'Privacy questions go to support@homeschoolmaster.com and we will answer them ourselves.',
+          'Privacy questions go to support@myhomeschoolmaster.com and we will answer them ourselves.',
         ],
       },
     ],
@@ -672,7 +672,7 @@ export const LEGAL_CONTENT: Record<LegalSlug, LegalDocument> = {
       {
         heading: 'Contact',
         body: [
-          'Questions about cookies can go to support@homeschoolmaster.com.',
+          'Questions about cookies can go to support@myhomeschoolmaster.com.',
         ],
       },
     ],
@@ -724,7 +724,7 @@ export const LEGAL_CONTENT: Record<LegalSlug, LegalDocument> = {
       {
         heading: 'How We Can Help',
         body: [
-          "Email support@homeschoolmaster.com and we will walk you through the store's process, confirm what was charged and when, and write a short note you can attach to your request explaining the situation.",
+          "Email support@myhomeschoolmaster.com and we will walk you through the store's process, confirm what was charged and when, and write a short note you can attach to your request explaining the situation.",
           'If a charge looks like a genuine mistake on our end, tell us. We will look into it and back up your refund request with the store.',
         ],
       },
