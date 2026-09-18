@@ -78,6 +78,7 @@
   // always legible on touch.
   &__add {
     @include tooltip-host;
+    @include touch-target;
     flex-shrink: 0;
     margin-left: auto;
     background: none;

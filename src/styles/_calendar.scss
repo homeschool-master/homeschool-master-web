@@ -179,6 +179,7 @@
      strength on touch, where there is no hover to reveal it. */
   &__add-day {
     @include tooltip-host;
+    @include touch-target;
     flex-shrink: 0;
     background: none;
     border: none;
