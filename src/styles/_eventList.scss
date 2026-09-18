@@ -138,6 +138,20 @@
     margin: 0;
   }
 
+  // The fields in their own column so the panel's own gap still separates the
+  // heading from them and them from each other: desktop spacing is unchanged.
+  &__fields {
+    display: flex;
+    flex-direction: column;
+    gap: $spacing-md;
+  }
+
+  // display: flex would otherwise beat the hidden attribute, and the collapsed
+  // panel depends on hidden for its tab order as much as for its looks.
+  &__fields[hidden] {
+    display: none;
+  }
+
   &__note {
     font-size: 0.8125rem;
     color: $color-text;
@@ -159,5 +173,81 @@
     &:hover {
       color: $color-accent;
     }
+  }
+}
+
+// Mobile only: the panel becomes a single row that opens to the same fields.
+// The row carries the whole panel's surface, so collapsed it reads as one
+// control rather than an empty box with a title in it.
+.calendar-filters--collapsible {
+  margin-top: 0;
+  margin-bottom: $spacing-md;
+  gap: $spacing-md;
+  padding: 0;
+  border: none;
+  background: none;
+
+  .calendar-filters__toggle {
+    @include nav-panel;
+    flex-direction: row;
+    align-items: center;
+    gap: $spacing-sm;
+    width: 100%;
+    padding: $spacing-sm $spacing-md;
+    font-family: $font-family-base;
+    font-size: 1rem;
+    font-weight: 700;
+    color: $color-headline;
+    text-align: left;
+    cursor: pointer;
+
+    &:focus-visible {
+      outline: 2px solid $color-headline;
+      outline-offset: 2px;
+    }
+  }
+
+  // The fields sit in their own panel below the row, so the two read as the
+  // control and what it opened rather than one tall box.
+  .calendar-filters__fields {
+    @include nav-panel;
+
+    // nav-panel sets display: flex at the same weight as the base hidden rule
+    // and after it, so the collapsed state needs saying again here.
+    &[hidden] {
+      display: none;
+    }
+  }
+
+  // How many filters are on while their fields are out of sight.
+  .calendar-filters__count {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 1.5rem;
+    padding: 1px $spacing-xs;
+    border-radius: 999px;
+    background-color: $color-headline;
+    color: $color-white;
+    font-size: 0.8125rem;
+    font-weight: 700;
+    line-height: 1.4;
+  }
+
+  // A chevron drawn from two borders: down when collapsed, up when open. The
+  // button's aria-expanded carries the same state for anyone not seeing it.
+  .calendar-filters__chevron {
+    margin-left: auto;
+    width: 0.5rem;
+    height: 0.5rem;
+    flex-shrink: 0;
+    border-right: 2px solid $color-headline;
+    border-bottom: 2px solid $color-headline;
+    transform: translateY(-2px) rotate(45deg);
+    transition: transform 0.15s;
+  }
+
+  .calendar-filters__toggle[aria-expanded='true'] .calendar-filters__chevron {
+    transform: translateY(2px) rotate(225deg);
   }
 }

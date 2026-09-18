@@ -48,6 +48,9 @@ export const CALENDAR_CONTENT = {
     searchPlaceholder: 'Title, location or notes',
     clear: 'Clear filters',
     activeNote: 'Filters apply to every view.',
+    // Mobile collapses the panel: the badge says how many filters are on, so a
+    // hidden filter is never the unexplained reason a calendar looks empty.
+    activeCountLabel: 'filters active',
   },
   /** Shown for an attendee id no longer on the roster: a removed student. */
   formerStudent: 'Former student',

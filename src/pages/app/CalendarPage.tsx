@@ -154,13 +154,17 @@ const CalendarPage = () => {
     [range]
   )
 
-  // The filter panel belongs under the app nav, which the layout owns.
+  // On desktop the filter panel belongs under the app nav, which the layout
+  // owns. At phone width that slot sits above the whole page, so three filter
+  // fields would push the dates off the first screen: there the panel renders
+  // inline with the calendar's own controls instead, collapsed behind a toggle.
   const filterSlot = useContext(SidebarSlotContext)
 
   const filterPanel = (
     <CalendarFilters
       values={filterValues}
       students={students}
+      collapsible={isMobile}
       onChange={(changes) => {
         const next = { ...filterValues, ...changes }
         updateParams({
@@ -175,7 +179,7 @@ const CalendarPage = () => {
 
   return (
     <div className='calendar'>
-      {filterSlot && createPortal(filterPanel, filterSlot)}
+      {!isMobile && filterSlot && createPortal(filterPanel, filterSlot)}
 
       <div className='calendar__inner'>
         <header className='calendar__toolbar'>
@@ -261,6 +265,8 @@ const CalendarPage = () => {
             </div>
           )}
         </div>
+
+        {isMobile && filterPanel}
 
         {error && <p className='calendar__error'>{error}</p>}
         {loading && <p className='calendar__status'>{CALENDAR_CONTENT.grid.loading}</p>}
