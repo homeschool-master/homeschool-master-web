@@ -4,6 +4,7 @@ import {
   MAX_PILLS_DESKTOP,
   MAX_PILLS_MOBILE,
 } from '../../constants/calendar'
+import { formatLongDate, fromDateKey } from '../../utils/calendarDates'
 import EventPill from './EventPill'
 
 interface DayCellProps {
@@ -35,6 +36,17 @@ const DayCell = ({
     return <div className='calendar__cell calendar__cell--blank' aria-hidden='true' />
   }
 
+  // Noon so a bare date key cannot be read as UTC and land on the day before.
+  const longDate = formatLongDate(`${dateKey}T12:00:00`)
+  const addLabel = `${CALENDAR_CONTENT.grid.addOnDayLabel} ${longDate}`
+
+  // Sunday and Saturday sit against the edges of the grid, so their tooltips
+  // anchor to their own edge and open inwards rather than off screen.
+  const weekday = fromDateKey(dateKey).getDay()
+  const tooltipEdge =
+    weekday === 0 ? '--tooltip-start' : weekday === 6 ? '--tooltip-end' : ''
+  const edgeClass = (base: string) => (tooltipEdge ? ` ${base}${tooltipEdge}` : '')
+
   const desktopOverflow = events.length - MAX_PILLS_DESKTOP
   const mobileOverflow = events.length - MAX_PILLS_MOBILE
 
@@ -53,8 +65,9 @@ const DayCell = ({
       <div className='calendar__cell-header'>
         <button
           type='button'
-          className='calendar__day-number'
+          className={`calendar__day-number${edgeClass('calendar__day-number')}`}
           onClick={() => onOpenDay(dateKey)}
+          data-tooltip={`${CALENDAR_CONTENT.grid.openDayLabel}: ${dateKey}`}
           aria-label={`${CALENDAR_CONTENT.grid.openDayLabel}: ${dateKey}`}
         >
           {dayNumber}
@@ -64,12 +77,16 @@ const DayCell = ({
         </button>
 
         {/* A real button, so the cell's own click handler skips it and the
-            keyboard reaches it: the cell click still opens the day. */}
+            keyboard reaches it: the cell click still opens the day.
+            data-tooltip feeds the instant tooltip, aria-label is the announced
+            name: both name the day, so one control is never mistaken for
+            another. */}
         <button
           type='button'
-          className='calendar__add-day'
+          className={`calendar__add-day${edgeClass('calendar__add-day')}`}
           onClick={() => onAddEvent(dateKey)}
-          aria-label={`${CALENDAR_CONTENT.grid.addOnDayLabel}: ${dateKey}`}
+          data-tooltip={addLabel}
+          aria-label={addLabel}
         >
           {CALENDAR_CONTENT.grid.addOnDaySymbol}
         </button>

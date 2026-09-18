@@ -116,3 +116,63 @@
     height: 100%;
   }
 }
+
+
+/**
+ * An instant tooltip on a control. The native title attribute cannot have its
+ * roughly one second delay shortened, so the text rides on a data-tooltip
+ * attribute and is drawn by a pseudo element instead.
+ *
+ * Generated content is not a DOM node, so it cannot become the control's
+ * accessible name: the aria-label stays the only name. It shows on hover and on
+ * keyboard focus, so it is not mouse only.
+ */
+@mixin tooltip-host {
+  position: relative;
+
+  &::after {
+    content: attr(data-tooltip);
+    position: absolute;
+    bottom: calc(100% + 6px);
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 30;
+    width: max-content;
+    max-width: 14rem;
+    padding: $spacing-xs $spacing-sm;
+    border-radius: 8px;
+    background-color: $color-headline;
+    color: $color-white;
+    font-family: $font-family-base;
+    font-size: 0.75rem;
+    font-weight: 600;
+    line-height: 1.3;
+    text-align: left;
+    text-transform: none;
+    letter-spacing: 0;
+    white-space: normal;
+    pointer-events: none;
+    opacity: 0;
+    visibility: hidden;
+  }
+
+  // No transition and no delay: it is there the moment the pointer arrives.
+  &:hover::after,
+  &:focus-visible::after {
+    opacity: 1;
+    visibility: visible;
+  }
+
+  // Controls at the edges anchor to their own edge instead of centring, so the
+  // tooltip opens inwards and never leaves the viewport.
+  &--tooltip-start::after {
+    left: 0;
+    transform: none;
+  }
+
+  &--tooltip-end::after {
+    left: auto;
+    right: 0;
+    transform: none;
+  }
+}

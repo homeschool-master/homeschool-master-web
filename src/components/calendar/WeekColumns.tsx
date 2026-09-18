@@ -1,7 +1,7 @@
 import { Link } from 'react-router-dom'
 import type { CalendarEvent, Student } from '../../types'
 import { CALENDAR_CONTENT } from '../../constants/calendar'
-import { formatTime, fromDateKey } from '../../utils/calendarDates'
+import { formatLongDate, formatTime, fromDateKey } from '../../utils/calendarDates'
 import { resolveAttendees } from '../../utils/attendees'
 
 interface WeekColumnsProps {
@@ -38,9 +38,19 @@ const WeekColumns = ({
   onAddEvent,
 }: WeekColumnsProps) => (
   <div className='week-columns'>
-    {dateKeys.map((dateKey) => {
+    {dateKeys.map((dateKey, index) => {
       const dayEvents = eventsByDay[dateKey] ?? []
       const isToday = dateKey === todayKey
+      // Noon so a bare date key cannot be read as UTC and land on the day before.
+      const addLabel = `${CALENDAR_CONTENT.grid.addOnDayLabel} ${formatLongDate(`${dateKey}T12:00:00`)}`
+      // The outer columns anchor their tooltip to their own edge so it opens
+      // inwards instead of off the side of the panel.
+      const tooltipEdge =
+        index === 0
+          ? ' week-columns__add--tooltip-start'
+          : index === dateKeys.length - 1
+            ? ' week-columns__add--tooltip-end'
+            : ''
 
       return (
         <section
@@ -58,12 +68,15 @@ const WeekColumns = ({
             )}
 
             {/* In the header, above the event cards, so it never competes with
-                a card's own click. */}
+                a card's own click. data-tooltip drives the instant tooltip,
+                aria-label is the announced name, both naming this column's
+                day. */}
             <button
               type='button'
-              className='week-columns__add'
+              className={`week-columns__add${tooltipEdge}`}
               onClick={() => onAddEvent(dateKey)}
-              aria-label={`${CALENDAR_CONTENT.grid.addOnDayLabel}: ${dateKey}`}
+              data-tooltip={addLabel}
+              aria-label={addLabel}
             >
               {CALENDAR_CONTENT.grid.addOnDaySymbol}
             </button>

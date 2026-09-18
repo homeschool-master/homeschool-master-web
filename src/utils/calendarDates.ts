@@ -127,6 +127,28 @@ export const formatLongDate = (iso: string): string =>
     year: 'numeric',
   })
 
+/**
+ * The heading for a week. The weekdays are left out, since the column headers
+ * name them, and so is the month on the closing date when the week sits inside
+ * one month: "September 13 - 19". A week that crosses a month names both, and
+ * one that crosses New Year carries both years, since "December 27 - January 2"
+ * alone could be either side of the boundary.
+ */
+export const formatWeekRange = (startDate: string, endDate: string): string => {
+  const start = fromDateKey(startDate)
+  const end = fromDateKey(endDate)
+  const sameYear = start.getFullYear() === end.getFullYear()
+  const sameMonth = sameYear && start.getMonth() === end.getMonth()
+
+  const yearPart: Intl.DateTimeFormatOptions = sameYear ? {} : { year: 'numeric' }
+  const startOptions: Intl.DateTimeFormatOptions = { month: 'long', day: 'numeric', ...yearPart }
+  const endOptions: Intl.DateTimeFormatOptions = sameMonth
+    ? { day: 'numeric' }
+    : startOptions
+
+  return `${start.toLocaleDateString(undefined, startOptions)} - ${end.toLocaleDateString(undefined, endOptions)}`
+}
+
 /** A readable local clock time, matching the browser's locale. */
 export const formatTime = (iso: string): string =>
   new Date(iso).toLocaleTimeString(undefined, { hour: 'numeric', minute: '2-digit' })

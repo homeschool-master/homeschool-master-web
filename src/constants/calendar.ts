@@ -3,14 +3,15 @@ export const CALENDAR_CONTENT = {
     weekdays: ['S', 'M', 'T', 'W', 'TH', 'F', 'S'],
     previousMonthLabel: 'Previous month',
     nextMonthLabel: 'Next month',
-    newEventLabel: 'New event',
+    newEventLabel: 'Add an event',
     loading: 'Loading your calendar...',
     empty: 'No events this month yet.',
     moreSuffix: 'more',
     untitledEvent: 'Untitled event',
     todayLabel: 'Today',
     openDayLabel: 'Open this day',
-    addOnDayLabel: 'Add an event on this day',
+    /** Completed with the day itself, so each control names its own date. */
+    addOnDayLabel: 'Add an event on',
     addOnDaySymbol: '+',
   },
   views: {

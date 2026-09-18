@@ -11,6 +11,7 @@ import {
   buildMonthCells,
   dateKeysBetween,
   formatLongDate,
+  formatWeekRange,
   fromDateKey,
   groupEventsByDay,
   isDateKey,
@@ -141,7 +142,7 @@ const CalendarPage = () => {
     rangeKind === 'month'
       ? `${MONTH_NAMES[anchorDate.getMonth()]} ${anchorDate.getFullYear()}`
       : rangeKind === 'week'
-        ? `${formatLongDate(`${range.startDate}T12:00:00`)} to ${formatLongDate(`${range.endDate}T12:00:00`)}`
+        ? formatWeekRange(range.startDate, range.endDate)
         : formatLongDate(`${dateKey}T12:00:00`)
 
   const monthCells = useMemo(
@@ -187,7 +188,13 @@ const CalendarPage = () => {
             >
               &lt;
             </button>
-            <h1 className='calendar__month-name'>{rangeTitle}</h1>
+            <h1
+              className={`calendar__month-name${
+                rangeKind === 'week' ? ' calendar__month-name--week' : ''
+              }`}
+            >
+              {rangeTitle}
+            </h1>
             <button
               type='button'
               className='calendar__arrow'
@@ -200,8 +207,9 @@ const CalendarPage = () => {
 
           <button
             type='button'
-            className='calendar__add'
+            className='calendar__add calendar__add--tooltip-end'
             onClick={() => navigate(`/calendar/new?date=${dateKey}`)}
+            data-tooltip={CALENDAR_CONTENT.grid.newEventLabel}
             aria-label={CALENDAR_CONTENT.grid.newEventLabel}
           >
             +

@@ -21,7 +21,6 @@
   border: 1.5px solid $color-gradient-dark;
   border-radius: 24px;
   padding: $spacing-sm;
-  overflow: hidden;
 
   &__day {
     display: flex;
@@ -44,9 +43,10 @@
   &__header {
     display: flex;
     align-items: baseline;
-    gap: $spacing-xs;
-    padding-bottom: $spacing-xs;
-    margin-bottom: $spacing-xs;
+    flex-wrap: wrap;
+    gap: $spacing-xs $spacing-sm;
+    padding: $spacing-xs $spacing-xs $spacing-sm;
+    margin-bottom: $spacing-sm;
     border-bottom: 1px solid $color-gradient-dark;
   }
 
@@ -66,8 +66,6 @@
 
   // Says how many are in the column, including any below the scroll.
   &__count {
-    margin-left: auto;
-    margin-right: $spacing-xs;
     font-size: 0.75rem;
     font-weight: 700;
     color: $color-text;
@@ -79,7 +77,9 @@
   // Same treatment as the month grid's: quiet, stronger on hover and focus, and
   // always legible on touch.
   &__add {
+    @include tooltip-host;
     flex-shrink: 0;
+    margin-left: auto;
     background: none;
     border: none;
     padding: 0 2px;
