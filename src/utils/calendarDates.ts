@@ -11,18 +11,29 @@ export const isoToDateKey = (iso: string): string => toDateKey(new Date(iso))
 
 export const todayKey = (): string => toDateKey(new Date())
 
-export const monthKey = (year: number, month: number): string => `${year}-${pad(month + 1)}`
+export type CalendarRangeKind = 'day' | 'week' | 'month'
 
-export const parseMonthKey = (value: string | null): { year: number; month: number } | null => {
-  if (!value) return null
-  const match = /^(\d{4})-(\d{2})$/.exec(value)
-  if (!match) return null
+/** A YYYY-MM-DD key parsed back into a local Date at midnight. */
+export const fromDateKey = (dateKey: string): Date => {
+  const [year, month, day] = dateKey.split('-').map(Number)
+  return new Date(year, month - 1, day)
+}
 
-  const year = Number(match[1])
-  const month = Number(match[2]) - 1
-  if (month < 0 || month > 11) return null
+export const isDateKey = (value: string | null): value is string =>
+  value !== null && /^\d{4}-\d{2}-\d{2}$/.test(value) && !Number.isNaN(fromDateKey(value).getTime())
 
-  return { year, month }
+/** The single day a date key names. */
+export const dayRange = (dateKey: string) => ({ startDate: dateKey, endDate: dateKey })
+
+/** Sunday through Saturday around a date, matching the grid's week rows. */
+export const weekRange = (dateKey: string) => {
+  const date = fromDateKey(dateKey)
+  const sunday = new Date(date)
+  sunday.setDate(date.getDate() - date.getDay())
+  const saturday = new Date(sunday)
+  saturday.setDate(sunday.getDate() + 6)
+
+  return { startDate: toDateKey(sunday), endDate: toDateKey(saturday) }
 }
 
 /**
@@ -107,12 +118,6 @@ export const groupEventsByDay = (events: CalendarEvent[]): Record<string, Calend
   return grouped
 }
 
-/** The month an event belongs to, for returning to the grid it came from. */
-export const isoToMonthKey = (iso: string): string => {
-  const date = new Date(iso)
-  return monthKey(date.getFullYear(), date.getMonth())
-}
-
 /** A long, readable local date: the detail view's spelling. */
 export const formatLongDate = (iso: string): string =>
   new Date(iso).toLocaleDateString(undefined, {
@@ -125,6 +130,40 @@ export const formatLongDate = (iso: string): string =>
 /** A readable local clock time, matching the browser's locale. */
 export const formatTime = (iso: string): string =>
   new Date(iso).toLocaleTimeString(undefined, { hour: 'numeric', minute: '2-digit' })
+
+/** The range the calendar should fetch for a kind and an anchor date. */
+export const rangeFor = (kind: CalendarRangeKind, dateKey: string) => {
+  if (kind === 'day') return dayRange(dateKey)
+  if (kind === 'week') return weekRange(dateKey)
+
+  const date = fromDateKey(dateKey)
+  return monthRange(date.getFullYear(), date.getMonth())
+}
+
+/** Pages the anchor date forward or back by one unit of the current range. */
+export const shiftDate = (kind: CalendarRangeKind, dateKey: string, delta: number): string => {
+  const date = fromDateKey(dateKey)
+
+  if (kind === 'day') date.setDate(date.getDate() + delta)
+  else if (kind === 'week') date.setDate(date.getDate() + delta * 7)
+  else date.setMonth(date.getMonth() + delta, 1)
+
+  return toDateKey(date)
+}
+
+/** Every local day in a range, in order, so a list can show empty days too. */
+export const dateKeysBetween = (startDate: string, endDate: string): string[] => {
+  const cursor = fromDateKey(startDate)
+  const last = fromDateKey(endDate)
+  const keys: string[] = []
+
+  while (cursor <= last) {
+    keys.push(toDateKey(cursor))
+    cursor.setDate(cursor.getDate() + 1)
+  }
+
+  return keys
+}
 
 /** The local HH:MM an ISO timestamp falls at, for a time input. */
 export const isoToTimeValue = (iso: string): string => {

@@ -1,22 +1,73 @@
-import { useEffect, useMemo } from 'react'
+import { useContext, useEffect, useMemo } from 'react'
+import { createPortal } from 'react-dom'
 import { useDispatch, useSelector } from 'react-redux'
 import { useNavigate, useSearchParams } from 'react-router-dom'
 import type { AppDispatch, RootState } from '../../store'
+import type { CalendarEvent } from '../../types'
 import { fetchCalendarEvents } from '../../store/calendarEventsSlice'
+import { fetchStudents } from '../../store/studentsSlice'
 import { CALENDAR_CONTENT, MONTH_NAMES } from '../../constants/calendar'
 import {
   buildMonthCells,
+  dateKeysBetween,
+  formatLongDate,
+  fromDateKey,
   groupEventsByDay,
-  monthKey,
-  monthRange,
-  parseMonthKey,
+  isDateKey,
+  rangeFor,
+  shiftDate,
   todayKey,
 } from '../../utils/calendarDates'
+import type { CalendarRangeKind } from '../../utils/calendarDates'
 import DayCell from '../../components/calendar/DayCell'
+import EventList from '../../components/calendar/EventList'
+import CalendarFilters from '../../components/calendar/CalendarFilters'
+import { SidebarSlotContext } from '../../components/app/sidebarSlot'
+import type { CalendarFilterValues, TimingFilter } from '../../components/calendar/CalendarFilters'
 
-const currentMonth = () => {
-  const now = new Date()
-  return { year: now.getFullYear(), month: now.getMonth() }
+const { views } = CALENDAR_CONTENT
+
+const RANGE_KINDS: CalendarRangeKind[] = ['day', 'week', 'month']
+const TIMING_VALUES: TimingFilter[] = ['all', 'allDay', 'timed']
+
+/**
+ * Everything the view depends on lives in the query string: the range, the
+ * month layout, the anchor date and all three filters. That makes a filtered
+ * week linkable, survives a reload, and keeps the filters in place when the
+ * range changes or a day cell is opened.
+ */
+const readDateKey = (params: URLSearchParams): string => {
+  const date = params.get('date')
+  return isDateKey(date) ? date : todayKey()
+}
+
+const readRangeKind = (params: URLSearchParams): CalendarRangeKind => {
+  const value = params.get('range')
+  return RANGE_KINDS.find((kind) => kind === value) ?? 'month'
+}
+
+const readTiming = (params: URLSearchParams): TimingFilter => {
+  const value = params.get('timing')
+  return TIMING_VALUES.find((timing) => timing === value) ?? 'all'
+}
+
+/** Timing and search narrow what the server already scoped to the range. */
+const applyClientFilters = (
+  events: CalendarEvent[],
+  timing: TimingFilter,
+  search: string
+): CalendarEvent[] => {
+  const needle = search.trim().toLowerCase()
+
+  return events.filter((event) => {
+    if (timing === 'allDay' && !event.allDay) return false
+    if (timing === 'timed' && event.allDay) return false
+    if (!needle) return true
+
+    return [event.title, event.location, event.notes].some((field) =>
+      (field ?? '').toLowerCase().includes(needle)
+    )
+  })
 }
 
 const CalendarPage = () => {
@@ -25,59 +76,115 @@ const CalendarPage = () => {
   const [searchParams, setSearchParams] = useSearchParams()
 
   const { items, loading, error } = useSelector((state: RootState) => state.calendarEvents)
+  const { items: students } = useSelector((state: RootState) => state.students)
 
-  // The visible month lives in the query string rather than component state, so
-  // saving an event can return here on the month it was created in and the view
-  // survives a reload.
-  const monthParam = searchParams.get('month')
-  const visibleMonth = useMemo(
-    () => parseMonthKey(monthParam) ?? currentMonth(),
-    [monthParam]
-  )
-  const visibleKey = monthKey(visibleMonth.year, visibleMonth.month)
+  const dateKey = readDateKey(searchParams)
+  const rangeKind = readRangeKind(searchParams)
+  const isGrid = rangeKind === 'month' && searchParams.get('view') !== 'list'
 
-  const range = useMemo(
-    () => monthRange(visibleMonth.year, visibleMonth.month),
-    [visibleMonth]
-  )
+  const filterValues: CalendarFilterValues = {
+    studentId: searchParams.get('studentId') ?? '',
+    timing: readTiming(searchParams),
+    search: searchParams.get('q') ?? '',
+  }
+  const { studentId, timing, search } = filterValues
+
+  const range = useMemo(() => rangeFor(rangeKind, dateKey), [rangeKind, dateKey])
+
+  // The pills resolve names and colours from the roster, so a cold load or a
+  // direct link needs the students as much as the events.
+  useEffect(() => {
+    dispatch(fetchStudents())
+  }, [dispatch])
 
   useEffect(() => {
-    dispatch(fetchCalendarEvents(range))
-  }, [dispatch, range])
+    dispatch(fetchCalendarEvents({ range, studentId: studentId || undefined }))
+  }, [dispatch, range, studentId])
 
-  const cells = useMemo(
-    () => buildMonthCells(visibleMonth.year, visibleMonth.month),
-    [visibleMonth]
+  const visibleEvents = useMemo(
+    () => applyClientFilters(items, timing, search),
+    [items, timing, search]
   )
-  const eventsByDay = useMemo(() => groupEventsByDay(items), [items])
+  const eventsByDay = useMemo(() => groupEventsByDay(visibleEvents), [visibleEvents])
   const today = todayKey()
 
-  const changeMonth = (delta: number) => {
-    const next = new Date(visibleMonth.year, visibleMonth.month + delta, 1)
-    setSearchParams({ month: monthKey(next.getFullYear(), next.getMonth()) })
+  /**
+   * Writes the next view state without dropping the filters already set. The
+   * updater form reads the live params rather than the ones this render closed
+   * over, so two changes landing in the same tick cannot clobber each other.
+   */
+  const updateParams = (changes: Record<string, string | null>) => {
+    setSearchParams((current) => {
+      const next = new URLSearchParams(current)
+
+      Object.entries(changes).forEach(([key, value]) => {
+        if (value === null || value === '') next.delete(key)
+        else next.set(key, value)
+      })
+
+      return next
+    })
   }
+
+  const openDay = (day: string) => updateParams({ range: 'day', date: day, view: null })
+
+  const anchorDate = fromDateKey(dateKey)
+  const rangeTitle =
+    rangeKind === 'month'
+      ? `${MONTH_NAMES[anchorDate.getMonth()]} ${anchorDate.getFullYear()}`
+      : rangeKind === 'week'
+        ? `${formatLongDate(`${range.startDate}T12:00:00`)} to ${formatLongDate(`${range.endDate}T12:00:00`)}`
+        : formatLongDate(`${dateKey}T12:00:00`)
+
+  const monthCells = useMemo(
+    () => buildMonthCells(anchorDate.getFullYear(), anchorDate.getMonth()),
+    [anchorDate]
+  )
+  const listDateKeys = useMemo(
+    () => dateKeysBetween(range.startDate, range.endDate),
+    [range]
+  )
+
+  // The filter panel belongs under the app nav, which the layout owns.
+  const filterSlot = useContext(SidebarSlotContext)
+
+  const filterPanel = (
+    <CalendarFilters
+      values={filterValues}
+      students={students}
+      onChange={(changes) => {
+        const next = { ...filterValues, ...changes }
+        updateParams({
+          studentId: next.studentId || null,
+          timing: next.timing === 'all' ? null : next.timing,
+          q: next.search || null,
+        })
+      }}
+      onClear={() => updateParams({ studentId: null, timing: null, q: null })}
+    />
+  )
 
   return (
     <div className='calendar'>
+      {filterSlot && createPortal(filterPanel, filterSlot)}
+
       <div className='calendar__inner'>
         <header className='calendar__toolbar'>
           <div className='calendar__month-nav'>
             <button
               type='button'
               className='calendar__arrow'
-              onClick={() => changeMonth(-1)}
-              aria-label={CALENDAR_CONTENT.grid.previousMonthLabel}
+              onClick={() => updateParams({ date: shiftDate(rangeKind, dateKey, -1) })}
+              aria-label={views.previous}
             >
               &lt;
             </button>
-            <h1 className='calendar__month-name'>
-              {MONTH_NAMES[visibleMonth.month]} {visibleMonth.year}
-            </h1>
+            <h1 className='calendar__month-name'>{rangeTitle}</h1>
             <button
               type='button'
               className='calendar__arrow'
-              onClick={() => changeMonth(1)}
-              aria-label={CALENDAR_CONTENT.grid.nextMonthLabel}
+              onClick={() => updateParams({ date: shiftDate(rangeKind, dateKey, 1) })}
+              aria-label={views.next}
             >
               &gt;
             </button>
@@ -86,35 +193,95 @@ const CalendarPage = () => {
           <button
             type='button'
             className='calendar__add'
-            onClick={() => navigate(`/calendar/new?month=${visibleKey}`)}
+            onClick={() => navigate(`/calendar/new?date=${dateKey}`)}
             aria-label={CALENDAR_CONTENT.grid.newEventLabel}
           >
             +
           </button>
         </header>
 
+        <div className='calendar__toggles'>
+          <div className='calendar__toggle-group' role='group' aria-label={views.rangeLabel}>
+            {RANGE_KINDS.map((kind) => (
+              <button
+                key={kind}
+                type='button'
+                className={`calendar__toggle${rangeKind === kind ? ' calendar__toggle--active' : ''}`}
+                aria-pressed={rangeKind === kind}
+                onClick={() => updateParams({ range: kind === 'month' ? null : kind })}
+              >
+                {views[kind]}
+              </button>
+            ))}
+          </div>
+
+          <button
+            type='button'
+            className='calendar__toggle calendar__toggle--today'
+            onClick={() => updateParams({ date: today })}
+          >
+            {views.today}
+          </button>
+
+          {/* Grid and list are a month choice: week and day are always lists. */}
+          {rangeKind === 'month' && (
+            <div className='calendar__toggle-group' role='group' aria-label={views.viewLabel}>
+              <button
+                type='button'
+                className={`calendar__toggle${isGrid ? ' calendar__toggle--active' : ''}`}
+                aria-pressed={isGrid}
+                onClick={() => updateParams({ view: null })}
+              >
+                {views.grid}
+              </button>
+              <button
+                type='button'
+                className={`calendar__toggle${isGrid ? '' : ' calendar__toggle--active'}`}
+                aria-pressed={!isGrid}
+                onClick={() => updateParams({ view: 'list' })}
+              >
+                {views.list}
+              </button>
+            </div>
+          )}
+        </div>
+
         {error && <p className='calendar__error'>{error}</p>}
         {loading && <p className='calendar__status'>{CALENDAR_CONTENT.grid.loading}</p>}
 
-        <div className='calendar__grid'>
-          {CALENDAR_CONTENT.grid.weekdays.map((weekday, index) => (
-            <div key={`${weekday}-${index}`} className='calendar__weekday'>
-              {weekday}
+        {isGrid ? (
+          <>
+            <div className='calendar__grid'>
+              {CALENDAR_CONTENT.grid.weekdays.map((weekday, index) => (
+                <div key={`${weekday}-${index}`} className='calendar__weekday'>
+                  {weekday}
+                </div>
+              ))}
+
+              {monthCells.map((cell, index) => (
+                <DayCell
+                  key={cell.key ?? `blank-${index}`}
+                  dateKey={cell.key}
+                  dayNumber={cell.dayNumber}
+                  events={cell.key ? eventsByDay[cell.key] ?? [] : []}
+                  students={students}
+                  isToday={cell.key === today}
+                  onOpenDay={openDay}
+                />
+              ))}
             </div>
-          ))}
 
-          {cells.map((cell, index) => (
-            <DayCell
-              key={cell.key ?? `blank-${index}`}
-              dayNumber={cell.dayNumber}
-              events={cell.key ? eventsByDay[cell.key] ?? [] : []}
-              isToday={cell.key === today}
-            />
-          ))}
-        </div>
-
-        {!loading && !error && items.length === 0 && (
-          <p className='calendar__status'>{CALENDAR_CONTENT.grid.empty}</p>
+            {!loading && !error && visibleEvents.length === 0 && (
+              <p className='calendar__status'>{CALENDAR_CONTENT.grid.empty}</p>
+            )}
+          </>
+        ) : (
+          <EventList
+            dateKeys={listDateKeys}
+            eventsByDay={eventsByDay}
+            students={students}
+            todayKey={today}
+          />
         )}
       </div>
     </div>

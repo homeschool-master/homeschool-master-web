@@ -8,14 +8,15 @@ import {
   deleteCalendarEvent,
   fetchCalendarEvent,
 } from '../../store/calendarEventsSlice'
-import { CALENDAR_CONTENT, NEUTRAL_EVENT_COLOR } from '../../constants/calendar'
+import { fetchStudents } from '../../store/studentsSlice'
+import { CALENDAR_CONTENT } from '../../constants/calendar'
 import {
   formatLongDate,
   formatTime,
   isoToDateKey,
-  isoToMonthKey,
 } from '../../utils/calendarDates'
 import { readableTextColor } from '../../utils/studentColor'
+import { resolveAttendees } from '../../utils/attendees'
 import EventDeleteConfirm from '../../components/calendar/EventDeleteConfirm'
 
 const { detail } = CALENDAR_CONTENT
@@ -27,8 +28,14 @@ const EventDetailPage = () => {
 
   const { current, currentLoading, currentError, currentNotFound, deletingId, deleteError } =
     useSelector((state: RootState) => state.calendarEvents)
+  const { items: students } = useSelector((state: RootState) => state.students)
 
   const [confirmingDelete, setConfirmingDelete] = useState(false)
+
+  // Attendee ids resolve against the roster, so a cold load needs it too.
+  useEffect(() => {
+    dispatch(fetchStudents())
+  }, [dispatch])
 
   // Fetched by id rather than read out of the grid's slice, so the URL works on
   // a cold load or a refresh.
@@ -41,14 +48,16 @@ const EventDetailPage = () => {
     }
   }, [dispatch, id])
 
-  const monthHref = current ? `/calendar?month=${isoToMonthKey(current.startTime)}` : '/calendar'
+  const calendarHref = current
+    ? `/calendar?date=${isoToDateKey(current.startTime)}`
+    : '/calendar'
 
   const handleDelete = async () => {
     if (!current) return
-    const month = isoToMonthKey(current.startTime)
+    const eventDate = isoToDateKey(current.startTime)
     const result = await dispatch(deleteCalendarEvent(current.id))
     if (deleteCalendarEvent.fulfilled.match(result)) {
-      navigate(`/calendar?month=${month}`)
+      navigate(`/calendar?date=${eventDate}`)
     }
   }
 
@@ -102,22 +111,24 @@ const EventDetailPage = () => {
 
         <section className='event-detail__card'>
           <span className='event-detail__label'>{detail.attendees}</span>
-          {current.attendees.length === 0 ? (
+          {current.attendeeIds.length === 0 ? (
             <p className='event-detail__value'>{detail.noAttendees}</p>
           ) : (
             <ul className='event-detail__attendees'>
-              {current.attendees.map((attendee) => {
-                const background = attendee.color ?? NEUTRAL_EVENT_COLOR
-                return (
-                  <li
-                    key={attendee.id}
-                    className='event-detail__attendee'
-                    style={{ backgroundColor: background, color: readableTextColor(background) }}
-                  >
-                    {attendee.firstName}
-                  </li>
-                )
-              })}
+              {resolveAttendees(current.attendeeIds, students).map((attendee) => (
+                <li
+                  key={attendee.id}
+                  className={`event-detail__attendee${
+                    attendee.isKnown ? '' : ' event-detail__attendee--former'
+                  }`}
+                  style={{
+                    backgroundColor: attendee.color,
+                    color: readableTextColor(attendee.color),
+                  }}
+                >
+                  {attendee.name}
+                </li>
+              ))}
             </ul>
           )}
         </section>
@@ -169,7 +180,7 @@ const EventDetailPage = () => {
   return (
     <div className='event-detail'>
       <header className='event-detail__bar'>
-        <Link to={monthHref} className='event-detail__back'>
+        <Link to={calendarHref} className='event-detail__back'>
           {detail.backToCalendar}
         </Link>
         <h1 className='event-detail__heading'>{detail.heading}</h1>

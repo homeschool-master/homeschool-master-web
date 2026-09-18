@@ -18,14 +18,12 @@ import EventDeleteConfirm from '../../components/calendar/EventDeleteConfirm'
 import { CALENDAR_CONTENT, NEUTRAL_EVENT_COLOR } from '../../constants/calendar'
 import {
   browserTimeZone,
+  isDateKey,
   isoToDateKey,
-  isoToMonthKey,
   isoToTimeValue,
   localDayEndIso,
   localDayStartIso,
   localToUtcIso,
-  monthKey,
-  parseMonthKey,
   toDateKey,
 } from '../../utils/calendarDates'
 import { readableTextColor } from '../../utils/studentColor'
@@ -61,21 +59,13 @@ const EventFormPage = () => {
     (state: RootState) => state.students
   )
 
-  // The grid passes the month it was showing, so the date defaults inside that
-  // month rather than today when the teacher has paged away from it.
-  const monthParam = searchParams.get('month')
-  const defaultDate = useMemo(() => {
-    const originMonth = parseMonthKey(monthParam)
-    const now = new Date()
-    if (!originMonth) return toDateKey(now)
-
-    const isCurrentMonth =
-      originMonth.year === now.getFullYear() && originMonth.month === now.getMonth()
-
-    return isCurrentMonth
-      ? toDateKey(now)
-      : toDateKey(new Date(originMonth.year, originMonth.month, 1))
-  }, [monthParam])
+  // The calendar passes the day it was anchored on, so creating from a day or a
+  // week lands on that date rather than today.
+  const dateParam = searchParams.get('date')
+  const defaultDate = useMemo(
+    () => (isDateKey(dateParam) ? dateParam : toDateKey(new Date())),
+    [dateParam]
+  )
 
   const [title, setTitle] = useState('')
   const [date, setDate] = useState(defaultDate)
@@ -120,7 +110,7 @@ const EventFormPage = () => {
     // turns all day off.
     setStartTime(current.allDay ? DEFAULT_START_TIME : isoToTimeValue(current.startTime))
     setEndTime(current.allDay ? DEFAULT_END_TIME : isoToTimeValue(current.endTime))
-    setSelectedIds(current.attendees.map((attendee) => attendee.id))
+    setSelectedIds(current.attendeeIds)
     setLocation(current.location ?? '')
     setNotes(current.notes ?? '')
   }
@@ -189,16 +179,15 @@ const EventFormPage = () => {
     )
 
     if (createCalendarEvent.fulfilled.match(result)) {
-      const [year, month] = date.split('-').map(Number)
-      navigate(`/calendar?month=${monthKey(year, month - 1)}`)
+      navigate(`/calendar?date=${date}`)
     }
   }
 
   const handleDelete = async () => {
     if (!id || !current) return
-    const month = isoToMonthKey(current.startTime)
+    const eventDate = isoToDateKey(current.startTime)
     const result = await dispatch(deleteCalendarEvent(id))
-    if (deleteCalendarEvent.fulfilled.match(result)) navigate(`/calendar?month=${month}`)
+    if (deleteCalendarEvent.fulfilled.match(result)) navigate(`/calendar?date=${eventDate}`)
   }
 
   const saving = isEditing ? updating : creating

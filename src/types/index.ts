@@ -23,8 +23,6 @@ export interface Student {
   createdAt: string
 }
 
-export type CalendarEventAttendee = Student
-
 export interface CalendarEvent {
   id: string
   teacherId: string
@@ -35,7 +33,12 @@ export interface CalendarEvent {
   endTime: string
   allDay: boolean
   createdTimeZone: string | null
-  attendees: CalendarEventAttendee[]
+  /**
+   * Ids only: the client resolves names and colours from the students slice.
+   * A month can carry hundreds of events, and nesting the student record on
+   * each one repeats the same few students hundreds of times.
+   */
+  attendeeIds: string[]
   createdAt: string
 }
 

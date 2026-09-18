@@ -142,6 +142,12 @@
     font-weight: 600;
   }
 
+  // A student who was removed: the event kept them, the roster did not.
+  &__attendee--former {
+    font-style: italic;
+    border: 1px dashed $color-gradient-dark;
+  }
+
   &__status,
   &__error {
     @include container;

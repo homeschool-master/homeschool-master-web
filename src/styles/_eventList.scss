@@ -1,0 +1,163 @@
+@use 'variables' as *;
+@use 'mixins' as *;
+
+// Day, week and month list rendering: days in order, events in time order.
+.event-list {
+  @include container;
+  max-width: 52rem;
+  list-style: none;
+  margin: 0;
+  padding: 0 0 $spacing-xl;
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-lg;
+
+  &__day {
+    display: flex;
+    flex-direction: column;
+    gap: $spacing-sm;
+    padding-bottom: $spacing-md;
+    border-bottom: 1.5px solid $color-gradient-dark;
+  }
+
+  &__day--today &__date {
+    color: $color-accent;
+  }
+
+  &__date {
+    font-size: 1.125rem;
+    font-weight: 700;
+    color: $color-headline;
+    margin: 0;
+  }
+
+  &__empty {
+    color: $color-text;
+    opacity: 0.7;
+  }
+
+  &__events {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: $spacing-sm;
+  }
+
+  &__event {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: $spacing-sm;
+    background-color: $color-surface;
+    border: 1.5px solid $color-gradient-dark;
+    border-radius: 16px;
+    padding: $spacing-sm $spacing-md;
+  }
+
+  &__link {
+    display: flex;
+    align-items: baseline;
+    flex-wrap: wrap;
+    gap: $spacing-sm;
+    flex: 1;
+    min-width: 0;
+    text-decoration: none;
+    color: $color-headline;
+
+    &:hover &__title {
+      text-decoration: underline;
+    }
+
+    &:focus-visible {
+      outline: 2px solid $color-headline;
+      outline-offset: 2px;
+    }
+  }
+
+  &__time {
+    flex-shrink: 0;
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: $color-text;
+    min-width: 9rem;
+
+    @include respond-to(mobile) {
+      min-width: 0;
+    }
+  }
+
+  &__title {
+    font-size: 1.0625rem;
+    font-weight: 700;
+  }
+
+  &__location {
+    font-size: 0.875rem;
+    color: $color-text;
+    opacity: 0.8;
+  }
+
+  &__attendees {
+    display: flex;
+    flex-wrap: wrap;
+    gap: $spacing-xs;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+
+  &__attendee {
+    border-radius: 999px;
+    padding: 2px $spacing-sm;
+    font-size: 0.8125rem;
+    font-weight: 600;
+  }
+
+  // A student who was removed: the event kept them, the roster did not.
+  &__attendee--former {
+    font-style: italic;
+    border: 1px dashed $color-gradient-dark;
+  }
+}
+
+// Filter panel, portalled under the app section nav.
+.calendar-filters {
+  @include nav-panel;
+  margin-top: $spacing-md;
+  gap: $spacing-md;
+
+  @include respond-to(mobile) {
+    margin-top: $spacing-sm;
+  }
+
+  &__heading {
+    @include form-field-label;
+    font-size: 1rem;
+    margin: 0;
+  }
+
+  &__note {
+    font-size: 0.8125rem;
+    color: $color-text;
+    opacity: 0.75;
+  }
+
+  &__clear {
+    align-self: flex-start;
+    background: none;
+    border: none;
+    padding: 0;
+    font-family: $font-family-base;
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: $color-headline;
+    text-decoration: underline;
+    cursor: pointer;
+
+    &:hover {
+      color: $color-accent;
+    }
+  }
+}
