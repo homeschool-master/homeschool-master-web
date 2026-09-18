@@ -10,6 +10,8 @@ export const CALENDAR_CONTENT = {
     untitledEvent: 'Untitled event',
     todayLabel: 'Today',
     openDayLabel: 'Open this day',
+    addOnDayLabel: 'Add an event on this day',
+    addOnDaySymbol: '+',
   },
   views: {
     rangeLabel: 'Date range',
@@ -27,6 +29,11 @@ export const CALENDAR_CONTENT = {
     empty: 'Nothing scheduled in this range.',
     noEventsOnDay: 'Nothing scheduled.',
     allDay: 'All day',
+  },
+  week: {
+    eventCountLabel: 'events',
+    attendeesLabel: 'Attendees',
+    noAttendees: 'No students',
   },
   filters: {
     heading: 'Filters',

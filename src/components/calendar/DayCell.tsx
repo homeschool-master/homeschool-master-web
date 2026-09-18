@@ -13,6 +13,7 @@ interface DayCellProps {
   students: Student[]
   isToday: boolean
   onOpenDay: (dateKey: string) => void
+  onAddEvent: (dateKey: string) => void
 }
 
 /**
@@ -21,7 +22,15 @@ interface DayCellProps {
  * "+N more" lines are swapped by the same breakpoint, and both open the day
  * view, as does clicking the cell itself.
  */
-const DayCell = ({ dateKey, dayNumber, events, students, isToday, onOpenDay }: DayCellProps) => {
+const DayCell = ({
+  dateKey,
+  dayNumber,
+  events,
+  students,
+  isToday,
+  onOpenDay,
+  onAddEvent,
+}: DayCellProps) => {
   if (dayNumber === null || dateKey === null) {
     return <div className='calendar__cell calendar__cell--blank' aria-hidden='true' />
   }
@@ -41,15 +50,30 @@ const DayCell = ({ dateKey, dayNumber, events, students, isToday, onOpenDay }: D
       className={`calendar__cell${isToday ? ' calendar__cell--today' : ''}`}
       onClick={handleCellClick}
     >
-      <button
-        type='button'
-        className='calendar__day-number'
-        onClick={() => onOpenDay(dateKey)}
-        aria-label={`${CALENDAR_CONTENT.grid.openDayLabel}: ${dateKey}`}
-      >
-        {dayNumber}
-        {isToday && <span className='calendar__sr-only'> {CALENDAR_CONTENT.grid.todayLabel}</span>}
-      </button>
+      <div className='calendar__cell-header'>
+        <button
+          type='button'
+          className='calendar__day-number'
+          onClick={() => onOpenDay(dateKey)}
+          aria-label={`${CALENDAR_CONTENT.grid.openDayLabel}: ${dateKey}`}
+        >
+          {dayNumber}
+          {isToday && (
+            <span className='calendar__sr-only'> {CALENDAR_CONTENT.grid.todayLabel}</span>
+          )}
+        </button>
+
+        {/* A real button, so the cell's own click handler skips it and the
+            keyboard reaches it: the cell click still opens the day. */}
+        <button
+          type='button'
+          className='calendar__add-day'
+          onClick={() => onAddEvent(dateKey)}
+          aria-label={`${CALENDAR_CONTENT.grid.addOnDayLabel}: ${dateKey}`}
+        >
+          {CALENDAR_CONTENT.grid.addOnDaySymbol}
+        </button>
+      </div>
 
       <div className='calendar__events'>
         {events.map((event) => (

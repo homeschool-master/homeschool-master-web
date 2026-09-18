@@ -151,6 +151,52 @@
     box-shadow: inset 0 0 0 2px $color-accent;
   }
 
+  &__cell-header {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: $spacing-xs;
+  }
+
+  /* Creating on a specific day. Quiet rather than hidden: the rest of the cell
+     opens the day view, so an invisible control here would be a trap for anyone
+     clicking the corner. It strengthens on hover and focus, and sits at full
+     strength on touch, where there is no hover to reveal it. */
+  &__add-day {
+    flex-shrink: 0;
+    background: none;
+    border: none;
+    padding: 0 2px;
+    font-family: $font-family-base;
+    font-size: 1rem;
+    line-height: 1;
+    font-weight: 700;
+    color: $color-headline;
+    opacity: 0.3;
+    cursor: pointer;
+    transition: opacity 0.15s;
+
+    &:hover {
+      opacity: 1;
+      color: $color-accent;
+    }
+
+    &:focus-visible {
+      opacity: 1;
+      outline: 2px solid $color-headline;
+      outline-offset: 2px;
+    }
+
+    @include respond-to(mobile) {
+      opacity: 0.75;
+    }
+  }
+
+  &__cell:hover &__add-day,
+  &__cell:focus-within &__add-day {
+    opacity: 1;
+  }
+
   // A button so the day view is reachable by keyboard: the cell's own click
   // handler covers the pointer case.
   &__day-number {

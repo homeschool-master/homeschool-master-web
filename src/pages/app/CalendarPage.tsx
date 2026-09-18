@@ -21,8 +21,10 @@ import {
 import type { CalendarRangeKind } from '../../utils/calendarDates'
 import DayCell from '../../components/calendar/DayCell'
 import EventList from '../../components/calendar/EventList'
+import WeekColumns from '../../components/calendar/WeekColumns'
 import CalendarFilters from '../../components/calendar/CalendarFilters'
 import { SidebarSlotContext } from '../../components/app/sidebarSlot'
+import { useIsMobile } from '../../hooks/useIsMobile'
 import type { CalendarFilterValues, TimingFilter } from '../../components/calendar/CalendarFilters'
 
 const { views } = CALENDAR_CONTENT
@@ -77,6 +79,9 @@ const CalendarPage = () => {
 
   const { items, loading, error } = useSelector((state: RootState) => state.calendarEvents)
   const { items: students } = useSelector((state: RootState) => state.students)
+  // Seven columns cannot work at phone width, so the week falls back to the
+  // stacked list there. The other views are responsive in CSS alone.
+  const isMobile = useIsMobile()
 
   const dateKey = readDateKey(searchParams)
   const rangeKind = readRangeKind(searchParams)
@@ -127,6 +132,9 @@ const CalendarPage = () => {
   }
 
   const openDay = (day: string) => updateParams({ range: 'day', date: day, view: null })
+
+  /** The form reads the same date param the calendar anchors on. */
+  const addEventOn = (day: string) => navigate(`/calendar/new?date=${day}`)
 
   const anchorDate = fromDateKey(dateKey)
   const rangeTitle =
@@ -267,6 +275,7 @@ const CalendarPage = () => {
                   students={students}
                   isToday={cell.key === today}
                   onOpenDay={openDay}
+                  onAddEvent={addEventOn}
                 />
               ))}
             </div>
@@ -275,6 +284,14 @@ const CalendarPage = () => {
               <p className='calendar__status'>{CALENDAR_CONTENT.grid.empty}</p>
             )}
           </>
+        ) : rangeKind === 'week' && !isMobile ? (
+          <WeekColumns
+            dateKeys={listDateKeys}
+            eventsByDay={eventsByDay}
+            students={students}
+            todayKey={today}
+            onAddEvent={addEventOn}
+          />
         ) : (
           <EventList
             dateKeys={listDateKeys}

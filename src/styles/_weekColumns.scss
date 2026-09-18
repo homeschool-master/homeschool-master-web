@@ -1,0 +1,200 @@
+@use 'variables' as *;
+@use 'mixins' as *;
+
+// One panel holding seven day columns, divided by rules rather than seven
+// separate cards. The panel takes the border, radius and surface the settings
+// panels and event form cards use, so it reads as a single object.
+//
+// Columns stretch so the dividers run the full height, but their content sits
+// at the top: a quiet day shows its one event, or "nothing scheduled", against
+// the top rule instead of being stretched or floated to the middle. Only the
+// busiest column decides the panel's height, and it caps and scrolls inside
+// itself so one heavy day cannot run the row off screen.
+.week-columns {
+  @include container;
+  max-width: 100%;
+  margin-bottom: $spacing-xl;
+  display: grid;
+  grid-template-columns: repeat(7, minmax(0, 1fr));
+  align-items: stretch;
+  background-color: $color-surface;
+  border: 1.5px solid $color-gradient-dark;
+  border-radius: 24px;
+  padding: $spacing-sm;
+  overflow: hidden;
+
+  &__day {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    min-width: 0;
+    padding: 0 $spacing-xs;
+  }
+
+  // Dividers between days, not around them.
+  &__day + &__day {
+    border-left: 1px solid $color-gradient-dark;
+  }
+
+  &__day--today {
+    background-color: rgba(254, 240, 202, 0.45);
+    border-radius: 12px;
+  }
+
+  &__header {
+    display: flex;
+    align-items: baseline;
+    gap: $spacing-xs;
+    padding-bottom: $spacing-xs;
+    margin-bottom: $spacing-xs;
+    border-bottom: 1px solid $color-gradient-dark;
+  }
+
+  &__weekday {
+    font-size: 0.8125rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    color: $color-text;
+  }
+
+  &__date {
+    font-size: 1.125rem;
+    font-weight: 700;
+    color: $color-headline;
+  }
+
+  // Says how many are in the column, including any below the scroll.
+  &__count {
+    margin-left: auto;
+    margin-right: $spacing-xs;
+    font-size: 0.75rem;
+    font-weight: 700;
+    color: $color-text;
+    background-color: $color-white;
+    border-radius: 999px;
+    padding: 1px $spacing-xs;
+  }
+
+  // Same treatment as the month grid's: quiet, stronger on hover and focus, and
+  // always legible on touch.
+  &__add {
+    flex-shrink: 0;
+    background: none;
+    border: none;
+    padding: 0 2px;
+    font-family: $font-family-base;
+    font-size: 0.9375rem;
+    line-height: 1;
+    font-weight: 700;
+    color: $color-headline;
+    opacity: 0.3;
+    cursor: pointer;
+    transition: opacity 0.15s;
+
+    &:hover {
+      opacity: 1;
+      color: $color-accent;
+    }
+
+    &:focus-visible {
+      opacity: 1;
+      outline: 2px solid $color-headline;
+      outline-offset: 2px;
+    }
+
+    @include respond-to(mobile) {
+      opacity: 0.75;
+    }
+  }
+
+  &__day:hover &__add,
+  &__day:focus-within &__add {
+    opacity: 1;
+  }
+
+  &__empty {
+    font-size: 0.8125rem;
+    color: $color-text;
+    opacity: 0.6;
+  }
+
+  &__events {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: $spacing-xs;
+    // The cap that keeps a twenty event day from setting the row height. Short
+    // columns never reach it, so they stay their natural size.
+    max-height: 28rem;
+    overflow-y: auto;
+    // Stops the list stretching to fill a column that the panel made tall.
+    flex: 0 1 auto;
+  }
+
+  &__event {
+    min-width: 0;
+  }
+
+  &__link {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    padding: $spacing-xs;
+    border-radius: 10px;
+    background-color: $color-white;
+    border: 1px solid rgba($color-gradient-dark, 0.7);
+    text-decoration: none;
+    color: $color-headline;
+
+    &:hover {
+      background-color: $color-gradient-light;
+    }
+
+    &:focus-visible {
+      outline: 2px solid $color-headline;
+      outline-offset: 1px;
+    }
+  }
+
+  &__time {
+    font-size: 0.6875rem;
+    font-weight: 700;
+    color: $color-text;
+  }
+
+  &__title {
+    font-size: 0.8125rem;
+    font-weight: 600;
+    // One line per event keeps the column scannable: the detail page has the
+    // rest.
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  &__dots {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 3px;
+    margin-top: 2px;
+    min-height: 8px;
+  }
+
+  &__dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    flex-shrink: 0;
+    // A ring so a pale colour still reads against the white card.
+    box-shadow: 0 0 0 1px rgba($color-headline, 0.25);
+  }
+
+  // A student who was removed: neutral fill, dashed ring.
+  &__dot--former {
+    box-shadow: 0 0 0 1px $color-headline;
+    opacity: 0.75;
+  }
+}
