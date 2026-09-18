@@ -59,6 +59,31 @@ Session persistence across reloads is handled on app start. Redux state is lost 
 
 Route protection is driven by whether a user is present in state. Dashboard routes sit behind a protected-route guard, and the login, register, and password reset pages redirect to the dashboard when a user is already signed in.
 
+## API conventions
+
+**Client code is camelCase everywhere, including request bodies.** Never write a
+snake_case key in a type, a payload or a query param: `startTime`, not
+`start_time`.
+
+Keys are converted at the boundary, in both directions:
+
+- **Responses** come back camelCase because the shared axios instance in
+  `src/services/api.ts` sends `X-Key-Inflection: camel`. The API's
+  `Api::V1::BaseController` camelizes its response keys when it sees that
+  header.
+- **Requests** are converted the other way by the API itself:
+  `ApplicationController` runs `deep_transform_keys!(&:underscore)` on every
+  incoming request, so `startTime` arrives as `start_time`. That one is
+  unconditional and does not depend on the header.
+
+So the wire format is unchanged by writing camelCase: Rails still receives the
+column names it expects, and the client never has to think in two cases.
+
+snake_case does appear in comments that describe what Rails receives, in
+`services/calendarEvents.ts` and `services/apiError.ts`. That is deliberate:
+those comments document the server side of the boundary, and they are not an
+exception to the rule for code.
+
 ## Deployment
 
 The Rails API is deployed to Heroku with PostgreSQL via the Heroku Postgres add-on. The React web app is deployed to Vercel.

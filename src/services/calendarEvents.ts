@@ -25,9 +25,9 @@ export const fetchCalendarEventsRequest = async (
 ): Promise<CalendarEvent[]> => {
   const response = await api.get<CalendarEventsResponse>('/api/v1/calendar_events', {
     params: {
-      start_date: range.startDate,
-      end_date: range.endDate,
-      ...(studentId ? { student_id: studentId } : {}),
+      startDate: range.startDate,
+      endDate: range.endDate,
+      ...(studentId ? { studentId } : {}),
     },
   })
   return response.data.data

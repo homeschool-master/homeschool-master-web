@@ -40,9 +40,10 @@ export interface CalendarEvent {
 }
 
 /**
- * Request bodies are snake_case. Timestamps are UTC ISO strings: the server
- * stores them as sent and never converts, so build them from local input with
- * toISOString.
+ * Request bodies are camelCase, like the rest of the client: the API converts
+ * every incoming key to snake_case at the boundary, so Rails still receives the
+ * names it expects. Timestamps are UTC ISO strings: the server stores them as
+ * sent and never converts, so build them from local input with toISOString.
  */
 /** The fields the students endpoint accepts from web: no photo upload yet. */
 export interface StudentInput {
@@ -57,15 +58,15 @@ export interface CalendarEventInput {
   title: string
   notes: string | null
   location: string | null
-  start_time: string
-  end_time: string
-  all_day: boolean
-  student_ids: string[]
-  created_time_zone: string
+  startTime: string
+  endTime: string
+  allDay: boolean
+  studentIds: string[]
+  createdTimeZone: string
 }
 
-/** Update takes the same fields minus created_time_zone, which is create only. */
-export type CalendarEventUpdateInput = Omit<CalendarEventInput, 'created_time_zone'>
+/** Update takes the same fields minus createdTimeZone, which is create only. */
+export type CalendarEventUpdateInput = Omit<CalendarEventInput, 'createdTimeZone'>
 
 export interface CalendarEventRange {
   startDate: string

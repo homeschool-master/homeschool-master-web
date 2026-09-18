@@ -171,21 +171,21 @@ const EventFormPage = () => {
       title: title.trim(),
       notes: notes.trim() || null,
       location: location.trim() || null,
-      start_time: allDay ? localDayStartIso(date) : localToUtcIso(date, startTime),
-      end_time: allDay ? localDayEndIso(date) : localToUtcIso(date, endTime),
-      all_day: allDay,
-      student_ids: attendeeIds,
+      startTime: allDay ? localDayStartIso(date) : localToUtcIso(date, startTime),
+      endTime: allDay ? localDayEndIso(date) : localToUtcIso(date, endTime),
+      allDay,
+      studentIds: attendeeIds,
     }
 
     if (isEditing && id) {
-      // created_time_zone is create only and is deliberately absent here.
+      // createdTimeZone is create only and is deliberately absent here.
       const result = await dispatch(updateCalendarEvent({ id, input: fields }))
       if (updateCalendarEvent.fulfilled.match(result)) navigate(`/calendar/${id}`)
       return
     }
 
     const result = await dispatch(
-      createCalendarEvent({ ...fields, created_time_zone: browserTimeZone() })
+      createCalendarEvent({ ...fields, createdTimeZone: browserTimeZone() })
     )
 
     if (createCalendarEvent.fulfilled.match(result)) {
