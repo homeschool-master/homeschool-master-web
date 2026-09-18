@@ -3,7 +3,7 @@ import { useLocation } from 'react-router-dom'
 
 // Resets scroll to top on route change so navigating from the bottom of one
 // page doesn't land you at the bottom of the next. Exception: navigating
-// between sections inside /dashboard preserves scroll so option clicks feel
+// between sections inside /settings preserves scroll so option clicks feel
 // like tabs, keeping the user's viewport anchored where they were.
 const ScrollToTop = () => {
   const { pathname } = useLocation()
@@ -13,10 +13,10 @@ const ScrollToTop = () => {
     const prev = prevPathnameRef.current
     prevPathnameRef.current = pathname
 
-    const stayingInDashboard =
-      prev.startsWith('/dashboard') && pathname.startsWith('/dashboard')
+    const stayingInSettings =
+      prev.startsWith('/settings') && pathname.startsWith('/settings')
 
-    if (!stayingInDashboard) {
+    if (!stayingInSettings) {
       window.scrollTo(0, 0)
     }
   }, [pathname])

@@ -349,7 +349,7 @@ export const DOWNLOAD_CONTENT = {
   account: {
     text: 'Manage your account and subscription in the meantime.',
     linkText: 'Go to Account Settings',
-    path: '/dashboard',
+    path: '/settings',
   },
   help: {
     text: 'Need help getting set up?',

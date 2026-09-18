@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { Link, useNavigate, useParams } from 'react-router-dom'
+import { Link, useNavigate, useParams, useSearchParams } from 'react-router-dom'
 import type { AppDispatch, RootState } from '../../store'
 import {
   clearCurrentEvent,
@@ -17,6 +17,7 @@ import {
 } from '../../utils/calendarDates'
 import { readableTextColor } from '../../utils/studentColor'
 import { resolveAttendees } from '../../utils/attendees'
+import { profileSearch, readProfile } from '../../utils/profile'
 import EventDeleteConfirm from '../../components/calendar/EventDeleteConfirm'
 
 const { detail } = CALENDAR_CONTENT
@@ -25,6 +26,7 @@ const EventDetailPage = () => {
   const { id } = useParams()
   const dispatch = useDispatch<AppDispatch>()
   const navigate = useNavigate()
+  const [searchParams] = useSearchParams()
 
   const { current, currentLoading, currentError, currentNotFound, deletingId, deleteError } =
     useSelector((state: RootState) => state.calendarEvents)
@@ -48,16 +50,31 @@ const EventDetailPage = () => {
     }
   }, [dispatch, id])
 
+  /**
+   * The profile rides in on the link that opened this page, so going back to
+   * the calendar has to hand it over again: a bare /calendar would drop it and
+   * silently reset the teacher to the default profile.
+   */
+  const profile = readProfile(searchParams)
+
+  const backToCalendar = (dateKey?: string): string => {
+    const params = new URLSearchParams(profileSearch(profile))
+    if (dateKey) params.set('date', dateKey)
+
+    const query = params.toString()
+    return query ? `/calendar?${query}` : '/calendar'
+  }
+
   const calendarHref = current
-    ? `/calendar?date=${isoToDateKey(current.startTime)}`
-    : '/calendar'
+    ? backToCalendar(isoToDateKey(current.startTime))
+    : backToCalendar()
 
   const handleDelete = async () => {
     if (!current) return
     const eventDate = isoToDateKey(current.startTime)
     const result = await dispatch(deleteCalendarEvent(current.id))
     if (deleteCalendarEvent.fulfilled.match(result)) {
-      navigate(`/calendar?date=${eventDate}`)
+      navigate(backToCalendar(eventDate))
     }
   }
 
@@ -185,7 +202,10 @@ const EventDetailPage = () => {
         </Link>
         <h1 className='event-detail__heading'>{detail.heading}</h1>
         {current ? (
-          <Link to={`/calendar/${current.id}/edit`} className='event-detail__edit'>
+          <Link
+            to={`/calendar/${current.id}/edit${profileSearch(profile)}`}
+            className='event-detail__edit'
+          >
             {detail.edit}
           </Link>
         ) : (

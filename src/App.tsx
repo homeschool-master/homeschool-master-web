@@ -3,6 +3,7 @@ import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-d
 import ProtectedRoutes from './components/app/ProtectedRoute'
 import AppLayout from './components/app/AppLayout'
 import DashboardPage from './pages/app/DashboardPage'
+import SettingsPage from './pages/app/SettingsPage'
 import LoginPage from './pages/app/LoginPage'
 import RegisterPage from './pages/app/RegisterPage'
 import DownloadPage from './pages/marketing/DownloadPage'
@@ -76,7 +77,14 @@ const App = () => {
                   <Route path='/calendar/new' element={<EventFormPage />} />
                   <Route path='/calendar/:id' element={<EventDetailPage />} />
                   <Route path='/calendar/:id/edit' element={<EventFormPage />} />
-                  <Route path='/dashboard' element={<DashboardPage />}>
+                  <Route path='/dashboard' element={<DashboardPage />} />
+
+                  {/* Account settings, moved off /dashboard so that path could
+                      become the dashboard the mockup describes. The nested nav
+                      and its five sections are unchanged: only the parent path
+                      moved, and the rows are relative links, so they followed
+                      it without edits. */}
+                  <Route path='/settings' element={<SettingsPage />}>
                     <Route index element={<Navigate to='profile' replace />} />
                     <Route path='profile' element={<ProfileSection />} />
                     <Route path='students' element={<StudentsSection />} />

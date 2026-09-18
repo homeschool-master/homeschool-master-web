@@ -57,10 +57,11 @@
 
   @include respond-to(mobile) {
     // Mobile lays the sections out as a strip above the content, the same move
-    // the settings nav makes at this breakpoint.
+    // the settings nav makes at this breakpoint. Five sections leave about 63px
+    // each at 375px, so the strip is tighter than it was at four.
     flex-direction: row;
-    gap: $spacing-xs;
-    padding: $spacing-xs;
+    gap: 2px;
+    padding: 2px;
   }
 }
 
@@ -84,11 +85,23 @@
 
   @include respond-to(mobile) {
     flex: 1;
+    // Five sections rather than four: without a zero minimum each row is
+    // floored at its own label width and the strip runs past the panel.
+    min-width: 0;
     flex-direction: column;
     gap: 2px;
-    padding: $spacing-xs;
-    font-size: 0.8125rem;
+    padding: $spacing-xs 0;
+    font-size: 0.6875rem;
     text-align: center;
+  }
+}
+
+.app-nav__label {
+  @include respond-to(mobile) {
+    max-width: 100%;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
   }
 }
 

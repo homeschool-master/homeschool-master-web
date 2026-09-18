@@ -4,6 +4,7 @@ import { useDispatch, useSelector } from 'react-redux'
 import { useNavigate, useSearchParams } from 'react-router-dom'
 import type { AppDispatch, RootState } from '../../store'
 import type { CalendarEvent } from '../../types'
+import type { Profile } from '../../utils/profile'
 import { fetchCalendarEvents } from '../../store/calendarEventsSlice'
 import { fetchStudents } from '../../store/studentsSlice'
 import { CALENDAR_CONTENT, MONTH_NAMES } from '../../constants/calendar'
@@ -26,6 +27,17 @@ import WeekColumns from '../../components/calendar/WeekColumns'
 import CalendarFilters from '../../components/calendar/CalendarFilters'
 import { SidebarSlotContext } from '../../components/app/sidebarSlot'
 import { useIsMobile } from '../../hooks/useIsMobile'
+import {
+  OVERRIDE_ALL,
+  OVERRIDE_PARAM,
+  hasOverride,
+  matchesProfile,
+  profileLabel,
+  profileSearch,
+  readCalendarScope,
+  readProfile,
+  serverStudentId,
+} from '../../utils/profile'
 import type { CalendarFilterValues, TimingFilter } from '../../components/calendar/CalendarFilters'
 
 const { views } = CALENDAR_CONTENT
@@ -54,15 +66,22 @@ const readTiming = (params: URLSearchParams): TimingFilter => {
   return TIMING_VALUES.find((timing) => timing === value) ?? 'all'
 }
 
-/** Timing and search narrow what the server already scoped to the range. */
+/**
+ * Timing, search and the profile narrow what the server already scoped to the
+ * range. A named student is the one filter the endpoint understands, so it is
+ * already applied when it gets here: the other profiles are attendee counts,
+ * which have no server counterpart.
+ */
 const applyClientFilters = (
   events: CalendarEvent[],
   timing: TimingFilter,
-  search: string
+  search: string,
+  scope: Profile
 ): CalendarEvent[] => {
   const needle = search.trim().toLowerCase()
 
   return events.filter((event) => {
+    if (!matchesProfile(event, scope)) return false
     if (timing === 'allDay' && !event.allDay) return false
     if (timing === 'timed' && event.allDay) return false
     if (!needle) return true
@@ -88,12 +107,23 @@ const CalendarPage = () => {
   const rangeKind = readRangeKind(searchParams)
   const isGrid = rangeKind === 'month' && searchParams.get('view') !== 'list'
 
+  // The profile the app is navigating with, and what this visit is actually
+  // showing: the same thing unless the student dropdown has overridden it.
+  const profile = readProfile(searchParams)
+  const scope = readCalendarScope(searchParams)
+  const overridden = hasOverride(searchParams)
+  // Event links carry the profile, never the override, so a detour through an
+  // event and back is the same journey as any other: the profile survives it,
+  // the override does not.
+  const eventLinkSearch = profileSearch(profile)
+
   const filterValues: CalendarFilterValues = {
-    studentId: searchParams.get('studentId') ?? '',
+    studentId: scope.kind === 'student' ? scope.studentId ?? '' : '',
     timing: readTiming(searchParams),
     search: searchParams.get('q') ?? '',
   }
-  const { studentId, timing, search } = filterValues
+  const { timing, search } = filterValues
+  const studentId = serverStudentId(scope)
 
   const range = useMemo(() => rangeFor(rangeKind, dateKey), [rangeKind, dateKey])
 
@@ -104,12 +134,14 @@ const CalendarPage = () => {
   }, [dispatch])
 
   useEffect(() => {
-    dispatch(fetchCalendarEvents({ range, studentId: studentId || undefined }))
+    dispatch(fetchCalendarEvents({ range, studentId }))
   }, [dispatch, range, studentId])
 
   const visibleEvents = useMemo(
-    () => applyClientFilters(items, timing, search),
-    [items, timing, search]
+    () => applyClientFilters(items, timing, search, scope),
+    // Spread rather than the object, which is rebuilt from the URL each render.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [items, timing, search, scope.kind, scope.studentId]
   )
   const eventsByDay = useMemo(() => groupEventsByDay(visibleEvents), [visibleEvents])
   const today = todayKey()
@@ -160,20 +192,45 @@ const CalendarPage = () => {
   // inline with the calendar's own controls instead, collapsed behind a toggle.
   const filterSlot = useContext(SidebarSlotContext)
 
+  /**
+   * The dropdown writes to the override param, never to the profile's own
+   * studentId. That is the whole of how the two stay out of each other's way:
+   * the profile is only ever written by the dashboard switcher, the override is
+   * only ever written here, and nothing carries the override onward, so leaving
+   * the calendar and coming back lands on the profile again.
+   */
+  const setStudentOverride = (value: string): string | null => {
+    // Back to exactly what the profile already says: drop the override rather
+    // than pinning the same answer twice.
+    if (value === '' && profile.kind === 'everyone') return null
+    if (value !== '' && profile.kind === 'student' && profile.studentId === value) return null
+
+    return value === '' ? OVERRIDE_ALL : value
+  }
+
   const filterPanel = (
     <CalendarFilters
       values={filterValues}
       students={students}
       collapsible={isMobile}
+      scopeLabel={profileLabel(scope, students)}
+      profileLabel={overridden ? profileLabel(profile, students) : null}
+      onResetToProfile={() => updateParams({ [OVERRIDE_PARAM]: null })}
       onChange={(changes) => {
         const next = { ...filterValues, ...changes }
         updateParams({
-          studentId: next.studentId || null,
+          // Left out entirely unless the dropdown itself moved, so changing the
+          // timing or the search never disturbs the override either way.
+          ...(changes.studentId === undefined
+            ? {}
+            : { [OVERRIDE_PARAM]: setStudentOverride(next.studentId) }),
           timing: next.timing === 'all' ? null : next.timing,
           q: next.search || null,
         })
       }}
-      onClear={() => updateParams({ studentId: null, timing: null, q: null })}
+      onClear={() =>
+        updateParams({ [OVERRIDE_PARAM]: null, timing: null, q: null })
+      }
     />
   )
 
@@ -290,6 +347,7 @@ const CalendarPage = () => {
                   isToday={cell.key === today}
                   onOpenDay={openDay}
                   onAddEvent={addEventOn}
+                  linkSearch={eventLinkSearch}
                 />
               ))}
             </div>
@@ -304,6 +362,7 @@ const CalendarPage = () => {
             eventsByDay={eventsByDay}
             students={students}
             todayKey={today}
+            linkSearch={eventLinkSearch}
             onAddEvent={addEventOn}
           />
         ) : (
@@ -312,6 +371,7 @@ const CalendarPage = () => {
             eventsByDay={eventsByDay}
             students={students}
             todayKey={today}
+            linkSearch={eventLinkSearch}
           />
         )}
       </div>

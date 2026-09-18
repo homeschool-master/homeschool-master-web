@@ -11,6 +11,8 @@ interface EventListProps {
   eventsByDay: Record<string, CalendarEvent[]>
   students: Student[]
   todayKey: string
+  /** The profile, so coming back from the detail page lands on it again. */
+  linkSearch: string
 }
 
 const { list } = CALENDAR_CONTENT
@@ -20,7 +22,7 @@ const { list } = CALENDAR_CONTENT
  * time order. Deliberately not a time axis grid, which reads badly once a day
  * carries a dozen blocked subjects.
  */
-const EventList = ({ dateKeys, eventsByDay, students, todayKey }: EventListProps) => {
+const EventList = ({ dateKeys, eventsByDay, students, todayKey, linkSearch }: EventListProps) => {
   const total = dateKeys.reduce((count, key) => count + (eventsByDay[key]?.length ?? 0), 0)
 
   if (total === 0) return <p className='calendar__status'>{list.empty}</p>
@@ -46,7 +48,7 @@ const EventList = ({ dateKeys, eventsByDay, students, todayKey }: EventListProps
 
                   return (
                     <li key={event.id} className='event-list__event'>
-                      <Link to={`/calendar/${event.id}`} className='event-list__link'>
+                      <Link to={`/calendar/${event.id}${linkSearch}`} className='event-list__link'>
                         <span className='event-list__time'>
                           {event.allDay
                             ? list.allDay

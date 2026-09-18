@@ -15,6 +15,8 @@ interface DayCellProps {
   isToday: boolean
   onOpenDay: (dateKey: string) => void
   onAddEvent: (dateKey: string) => void
+  /** The profile, so coming back from the detail page lands on it again. */
+  linkSearch: string
 }
 
 /**
@@ -31,6 +33,7 @@ const DayCell = ({
   isToday,
   onOpenDay,
   onAddEvent,
+  linkSearch,
 }: DayCellProps) => {
   if (dayNumber === null || dateKey === null) {
     return <div className='calendar__cell calendar__cell--blank' aria-hidden='true' />
@@ -94,7 +97,12 @@ const DayCell = ({
 
       <div className='calendar__events'>
         {events.map((event) => (
-          <EventPill key={`${event.id}-${dayNumber}`} event={event} students={students} />
+          <EventPill
+            key={`${event.id}-${dayNumber}`}
+            event={event}
+            students={students}
+            linkSearch={linkSearch}
+          />
         ))}
 
         {desktopOverflow > 0 && (

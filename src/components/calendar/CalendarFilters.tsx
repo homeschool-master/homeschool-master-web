@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import type { Student } from '../../types'
 import { CALENDAR_CONTENT } from '../../constants/calendar'
+import { PROFILE_CONTENT } from '../../constants/profile'
 import FormField, { FormInput, FormSelect } from '../shared/FormField'
 
 export type TimingFilter = 'all' | 'allDay' | 'timed'
@@ -21,6 +22,11 @@ interface CalendarFiltersProps {
    * Desktop leaves the panel open under the section nav, as it always was.
    */
   collapsible?: boolean
+  /** Whose events the calendar is showing right now. */
+  scopeLabel: string
+  /** The profile being overridden, and null while the two agree. */
+  profileLabel: string | null
+  onResetToProfile: () => void
 }
 
 const { filters } = CALENDAR_CONTENT
@@ -45,6 +51,9 @@ const CalendarFilters = ({
   onChange,
   onClear,
   collapsible = false,
+  scopeLabel,
+  profileLabel,
+  onResetToProfile,
 }: CalendarFiltersProps) => {
   const [open, setOpen] = useState(false)
 
@@ -91,6 +100,30 @@ const CalendarFilters = ({
       {/* hidden rather than unmounted, so aria-controls always points at a real
           element: the attribute also takes the fields out of the tab order. */}
       <div className='calendar-filters__fields' id={FIELDS_ID} hidden={!expanded}>
+        {/* Says what the dropdown alone cannot: the profile can narrow the
+            calendar to the teacher's own items or to anything with a student on
+            it, neither of which is a value this select can hold. */}
+        <p className='calendar-filters__scope'>
+          <span className='calendar-filters__scope-label'>{PROFILE_CONTENT.viewing}:</span>{' '}
+          <strong className='calendar-filters__scope-value'>{scopeLabel}</strong>
+          {profileLabel !== null && (
+            <>
+              {' '}
+              <span className='calendar-filters__scope-note'>
+                {PROFILE_CONTENT.overrideSuffix}. {PROFILE_CONTENT.profile}: {profileLabel}.
+              </span>{' '}
+              <button
+                type='button'
+                className='calendar-filters__reset'
+                onClick={onResetToProfile}
+                aria-label={PROFILE_CONTENT.resetLabel}
+              >
+                {PROFILE_CONTENT.reset}
+              </button>
+            </>
+          )}
+        </p>
+
         <FormField label={filters.student} htmlFor='filter-student'>
           <FormSelect
             id='filter-student'

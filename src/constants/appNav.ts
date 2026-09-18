@@ -1,10 +1,16 @@
-export type AppNavKey = 'dashboard' | 'calendar' | 'tasks' | 'grades'
+export type AppNavKey = 'dashboard' | 'settings' | 'calendar' | 'tasks' | 'grades'
 
 export interface AppNavItem {
   key: AppNavKey
   label: string
   /** Null marks a section that has no page yet: it renders, but is not a link. */
   to: string | null
+  /**
+   * Whether the row carries the current profile onward. The calendar and the
+   * dashboard read the same profile, so moving between them keeps it: settings
+   * has nothing to do with it and stays a plain link.
+   */
+  carriesProfile?: boolean
 }
 
 export const APP_NAV_CONTENT = {
@@ -13,8 +19,9 @@ export const APP_NAV_CONTENT = {
   comingSoonBadge: 'Soon',
   comingSoonHint: 'Coming soon',
   items: [
-    { key: 'dashboard', label: 'Dashboard', to: '/dashboard' },
-    { key: 'calendar', label: 'Calendar', to: '/calendar' },
+    { key: 'dashboard', label: 'Dashboard', to: '/dashboard', carriesProfile: true },
+    { key: 'settings', label: 'Settings', to: '/settings' },
+    { key: 'calendar', label: 'Calendar', to: '/calendar', carriesProfile: true },
     { key: 'tasks', label: 'Tasks', to: null },
     { key: 'grades', label: 'Grades', to: null },
   ] as AppNavItem[],

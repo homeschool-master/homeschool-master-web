@@ -1,0 +1,553 @@
+@use 'variables' as *;
+@use 'mixins' as *;
+
+// Announced but not drawn. The calendar has its own copy of this scoped to that
+// block: this one is unscoped, so the dashboard and anything after it can use
+// it without borrowing the calendar's namespace.
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+.dashboard-home {
+  font-family: $font-family-base;
+  color: $color-text;
+  background-color: $color-white;
+}
+
+// Band one: whose calendar this is. Full bleed the same way the settings hero
+// is, with a pseudo element reaching back under the app sidebar so the colour
+// meets the viewport edge while the chips stay in the content column.
+.profile-switcher {
+  position: relative;
+  padding: 0 5px;
+
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: calc(-1 * (100vw - 100%));
+    background-color: $color-master;
+  }
+
+  &__inner {
+    @include container;
+    position: relative;
+    padding-top: $spacing-lg;
+    padding-bottom: $spacing-lg;
+  }
+
+  // A fieldset so the chips are one named group with one tab stop, without
+  // reimplementing radio behaviour. The browser default chrome is reset away.
+  &__group {
+    margin: 0;
+    padding: 0;
+    border: 0;
+  }
+
+  &__heading {
+    padding: 0;
+    margin-bottom: $spacing-md;
+    font-size: 1.35rem;
+    font-weight: 600;
+    color: $color-white;
+
+    @include respond-to(mobile) {
+      font-size: 1.1rem;
+    }
+  }
+
+  &__grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: $spacing-sm $spacing-md;
+
+    @include respond-to(mobile) {
+      // Three across leaves about 65px for the label at phone width, which is
+      // not enough for "Teacher & Students": two keeps the same reading order.
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: $spacing-sm;
+    }
+  }
+
+  &__chip {
+    // The hidden radio is absolutely positioned: this keeps it inside its own
+    // chip rather than stacking all thirteen at the top of the band, so
+    // scrolling focus into view lands on the chip a keyboard user is on.
+    position: relative;
+    display: flex;
+    align-items: center;
+    gap: $spacing-sm;
+    min-width: 0;
+    padding: 4px $spacing-md 4px 4px;
+    border: 2px solid transparent;
+    border-radius: 999px;
+    background-color: $color-white;
+    color: $color-headline;
+    cursor: pointer;
+
+    &:hover {
+      border-color: $color-accent;
+    }
+
+    // The radio itself is hidden, so the ring has to come from the label.
+    &:focus-within {
+      outline: 2px solid $color-white;
+      outline-offset: 2px;
+    }
+  }
+
+  &__chip--active {
+    background-color: $color-gradient-light;
+    border-color: $color-accent;
+    font-weight: 700;
+  }
+
+  &__input {
+    position: absolute;
+    opacity: 0;
+    width: 1px;
+    height: 1px;
+    margin: 0;
+    pointer-events: none;
+  }
+
+  &__avatar {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    background-color: $color-gradient-light;
+    color: $color-headline;
+    font-size: 1rem;
+    font-weight: 700;
+
+    svg {
+      width: 24px;
+      height: 24px;
+    }
+
+    @include respond-to(mobile) {
+      width: 36px;
+      height: 36px;
+      font-size: 0.85rem;
+
+      svg {
+        width: 20px;
+        height: 20px;
+      }
+    }
+  }
+
+  // The three fixed profiles are categories rather than people: a line glyph on
+  // the cream circle, not initials on a colour a student picked.
+  &__avatar--glyph {
+    background-color: $color-surface;
+    color: $color-accent;
+    border: 1.5px solid $color-gradient-dark;
+  }
+
+  &__name {
+    min-width: 0;
+    font-size: 1rem;
+    line-height: 1.25;
+
+    @include respond-to(mobile) {
+      font-size: 0.875rem;
+    }
+  }
+
+  &__note {
+    margin-top: $spacing-md;
+    font-size: 0.9rem;
+    color: $color-white;
+  }
+
+  &__note-link {
+    color: $color-white;
+    font-weight: 700;
+    text-decoration: underline;
+
+    &:hover {
+      color: $color-headline;
+    }
+  }
+}
+
+// Band two: the three count cards.
+.todays-items {
+  padding: 0 5px;
+  background-color: $color-white;
+
+  &__inner {
+    @include container;
+    padding-top: $spacing-lg;
+    padding-bottom: $spacing-lg;
+  }
+
+  &__heading {
+    margin-bottom: $spacing-md;
+    font-size: 1.5rem;
+    font-weight: 800;
+    color: $color-headline;
+    text-align: center;
+
+    @include respond-to(mobile) {
+      font-size: 1.25rem;
+    }
+  }
+
+  &__cards {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: $spacing-md;
+
+    @include respond-to(mobile) {
+      gap: $spacing-sm;
+    }
+  }
+
+  &__card {
+    display: flex;
+    align-items: center;
+    gap: $spacing-sm;
+    min-width: 0;
+    padding: $spacing-md;
+    border: 1.5px solid $color-gradient-dark;
+    border-radius: 20px;
+    background-color: $color-white;
+
+    // Three cards across a phone leave about 100px each. The count and the
+    // label cannot sit side by side in that, least of all when the count is a
+    // "Soon" pill rather than a digit, so they stack.
+    @include respond-to(mobile) {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 2px;
+      padding: $spacing-sm;
+      border-radius: 16px;
+    }
+  }
+
+  // Same language as the disabled app nav rows: muted ink, a badge instead of a
+  // number, and a cursor that refuses. Nothing here invents a count.
+  &__card--disabled {
+    border-style: dashed;
+    border-color: rgba($color-gradient-dark, 0.7);
+    background-color: $color-surface;
+    color: rgba($color-headline, 0.45);
+    cursor: not-allowed;
+  }
+
+  &__link {
+    display: flex;
+    align-items: center;
+    gap: $spacing-sm;
+    min-width: 0;
+    width: 100%;
+
+    @include respond-to(mobile) {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 2px;
+    }
+
+    color: inherit;
+    text-decoration: none;
+
+    &:focus-visible {
+      outline: 2px solid $color-headline;
+      outline-offset: 4px;
+      border-radius: 12px;
+    }
+  }
+
+  &__count {
+    flex-shrink: 0;
+    font-size: 2.5rem;
+    font-weight: 800;
+    line-height: 1;
+    color: $color-headline;
+
+    @include respond-to(mobile) {
+      font-size: 2rem;
+    }
+  }
+
+  &__count--soon {
+    padding: 4px $spacing-sm;
+    border-radius: 999px;
+    background-color: $color-gradient-light;
+    color: rgba($color-headline, 0.6);
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+  }
+
+  &__label {
+    min-width: 0;
+    font-size: 1rem;
+    font-weight: 700;
+    line-height: 1.2;
+    // "Assignments" on its own is wider than a third of a phone at the desktop
+    // size, so the label has to be allowed to break inside a word.
+    overflow-wrap: break-word;
+
+    @include respond-to(mobile) {
+      font-size: 0.75rem;
+    }
+  }
+}
+
+// Band three: the two panels, on the pale ground the mockup puts them on.
+.dashboard-home__panels {
+  padding: 0 5px;
+  position: relative;
+
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: calc(-1 * (100vw - 100%));
+    background-color: $color-gradient-light;
+  }
+}
+
+.dashboard-home__panels-inner {
+  @include container;
+  position: relative;
+  padding-top: $spacing-lg;
+  padding-bottom: $spacing-lg;
+  display: grid;
+  // The mockup stacks them because it is a phone. Side by side on a wide screen
+  // keeps both above the fold without changing either panel.
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  align-items: start;
+  gap: $spacing-lg;
+
+  @include respond-to(mobile) {
+    grid-template-columns: minmax(0, 1fr);
+    gap: $spacing-md;
+  }
+}
+
+.panel-card {
+  min-width: 0;
+
+  &__header {
+    display: flex;
+    align-items: center;
+    gap: $spacing-sm;
+    padding: $spacing-sm $spacing-sm $spacing-sm $spacing-md;
+    border: 1.5px solid $color-gradient-dark;
+    border-radius: 999px;
+    background-color: $color-white;
+  }
+
+  &__icon {
+    display: flex;
+    flex-shrink: 0;
+    color: $color-accent;
+
+    svg {
+      width: 24px;
+      height: 24px;
+    }
+  }
+
+  &__title {
+    flex: 1;
+    min-width: 0;
+    font-size: 1.15rem;
+    font-weight: 800;
+    color: $color-headline;
+
+    @include respond-to(mobile) {
+      font-size: 1rem;
+    }
+  }
+
+  &__add {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background-color: $color-master;
+    color: $color-white;
+    font-size: 1.35rem;
+    font-weight: 700;
+    line-height: 1;
+    text-decoration: none;
+
+    &:hover {
+      background-color: $color-accent;
+    }
+
+    &:focus-visible {
+      outline: 2px solid $color-headline;
+      outline-offset: 2px;
+    }
+  }
+
+  &__badge {
+    flex-shrink: 0;
+    padding: 2px $spacing-sm;
+    border-radius: 999px;
+    background-color: $color-gradient-light;
+    color: rgba($color-headline, 0.6);
+    font-size: 0.7rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+  }
+
+  &__body {
+    padding: $spacing-md $spacing-sm 0;
+  }
+
+  &__status {
+    font-size: 0.9375rem;
+    color: $color-text;
+    opacity: 0.8;
+  }
+
+  &__error {
+    font-size: 0.9375rem;
+    font-weight: 600;
+    color: #b42318;
+  }
+
+  &__footer {
+    display: flex;
+    justify-content: flex-end;
+    margin-top: $spacing-md;
+  }
+
+  &__more {
+    padding: $spacing-xs $spacing-md;
+    border: 1.5px solid $color-gradient-dark;
+    border-radius: 999px;
+    background-color: $color-white;
+    color: $color-headline;
+    font-size: 0.9375rem;
+    font-weight: 600;
+    text-decoration: none;
+
+    &:hover {
+      background-color: $color-gradient-light;
+      border-color: $color-accent;
+    }
+
+    &:focus-visible {
+      outline: 2px solid $color-headline;
+      outline-offset: 2px;
+    }
+  }
+}
+
+// Nothing behind it yet. Muted throughout and carrying a badge, so it reads the
+// way the Tasks and Grades rows in the app nav do.
+.panel-card--disabled {
+  .panel-card__header {
+    border-style: dashed;
+    border-color: rgba($color-gradient-dark, 0.7);
+    background-color: rgba($color-white, 0.6);
+  }
+
+  .panel-card__icon,
+  .panel-card__title {
+    color: rgba($color-headline, 0.45);
+  }
+}
+
+.upcoming-day {
+  & + & {
+    margin-top: $spacing-md;
+  }
+
+  &__label {
+    margin-bottom: $spacing-xs;
+    font-size: 0.8125rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    color: $color-accent;
+  }
+
+  &__list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+
+  &__link {
+    display: grid;
+    // A fixed time column, then the rule the mockup draws between the two.
+    grid-template-columns: 5.5rem minmax(0, 1fr);
+    align-items: baseline;
+    gap: $spacing-sm;
+    padding: $spacing-xs $spacing-sm;
+    border-radius: 10px;
+    color: $color-headline;
+    text-decoration: none;
+
+    &:hover {
+      background-color: $color-white;
+    }
+
+    &:focus-visible {
+      outline: 2px solid $color-headline;
+      outline-offset: 1px;
+    }
+
+    @include respond-to(mobile) {
+      grid-template-columns: 4.75rem minmax(0, 1fr);
+    }
+  }
+
+  &__time {
+    text-align: right;
+    font-size: 0.9375rem;
+    font-weight: 600;
+    color: $color-text;
+
+    @include respond-to(mobile) {
+      font-size: 0.875rem;
+    }
+  }
+
+  &__title {
+    min-width: 0;
+    padding-left: $spacing-sm;
+    border-left: 2px solid $color-gradient-dark;
+    font-size: 1rem;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+
+    @include respond-to(mobile) {
+      font-size: 0.9375rem;
+    }
+  }
+}

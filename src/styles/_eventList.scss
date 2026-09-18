@@ -158,6 +158,46 @@
     opacity: 0.75;
   }
 
+  // Which profile the calendar is honouring. The student dropdown cannot hold
+  // "the teacher's own items" or "anything with a student on it", so without
+  // this line those two profiles would look like no filter at all.
+  &__scope {
+    font-size: 0.8125rem;
+    line-height: 1.5;
+    color: $color-text;
+  }
+
+  &__scope-label {
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    font-weight: 700;
+    opacity: 0.7;
+  }
+
+  &__scope-value {
+    color: $color-headline;
+  }
+
+  &__scope-note {
+    opacity: 0.75;
+  }
+
+  &__reset {
+    background: none;
+    border: none;
+    padding: 0;
+    font-family: $font-family-base;
+    font-size: 0.8125rem;
+    font-weight: 600;
+    color: $color-headline;
+    text-decoration: underline;
+    cursor: pointer;
+
+    &:hover {
+      color: $color-accent;
+    }
+  }
+
   &__clear {
     align-self: flex-start;
     background: none;

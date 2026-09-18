@@ -11,6 +11,8 @@ interface WeekColumnsProps {
   students: Student[]
   todayKey: string
   onAddEvent: (dateKey: string) => void
+  /** The profile, so coming back from the detail page lands on it again. */
+  linkSearch: string
 }
 
 const { list, week } = CALENDAR_CONTENT
@@ -36,6 +38,7 @@ const WeekColumns = ({
   students,
   todayKey,
   onAddEvent,
+  linkSearch,
 }: WeekColumnsProps) => (
   <div className='week-columns'>
     {dateKeys.map((dateKey, index) => {
@@ -92,7 +95,7 @@ const WeekColumns = ({
 
                 return (
                   <li key={event.id} className='week-columns__event'>
-                    <Link to={`/calendar/${event.id}`} className='week-columns__link'>
+                    <Link to={`/calendar/${event.id}${linkSearch}`} className='week-columns__link'>
                       <span className='week-columns__time'>
                         {event.allDay ? list.allDay : formatTime(event.startTime)}
                       </span>

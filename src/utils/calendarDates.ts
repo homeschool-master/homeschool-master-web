@@ -119,6 +119,20 @@ export const groupEventsByDay = (events: CalendarEvent[]): Record<string, Calend
 }
 
 /** A long, readable local date: the detail view's spelling. */
+/**
+ * The events that have not finished yet, soonest first. An all day event ends
+ * at the close of its own day, so it stays here for the whole of it. Reads the
+ * clock, the way todayKey does, rather than taking a caller supplied now.
+ */
+export const upcomingEvents = (events: CalendarEvent[]): CalendarEvent[] => {
+  const now = Date.now()
+
+  return events
+    .filter((event) => new Date(event.endTime).getTime() >= now)
+    .slice()
+    .sort((first, second) => first.startTime.localeCompare(second.startTime))
+}
+
 export const formatLongDate = (iso: string): string =>
   new Date(iso).toLocaleDateString(undefined, {
     weekday: 'long',

@@ -7,9 +7,11 @@ import { readableTextColor } from '../../utils/studentColor'
 interface EventPillProps {
   event: CalendarEvent
   students: Student[]
+  /** The profile, so coming back from the detail page lands on it again. */
+  linkSearch: string
 }
 
-const EventPill = ({ event, students }: EventPillProps) => {
+const EventPill = ({ event, students, linkSearch }: EventPillProps) => {
   const attendees = resolveAttendees(event.attendeeIds, students)
   const attendeeNames = attendees.map((attendee) => attendee.name).join(', ')
   const title = event.title || CALENDAR_CONTENT.grid.untitledEvent
@@ -17,7 +19,7 @@ const EventPill = ({ event, students }: EventPillProps) => {
 
   return (
     <Link
-      to={`/calendar/${event.id}`}
+      to={`/calendar/${event.id}${linkSearch}`}
       className='calendar__event'
       style={{ backgroundColor: background, color: readableTextColor(background) }}
       title={attendeeNames ? `${title} (${attendeeNames})` : title}
