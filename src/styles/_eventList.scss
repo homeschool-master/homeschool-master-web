@@ -161,10 +161,38 @@
   // Which profile the calendar is honouring. The student dropdown cannot hold
   // "the teacher's own items" or "anything with a student on it", so without
   // this line those two profiles would look like no filter at all.
+  // Same explanation the dashboard band gives, for the case where the shared
+  // link lands here instead.
+  &__unknown {
+    // Sits above the collapsible fields, so at phone width it needs its own
+    // separation from the toggle row rather than the panel's inner gap.
+    margin-top: $spacing-sm;
+    padding: $spacing-sm;
+    border: 1.5px dashed $color-gradient-dark;
+    border-radius: 12px;
+    background-color: $color-white;
+    font-size: 0.8125rem;
+    line-height: 1.5;
+    color: $color-text;
+
+    strong {
+      display: block;
+      color: $color-headline;
+    }
+  }
+
   &__scope {
     font-size: 0.8125rem;
     line-height: 1.5;
     color: $color-text;
+  }
+
+  // Desktop shows it either way: the panel is open, and one quiet line saying
+  // the calendar is unfiltered costs nothing.
+  &__scope--default {
+    @include respond-to(mobile) {
+      display: none;
+    }
   }
 
   &__scope-label {

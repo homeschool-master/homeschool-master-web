@@ -43,6 +43,8 @@ export const DASHBOARD_CONTENT = {
     empty: 'Nothing scheduled in the next 30 days.',
     /** The empty state changes meaning once a profile is narrowing the list. */
     emptyFiltered: 'Nothing scheduled in the next 30 days for this profile.',
+    /** Nothing to show, and the schedule is not the reason. */
+    emptyUnknown: 'No events to show while the selected student is not on this roster.',
   },
 
   tasks: {

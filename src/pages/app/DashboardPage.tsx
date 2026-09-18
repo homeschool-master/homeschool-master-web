@@ -20,6 +20,8 @@ import {
 } from '../../utils/calendarDates'
 import {
   DEFAULT_PROFILE,
+  calendarHref,
+  isUnknownProfile,
   matchesProfile,
   profileParams,
   readProfile,
@@ -71,7 +73,9 @@ const DashboardPage = () => {
   const { items: events, loading, error } = useSelector(
     (state: RootState) => state.calendarEvents
   )
-  const { items: students } = useSelector((state: RootState) => state.students)
+  const { items: students, loaded: studentsLoaded } = useSelector(
+    (state: RootState) => state.students
+  )
 
   const profile = readProfile(searchParams)
   const today = todayKey()
@@ -122,15 +126,30 @@ const DashboardPage = () => {
     })
   }
 
-  const calendarHref = withProfile('/calendar', profile)
+  // An empty roster and a roster that has not arrived look identical, so the
+  // claim waits until the request has settled.
+  const unknownProfile = studentsLoaded && isUnknownProfile(profile, students)
+
+  /**
+   * The count card counts what is left of today, so it opens today, not the
+   * month. See More continues the panel's own chronological list rather than
+   * dropping the reader into a grid that is shaped nothing like it.
+   */
+  const todayHref = calendarHref(profile, { range: 'day', date: today })
+  const seeMoreHref = calendarHref(profile, { view: 'list', date: today })
 
   return (
     <div className='dashboard-home'>
-      <ProfileSwitcher profile={profile} students={students} onSelect={selectProfile} />
+      <ProfileSwitcher
+        profile={profile}
+        students={students}
+        onSelect={selectProfile}
+        unknownProfile={unknownProfile}
+      />
 
       <TodaysItems
         upcomingCount={loading || error ? null : todayCount}
-        eventsHref={calendarHref}
+        eventsHref={todayHref}
       />
 
       <section className='dashboard-home__panels'>
@@ -140,7 +159,8 @@ const DashboardPage = () => {
             loading={loading}
             error={error}
             filtered={!sameProfile(profile, DEFAULT_PROFILE)}
-            seeMoreHref={calendarHref}
+            unknownProfile={unknownProfile}
+            seeMoreHref={seeMoreHref}
             addHref='/calendar/new'
             eventHref={(event) => withProfile(`/calendar/${event.id}`, profile)}
           />

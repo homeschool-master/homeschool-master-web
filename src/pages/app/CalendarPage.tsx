@@ -28,14 +28,19 @@ import CalendarFilters from '../../components/calendar/CalendarFilters'
 import { SidebarSlotContext } from '../../components/app/sidebarSlot'
 import { useIsMobile } from '../../hooks/useIsMobile'
 import {
+  DEFAULT_PROFILE,
+  MODE_PARAM,
   OVERRIDE_ALL,
   OVERRIDE_PARAM,
+  STUDENT_PARAM,
   hasOverride,
+  isUnknownProfile,
   matchesProfile,
   profileLabel,
   profileSearch,
   readCalendarScope,
   readProfile,
+  sameProfile,
   serverStudentId,
 } from '../../utils/profile'
 import type { CalendarFilterValues, TimingFilter } from '../../components/calendar/CalendarFilters'
@@ -98,7 +103,9 @@ const CalendarPage = () => {
   const [searchParams, setSearchParams] = useSearchParams()
 
   const { items, loading, error } = useSelector((state: RootState) => state.calendarEvents)
-  const { items: students } = useSelector((state: RootState) => state.students)
+  const { items: students, loaded: studentsLoaded } = useSelector(
+    (state: RootState) => state.students
+  )
   // Seven columns cannot work at phone width, so the week falls back to the
   // stacked list there. The other views are responsive in CSS alone.
   const isMobile = useIsMobile()
@@ -214,8 +221,13 @@ const CalendarPage = () => {
       students={students}
       collapsible={isMobile}
       scopeLabel={profileLabel(scope, students)}
+      scopeIsDefault={sameProfile(scope, DEFAULT_PROFILE) && !overridden}
       profileLabel={overridden ? profileLabel(profile, students) : null}
       onResetToProfile={() => updateParams({ [OVERRIDE_PARAM]: null })}
+      unknownProfile={studentsLoaded && isUnknownProfile(scope, students)}
+      onResetToDefault={() =>
+        updateParams({ [MODE_PARAM]: null, [STUDENT_PARAM]: null, [OVERRIDE_PARAM]: null })
+      }
       onChange={(changes) => {
         const next = { ...filterValues, ...changes }
         updateParams({

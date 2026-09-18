@@ -13,6 +13,12 @@ import { STUDENTS_CONTENT } from '../constants/students'
 interface StudentsState {
   items: Student[]
   loading: boolean
+  /**
+   * Whether the roster has come back at least once. An empty items array means
+   * two different things before and after that, and telling a teacher their
+   * selected student is not on the roster is only honest once it has.
+   */
+  loaded: boolean
   error: string | null
   saving: boolean
   saveError: string | null
@@ -23,6 +29,7 @@ interface StudentsState {
 const initialState: StudentsState = {
   items: [],
   loading: false,
+  loaded: false,
   error: null,
   saving: false,
   saveError: null,
@@ -94,10 +101,14 @@ const studentsSlice = createSlice({
       })
       .addCase(fetchStudents.fulfilled, (state, action) => {
         state.loading = false
+        state.loaded = true
         state.items = action.payload
       })
+      // A failed load is settled too: what it is not is an empty roster, so the
+      // flag says the request finished and the error says it did not work.
       .addCase(fetchStudents.rejected, (state, action) => {
         state.loading = false
+        state.loaded = true
         state.error = action.payload as string
       })
 

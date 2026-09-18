@@ -72,6 +72,31 @@ export const withProfile = (path: string, profile: Profile): string =>
   `${path}${profileSearch(profile)}`
 
 /**
+ * A calendar link carrying the profile plus whatever view the caller wants it
+ * to open on. The extra params win, so nothing here can be shadowed by a
+ * profile key it does not use.
+ */
+export const calendarHref = (
+  profile: Profile,
+  params: Record<string, string> = {}
+): string => {
+  const search = new URLSearchParams(profileSearch(profile))
+  Object.entries(params).forEach(([key, value]) => search.set(key, value))
+
+  const query = search.toString()
+  return query ? `/calendar?${query}` : '/calendar'
+}
+
+/**
+ * A studentId in the URL that the roster does not have: a link shared before
+ * the student was removed, or a hand edited address. Only meaningful once the
+ * roster has actually loaded, so callers gate on that.
+ */
+export const isUnknownProfile = (profile: Profile, students: Student[]): boolean =>
+  profile.kind === 'student' &&
+  !students.some((student) => student.id === profile.studentId)
+
+/**
  * What the calendar is actually showing. An override replaces the profile
  * outright rather than narrowing it: picking a student while the profile is
  * Teacher shows that student, not the empty intersection of the two.

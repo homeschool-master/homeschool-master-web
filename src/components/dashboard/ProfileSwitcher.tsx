@@ -2,9 +2,10 @@ import type { CSSProperties } from 'react'
 import { Link } from 'react-router-dom'
 import type { Student } from '../../types'
 import type { Profile } from '../../utils/profile'
-import { profileOptionsFor, sameProfile } from '../../utils/profile'
+import { DEFAULT_PROFILE, profileOptionsFor, sameProfile } from '../../utils/profile'
 import { readableTextColor } from '../../utils/studentColor'
 import { DASHBOARD_CONTENT } from '../../constants/dashboard'
+import { PROFILE_CONTENT } from '../../constants/profile'
 
 const { switcher } = DASHBOARD_CONTENT
 
@@ -41,6 +42,11 @@ interface ProfileSwitcherProps {
   profile: Profile
   students: Student[]
   onSelect: (next: Profile) => void
+  /**
+   * The URL names a student the roster does not have. No chip can be checked
+   * for them, so the band says why instead of just looking unselected.
+   */
+  unknownProfile: boolean
 }
 
 /** Stable per option, so React keys and radio ids do not collide. */
@@ -59,7 +65,12 @@ const colorStyle = (color: string | null): CSSProperties | undefined =>
  * movement, a single tab stop and the right announcement without reimplementing
  * any of it.
  */
-const ProfileSwitcher = ({ profile, students, onSelect }: ProfileSwitcherProps) => {
+const ProfileSwitcher = ({
+  profile,
+  students,
+  onSelect,
+  unknownProfile,
+}: ProfileSwitcherProps) => {
   const options = profileOptionsFor(students)
   const studentsById = new Map(students.map((student) => [student.id, student]))
 
@@ -114,6 +125,24 @@ const ProfileSwitcher = ({ profile, students, onSelect }: ProfileSwitcherProps) 
             })}
           </div>
         </fieldset>
+
+        {/* An out of date link, not a failure: say so where the reader is
+            already looking for the selected chip, and offer the way back. */}
+        {unknownProfile && (
+          <p className='profile-switcher__note profile-switcher__note--warning' role='status'>
+            <strong className='profile-switcher__note-heading'>
+              {PROFILE_CONTENT.unknownHeading}
+            </strong>{' '}
+            {PROFILE_CONTENT.unknownNote}{' '}
+            <button
+              type='button'
+              className='profile-switcher__note-button'
+              onClick={() => onSelect(DEFAULT_PROFILE)}
+            >
+              {PROFILE_CONTENT.unknownReset}
+            </button>
+          </p>
+        )}
 
         {/* A teacher with an empty roster still gets the three fixed chips, so
             the band is never blank: it just has nowhere to send them. */}

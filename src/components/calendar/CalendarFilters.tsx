@@ -24,9 +24,14 @@ interface CalendarFiltersProps {
   collapsible?: boolean
   /** Whose events the calendar is showing right now. */
   scopeLabel: string
+  /** Nothing is narrowing the calendar, so the scope line has nothing to say. */
+  scopeIsDefault: boolean
   /** The profile being overridden, and null while the two agree. */
   profileLabel: string | null
   onResetToProfile: () => void
+  /** The URL names a student the roster does not have. */
+  unknownProfile: boolean
+  onResetToDefault: () => void
 }
 
 const { filters } = CALENDAR_CONTENT
@@ -52,8 +57,11 @@ const CalendarFilters = ({
   onClear,
   collapsible = false,
   scopeLabel,
+  scopeIsDefault,
   profileLabel,
   onResetToProfile,
+  unknownProfile,
+  onResetToDefault,
 }: CalendarFiltersProps) => {
   const [open, setOpen] = useState(false)
 
@@ -97,33 +105,58 @@ const CalendarFilters = ({
         )}
       </h2>
 
+      {/* Outside the collapsible fields on purpose: at phone width those are
+          shut by default, and an explanation for an empty calendar is no use
+          behind a toggle. A link can outlive the student it names, and without
+          this the result reads as a load that failed. */}
+      {unknownProfile && (
+        <p className='calendar-filters__unknown' role='status'>
+          <strong>{PROFILE_CONTENT.unknownHeading}</strong> {PROFILE_CONTENT.unknownNote}{' '}
+          <button
+            type='button'
+            className='calendar-filters__reset'
+            onClick={onResetToDefault}
+          >
+            {PROFILE_CONTENT.unknownReset}
+          </button>
+        </p>
+      )}
+
+      {/* Says what the dropdown alone cannot: the profile can narrow the
+          calendar to the teacher's own items or to anything with a student on
+          it, neither of which is a value this select can hold. Outside the
+          collapsible fields for the same reason the notice above is: at phone
+          width those are shut, and a calendar showing a third of its events
+          needs to say why without being opened first. The default scope has
+          nothing to explain, so mobile hides that one case. */}
+      <p
+        className={`calendar-filters__scope${
+          scopeIsDefault ? ' calendar-filters__scope--default' : ''
+        }`}
+      >
+        <span className='calendar-filters__scope-label'>{PROFILE_CONTENT.viewing}:</span>{' '}
+        <strong className='calendar-filters__scope-value'>{scopeLabel}</strong>
+        {profileLabel !== null && (
+          <>
+            {' '}
+            <span className='calendar-filters__scope-note'>
+              {PROFILE_CONTENT.overrideSuffix}. {PROFILE_CONTENT.profile}: {profileLabel}.
+            </span>{' '}
+            <button
+              type='button'
+              className='calendar-filters__reset'
+              onClick={onResetToProfile}
+              aria-label={PROFILE_CONTENT.resetLabel}
+            >
+              {PROFILE_CONTENT.reset}
+            </button>
+          </>
+        )}
+      </p>
+
       {/* hidden rather than unmounted, so aria-controls always points at a real
           element: the attribute also takes the fields out of the tab order. */}
       <div className='calendar-filters__fields' id={FIELDS_ID} hidden={!expanded}>
-        {/* Says what the dropdown alone cannot: the profile can narrow the
-            calendar to the teacher's own items or to anything with a student on
-            it, neither of which is a value this select can hold. */}
-        <p className='calendar-filters__scope'>
-          <span className='calendar-filters__scope-label'>{PROFILE_CONTENT.viewing}:</span>{' '}
-          <strong className='calendar-filters__scope-value'>{scopeLabel}</strong>
-          {profileLabel !== null && (
-            <>
-              {' '}
-              <span className='calendar-filters__scope-note'>
-                {PROFILE_CONTENT.overrideSuffix}. {PROFILE_CONTENT.profile}: {profileLabel}.
-              </span>{' '}
-              <button
-                type='button'
-                className='calendar-filters__reset'
-                onClick={onResetToProfile}
-                aria-label={PROFILE_CONTENT.resetLabel}
-              >
-                {PROFILE_CONTENT.reset}
-              </button>
-            </>
-          )}
-        </p>
-
         <FormField label={filters.student} htmlFor='filter-student'>
           <FormSelect
             id='filter-student'

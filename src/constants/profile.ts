@@ -10,6 +10,12 @@ export const PROFILE_CONTENT = {
   /** A student id in the URL that is not on the roster any more. */
   unknownStudent: 'Former student',
 
+  // A link can outlive the student it names. This explains the empty result
+  // rather than letting it read as a page that failed to load.
+  unknownHeading: 'That student is not on this roster.',
+  unknownNote: 'They may have been removed since this link was made.',
+  unknownReset: 'Show Teacher & Students',
+
   viewing: 'Viewing',
   profile: 'Profile',
   overrideSuffix: 'for this visit only',

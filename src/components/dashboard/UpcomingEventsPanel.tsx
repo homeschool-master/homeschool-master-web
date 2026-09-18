@@ -17,6 +17,8 @@ interface UpcomingEventsPanelProps {
   error: string | null
   /** True when a profile is narrowing the list, which changes the empty state. */
   filtered: boolean
+  /** The selected student is not on the roster: the schedule is not the reason. */
+  unknownProfile: boolean
   seeMoreHref: string
   addHref: string
   eventHref: (event: CalendarEvent) => string
@@ -32,6 +34,7 @@ const UpcomingEventsPanel = ({
   loading,
   error,
   filtered,
+  unknownProfile,
   seeMoreHref,
   addHref,
   eventHref,
@@ -60,7 +63,11 @@ const UpcomingEventsPanel = ({
         {loading && <p className='panel-card__status'>{upcoming.loading}</p>}
         {isEmpty && (
           <p className='panel-card__status'>
-            {filtered ? upcoming.emptyFiltered : upcoming.empty}
+            {unknownProfile
+              ? upcoming.emptyUnknown
+              : filtered
+                ? upcoming.emptyFiltered
+                : upcoming.empty}
           </p>
         )}
 
