@@ -57,6 +57,36 @@ const TasksPage = () => {
     })
   }
 
+  /**
+   * Brings whatever just opened above the list into view: the add and edit
+   * form, and the remove confirmation, which share one slot because only one
+   * of them is ever open.
+   *
+   * The test is whether the top of the panel is on screen, not whether all of
+   * it is. Adding from the control at the top opens the form exactly where the
+   * button was, so its first field is already under the eye even though a tall
+   * form runs past the fold: scrolling there would be the jolt, not the fix.
+   * Editing or removing from a row far down opens above the list, out of
+   * sight, and that does have to travel.
+   *
+   * Measured synchronously: the ref runs after the form is in the document and
+   * reading its box forces the layout, so the number is already right. It is
+   * deliberately not deferred to an animation frame, which never runs while the
+   * document is hidden and would leave the form quietly off screen. The page
+   * sets overflow-anchor: none so nothing shifts under the measurement either.
+   *
+   * No smooth behavior: it is ignored outright in some contexts, and a scroll
+   * that silently does nothing is worse than one that simply arrives.
+   */
+  const revealPanel = (node: HTMLDivElement | null) => {
+    if (node === null) return
+
+    const top = node.getBoundingClientRect().top
+    if (top >= 0 && top < window.innerHeight) return
+
+    node.scrollIntoView({ block: 'start' })
+  }
+
   // Moving between the list, the form and the confirmation drops any error
   // left over from the previous attempt.
   const goTo = (next: Mode) => {
@@ -85,6 +115,12 @@ const TasksPage = () => {
   const showEmpty = !loading && !error && visible.length === 0
   const isEditingOrAdding = mode.kind === 'add' || mode.kind === 'edit'
 
+  // Distinct per opening, including edit on one row then edit on another, so
+  // the slot remounts and the reveal fires each time rather than swapping its
+  // contents somewhere off screen.
+  const panelKey =
+    mode.kind === 'add' || mode.kind === 'idle' ? mode.kind : `${mode.kind}:${mode.task.id}`
+
   return (
     <div className='tasks'>
       <div className='tasks__inner'>
@@ -109,6 +145,71 @@ const TasksPage = () => {
             </button>
           ))}
         </div>
+
+        {!loading && !error && mode.kind === 'idle' && (
+          <div className='tasks__actions'>
+            <Button color='cream' onClick={() => goTo({ kind: 'add' })}>
+              {TASKS_CONTENT.addButton}
+            </Button>
+          </div>
+        )}
+
+        {/* Whatever is open replaces the Add control in the same spot, so
+            neither adding nor removing sends the eye somewhere else. Editing
+            and removing are triggered from rows that can be a long way down,
+            so the slot brings itself into view. */}
+        {mode.kind !== 'idle' && (
+          <div key={panelKey} className='tasks__slot' ref={revealPanel}>
+            {isEditingOrAdding && (
+              <>
+                {saveError && (
+                  <p className='tasks__error' role='alert'>
+                    {saveError}
+                  </p>
+                )}
+                <TaskForm
+                  key={mode.kind === 'edit' ? mode.task.id : 'new'}
+                  task={mode.kind === 'edit' ? mode.task : null}
+                  saving={saving}
+                  onSubmit={handleSubmit}
+                  onCancel={() => goTo({ kind: 'idle' })}
+                />
+              </>
+            )}
+
+            {mode.kind === 'remove' && (
+              <div className='tasks__confirm'>
+                {removeError && (
+                  <p className='tasks__error' role='alert'>
+                    {removeError}
+                  </p>
+                )}
+                <p className='task-form__title'>{TASKS_CONTENT.remove.heading}</p>
+                <p className='tasks__confirm-task'>{mode.task.title}</p>
+                <p className='tasks__confirm-body'>{TASKS_CONTENT.remove.body}</p>
+                <div className='task-form__actions'>
+                  <button
+                    type='button'
+                    className='task-form__cancel'
+                    onClick={() => goTo({ kind: 'idle' })}
+                    disabled={removingId !== null}
+                  >
+                    {TASKS_CONTENT.remove.cancel}
+                  </button>
+                  <Button
+                    color='danger'
+                    onClick={() => handleRemove(mode.task)}
+                    disabled={removingId !== null}
+                  >
+                    {removingId !== null
+                      ? TASKS_CONTENT.remove.removing
+                      : TASKS_CONTENT.remove.confirm}
+                  </Button>
+                </div>
+              </div>
+            )}
+          </div>
+        )}
 
         {loading && <p className='tasks__status'>{TASKS_CONTENT.loading}</p>}
 
@@ -138,61 +239,6 @@ const TasksPage = () => {
           </ul>
         )}
 
-        {removeError && (
-          <p className='tasks__error' role='alert'>
-            {removeError}
-          </p>
-        )}
-
-        {!loading && !error && mode.kind === 'idle' && (
-          <div className='tasks__actions'>
-            <Button color='cream' onClick={() => goTo({ kind: 'add' })}>
-              {TASKS_CONTENT.addButton}
-            </Button>
-          </div>
-        )}
-
-        {isEditingOrAdding && (
-          <>
-            {saveError && (
-              <p className='tasks__error' role='alert'>
-                {saveError}
-              </p>
-            )}
-            <TaskForm
-              key={mode.kind === 'edit' ? mode.task.id : 'new'}
-              task={mode.kind === 'edit' ? mode.task : null}
-              saving={saving}
-              onSubmit={handleSubmit}
-              onCancel={() => goTo({ kind: 'idle' })}
-            />
-          </>
-        )}
-
-        {mode.kind === 'remove' && (
-          <div className='tasks__confirm'>
-            <p className='task-form__title'>{TASKS_CONTENT.remove.heading}</p>
-            <p className='tasks__confirm-task'>{mode.task.title}</p>
-            <p className='tasks__confirm-body'>{TASKS_CONTENT.remove.body}</p>
-            <div className='task-form__actions'>
-              <button
-                type='button'
-                className='task-form__cancel'
-                onClick={() => goTo({ kind: 'idle' })}
-                disabled={removingId !== null}
-              >
-                {TASKS_CONTENT.remove.cancel}
-              </button>
-              <Button
-                color='danger'
-                onClick={() => handleRemove(mode.task)}
-                disabled={removingId !== null}
-              >
-                {removingId !== null ? TASKS_CONTENT.remove.removing : TASKS_CONTENT.remove.confirm}
-              </Button>
-            </div>
-          </div>
-        )}
       </div>
     </div>
   )

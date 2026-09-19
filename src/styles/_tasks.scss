@@ -2,6 +2,10 @@
 @use 'mixins' as *;
 
 .tasks {
+  // The form opens above the list, so the content below it moves. Without this
+  // the browser compensates by shifting the scroll position, which fights the
+  // form trying to bring itself into view.
+  overflow-anchor: none;
   font-family: $font-family-base;
   color: $color-text;
   background-color: $color-white;
@@ -120,13 +124,20 @@
     color: #b42318;
   }
 
+  // Above the list now, so it needs its own separation from what follows.
   &__actions {
     display: flex;
     justify-content: flex-start;
+    margin-bottom: $spacing-md;
+  }
+
+  // Holds whichever panel is open: the add and edit form, or the remove
+  // confirmation. Only one of them can be, so they share the one place.
+  &__slot {
+    margin-bottom: $spacing-lg;
   }
 
   &__confirm {
-    margin-top: $spacing-lg;
     padding: $spacing-md;
     border: 1.5px solid $color-gradient-dark;
     border-radius: 16px;
@@ -258,7 +269,6 @@
 // The task form, matching the settings forms: labelled controls on a cream
 // panel, cancel beside the save.
 .task-form {
-  margin-top: $spacing-lg;
   padding: $spacing-md;
   border: 1.5px solid $color-gradient-dark;
   border-radius: 16px;
