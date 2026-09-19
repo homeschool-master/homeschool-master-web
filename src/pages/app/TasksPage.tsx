@@ -35,9 +35,11 @@ const TasksPage = () => {
   const [mode, setMode] = useState<Mode>({ kind: 'idle' })
 
   // In the URL like the calendar's view state, so a filtered list is linkable
-  // and survives a reload.
+  // and survives a reload. All is the default and writes no param, so a bare
+  // /tasks is everything: the two narrower views are the ones worth spelling
+  // out in a link.
   const filterParam = searchParams.get('show')
-  const filter: TaskFilter = isTaskFilter(filterParam) ? filterParam : 'open'
+  const filter: TaskFilter = isTaskFilter(filterParam) ? filterParam : 'all'
 
   const today = todayKey()
 
@@ -50,7 +52,8 @@ const TasksPage = () => {
   const selectFilter = (next: TaskFilter) => {
     setSearchParams((current) => {
       const params = new URLSearchParams(current)
-      if (next === 'open') params.delete('show')
+      // The default carries no param, so a bare /tasks is the whole list.
+      if (next === 'all') params.delete('show')
       else params.set('show', next)
 
       return params

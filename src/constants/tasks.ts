@@ -13,11 +13,15 @@ export const TASKS_CONTENT = {
     all: 'All',
   },
 
-  /** The three filters each need their own empty state: they mean different things. */
+  /**
+   * The three filters each need their own empty state: they mean different
+   * things. All is the default, so its wording is what someone sees on a first
+   * visit with nothing on the list.
+   */
   empty: {
     open: 'Nothing to do. Add a task when something comes up.',
     done: 'Nothing completed yet.',
-    all: 'No tasks yet. Add the first one below.',
+    all: 'No tasks yet. Add your first one with the button above.',
   },
 
   loading: 'Loading tasks',

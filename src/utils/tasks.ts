@@ -3,7 +3,8 @@ import { fromDateKey } from './calendarDates'
 
 export type TaskFilter = 'open' | 'done' | 'all'
 
-export const TASK_FILTERS: TaskFilter[] = ['open', 'done', 'all']
+/** Rendered in this order, default first: the page maps straight over it. */
+export const TASK_FILTERS: TaskFilter[] = ['all', 'open', 'done']
 
 export const isTaskFilter = (value: string | null): value is TaskFilter =>
   TASK_FILTERS.some((filter) => filter === value)
