@@ -2,6 +2,7 @@ import { configureStore } from '@reduxjs/toolkit'
 import authReducer from './authSlice'
 import calendarEventsReducer from './calendarEventsSlice'
 import studentsReducer from './studentsSlice'
+import subjectsReducer from './subjectsSlice'
 import tasksReducer from './tasksSlice'
 
 export const store = configureStore({
@@ -9,6 +10,7 @@ export const store = configureStore({
     auth: authReducer,
     calendarEvents: calendarEventsReducer,
     students: studentsReducer,
+    subjects: subjectsReducer,
     tasks: tasksReducer,
   },
 })

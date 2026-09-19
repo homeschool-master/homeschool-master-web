@@ -24,6 +24,7 @@ import ProfileSection from './components/dashboard/ProfileSection'
 import NotFoundPage from './pages/NotFoundPage'
 import UnderConstructionPage from './pages/UnderConstructionPage'
 import StudentsSection from './components/dashboard/StudentsSection'
+import SubjectsSection from './components/dashboard/SubjectsSection'
 import DataPrivacySection from './components/dashboard/DataPrivacySection'
 import SubscriptionSection from './components/dashboard/SubscriptionSection'
 import ScrollToTop from './components/shared/ScrollToTop'
@@ -90,6 +91,7 @@ const App = () => {
                     <Route index element={<Navigate to='profile' replace />} />
                     <Route path='profile' element={<ProfileSection />} />
                     <Route path='students' element={<StudentsSection />} />
+                    <Route path='subjects' element={<SubjectsSection />} />
                     <Route path='subscription' element={<SubscriptionSection />} />
                     <Route path='data-privacy' element={<DataPrivacySection />} />
                     <Route path='notifications' element={<NotificationsSection />} />

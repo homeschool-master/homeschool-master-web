@@ -14,6 +14,12 @@ const FamilyIcon = () => (
     <circle cx='9' cy='8' r='3' /><circle cx='17' cy='9' r='2.5' /><path d='M3 20v-1a5 5 0 0 1 5-5h2a5 5 0 0 1 5 5v1' /><path d='M16 14h1a4 4 0 0 1 4 4v2' />
   </svg>
 )
+const SubjectIcon = () => (
+  <svg viewBox='0 0 24 24' fill='none' stroke='currentColor' strokeWidth='2' strokeLinecap='round' strokeLinejoin='round'>
+    <path d='M4 5.5A2.5 2.5 0 0 1 6.5 3H19v15H6.5A2.5 2.5 0 0 0 4 20.5z' /><path d='M4 20.5A2.5 2.5 0 0 1 6.5 18H19v3H6.5' />
+    <path d='M9 7h6' />
+  </svg>
+)
 const SubscriptionIcon = () => (
   <svg viewBox='0 0 24 24' fill='none' stroke='currentColor' strokeWidth='2' strokeLinecap='round' strokeLinejoin='round'>
     <circle cx='12' cy='12' r='9' /><path d='M14.5 9a2.5 2.5 0 0 0-2.5-2c-1.4 0-2.5.9-2.5 2s1.1 2 2.5 2 2.5.9 2.5 2-1.1 2-2.5 2a2.5 2.5 0 0 1-2.5-2' /><path d='M12 5v2M12 17v2' />
@@ -38,6 +44,7 @@ const LogoutIcon = () => (
 const navItems = [
   { to: 'profile', label: 'Profile', Icon: ProfileIcon },
   { to: 'students', label: 'Students', Icon: FamilyIcon },
+  { to: 'subjects', label: 'Subjects', Icon: SubjectIcon },
   { to: 'subscription', label: 'Subscription', Icon: SubscriptionIcon },
   { to: 'data-privacy', label: 'Data & Privacy', Icon: DataIcon },
   { to: 'notifications', label: 'Notifications', Icon: BellIcon },

@@ -19,6 +19,18 @@ interface ApiErrorBody {
 export const isNotFoundError = (error: unknown): boolean =>
   isAxiosError(error) && error.response?.status === 404
 
+/**
+ * Whether the API rejected a particular field for a particular reason, so a
+ * caller can answer a known rule with its own wording rather than surfacing
+ * the server's validation phrasing.
+ */
+export const hasFieldError = (error: unknown, field: string, needle: string): boolean => {
+  if (!isAxiosError<ApiErrorBody>(error)) return false
+
+  const messages = error.response?.data?.error?.details?.[field]
+  return (messages ?? []).some((message) => message.toLowerCase().includes(needle.toLowerCase()))
+}
+
 /** Flattens an API failure into a single sentence suitable for display. */
 export const apiErrorMessage = (error: unknown, fallback: string): string => {
   if (!isAxiosError<ApiErrorBody>(error)) return fallback

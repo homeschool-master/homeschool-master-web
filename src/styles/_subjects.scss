@@ -1,0 +1,185 @@
+@use 'variables' as *;
+@use 'mixins' as *;
+
+// Lives inside the settings shell, so it inherits that panel's surface and
+// only styles what is its own: the list, the slot above it, and the form.
+.subjects {
+  // The form opens above the list, so the content below it moves. Without this
+  // the browser compensates by shifting the scroll position, which fights the
+  // panel trying to bring itself into view.
+  overflow-anchor: none;
+  display: flex;
+  flex-direction: column;
+
+  &__intro {
+    margin-bottom: $spacing-md;
+    font-size: 0.95rem;
+    color: $color-text;
+  }
+
+  &__actions {
+    display: flex;
+    justify-content: flex-start;
+    margin-bottom: $spacing-md;
+  }
+
+  // Holds whichever panel is open: the add and edit form, or the remove
+  // confirmation. Only one of them can be, so they share the one place.
+  &__slot {
+    margin-bottom: $spacing-lg;
+  }
+
+  &__status {
+    padding: $spacing-md;
+    border: 1px dashed $color-gradient-dark;
+    border-radius: 16px;
+    font-size: 0.9375rem;
+    font-style: italic;
+    color: $color-text;
+  }
+
+  &__list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: $spacing-sm;
+  }
+
+  &__confirm {
+    padding: $spacing-md;
+    border: 1.5px solid $color-gradient-dark;
+    border-radius: 16px;
+    background-color: $color-white;
+  }
+
+  &__confirm-name {
+    margin: $spacing-sm 0;
+    font-size: 1.05rem;
+    font-weight: 700;
+    color: $color-headline;
+  }
+
+  &__confirm-body {
+    margin-bottom: $spacing-md;
+    font-size: 0.9375rem;
+  }
+}
+
+.subject-row {
+  display: grid;
+  // The colour, then the name and description, then the actions.
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  align-items: center;
+  gap: $spacing-xs $spacing-sm;
+  padding: $spacing-sm $spacing-md;
+  border: 1.5px solid $color-gradient-dark;
+  border-radius: 14px;
+  background-color: $color-white;
+
+  // A ring so a subject with no colour still reads as a slot for one rather
+  // than as a missing element.
+  &__dot {
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    flex-shrink: 0;
+    background-color: $color-surface;
+    box-shadow: inset 0 0 0 1.5px rgba($color-headline, 0.25);
+  }
+
+  &__body {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    min-width: 0;
+  }
+
+  &__name {
+    font-size: 1rem;
+    font-weight: 600;
+    color: $color-headline;
+    overflow-wrap: break-word;
+  }
+
+  &__description {
+    font-size: 0.8125rem;
+    color: $color-text;
+    opacity: 0.8;
+  }
+
+  &__actions {
+    display: inline-flex;
+    gap: $spacing-sm;
+    flex-shrink: 0;
+  }
+
+  &__action {
+    background: none;
+    border: none;
+    padding: 0;
+    font-family: $font-family-base;
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: $color-headline;
+    text-decoration: underline;
+    cursor: pointer;
+
+    &:hover {
+      color: $color-accent;
+    }
+
+    &:focus-visible {
+      outline: 2px solid $color-headline;
+      outline-offset: 2px;
+    }
+  }
+
+  @include respond-to(mobile) {
+    // The actions drop under the name rather than squeezing it to nothing.
+    grid-template-columns: auto minmax(0, 1fr);
+
+    &__actions {
+      grid-column: 2;
+    }
+  }
+}
+
+.subject-form {
+  padding: $spacing-md;
+  border: 1.5px solid $color-gradient-dark;
+  border-radius: 16px;
+  background-color: $color-white;
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-md;
+
+  &__title {
+    font-size: 1.05rem;
+    font-weight: 700;
+    color: $color-headline;
+  }
+
+  &__actions {
+    display: flex;
+    align-items: center;
+    gap: $spacing-md;
+  }
+
+  &__cancel {
+    background: none;
+    border: none;
+    padding: 0;
+    font-family: $font-family-base;
+    font-size: 0.9375rem;
+    font-weight: 600;
+    color: $color-headline;
+    text-decoration: underline;
+    cursor: pointer;
+
+    &:hover {
+      color: $color-accent;
+    }
+  }
+}

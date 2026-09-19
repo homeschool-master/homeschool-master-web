@@ -75,6 +75,27 @@ export interface TaskInput {
 /** Ticking a checkbox is a partial update, so every field is optional here. */
 export type TaskUpdateInput = Partial<TaskInput> & { completed?: boolean }
 
+/**
+ * A subject a teacher tags work with. Removal is a soft delete server side, so
+ * an inactive subject keeps its row and its history: the index only ever
+ * returns the active ones.
+ */
+export interface Subject {
+  id: string
+  teacherId: string
+  name: string
+  color: string | null
+  description: string | null
+  isActive: boolean
+  createdAt: string
+}
+
+export interface SubjectInput {
+  name: string
+  color: string | null
+  description: string | null
+}
+
 export interface StudentInput {
   firstName: string
   middleName: string

@@ -2,7 +2,8 @@ import { Controller, useForm, useWatch } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
 import FormField, { FormInput, FormSelect } from '../shared/FormField'
-import { GRADE_LEVELS, STUDENT_COLORS } from '../../constants/onboarding'
+import ColorPicker from '../shared/ColorPicker'
+import { GRADE_LEVELS } from '../../constants/onboarding'
 import { STUDENTS_CONTENT } from '../../constants/students'
 import { readableTextColor } from '../../utils/studentColor'
 import type { Student, StudentInput } from '../../types'
@@ -114,38 +115,14 @@ const StudentForm = ({ student, saving, onSubmit, onCancel }: StudentFormProps) 
         name='color'
         control={control}
         render={({ field }) => (
-          <fieldset className='dashboard__color-field'>
-            <legend className='dashboard__color-legend'>{form.color}</legend>
-            <p className='dashboard__color-hint'>{form.colorHint}</p>
-
-            <div className='dashboard__color-swatches'>
-              {STUDENT_COLORS.map((option) => (
-                <label
-                  key={option.value}
-                  className={`dashboard__color-swatch${
-                    field.value === option.hex ? ' dashboard__color-swatch--selected' : ''
-                  }`}
-                  title={option.label}
-                >
-                  <input
-                    type='radio'
-                    className='dashboard__color-input'
-                    name={field.name}
-                    value={option.hex}
-                    checked={field.value === option.hex}
-                    onChange={() => field.onChange(option.hex)}
-                    onBlur={field.onBlur}
-                  />
-                  <span
-                    className='dashboard__color-dot'
-                    style={{ backgroundColor: option.hex }}
-                    aria-hidden='true'
-                  />
-                  <span className='dashboard__color-name'>{option.label}</span>
-                </label>
-              ))}
-            </div>
-
+          <ColorPicker
+            name={field.name}
+            value={field.value}
+            onChange={field.onChange}
+            onBlur={field.onBlur}
+            legend={form.color}
+            hint={form.colorHint}
+          >
             {/* The preview is the chip the roster and the calendar will show,
                 text colour picked from the fill so any choice stays legible. */}
             <span
@@ -160,7 +137,7 @@ const StudentForm = ({ student, saving, onSubmit, onCancel }: StudentFormProps) 
             </span>
 
             {errors.color && <span className='dashboard__error'>{errors.color.message}</span>}
-          </fieldset>
+          </ColorPicker>
         )}
       />
 
