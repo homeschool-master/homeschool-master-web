@@ -21,6 +21,7 @@ export const DASHBOARD_CONTENT = {
     heading: "Today's Items:",
     upcomingEvents: 'Upcoming Events',
     tasksToComplete: 'Tasks to Complete',
+    tasksToCompleteLabel: 'See tasks due today',
     assignmentsToGrade: 'Assignments to be Graded',
     /** Sits where the count would be on a card that has no backend yet. */
     comingSoonCount: 'Soon',
@@ -49,11 +50,14 @@ export const DASHBOARD_CONTENT = {
 
   tasks: {
     heading: 'Tasks Due',
-    comingSoonBadge: 'Soon',
-    comingSoon: 'Tasks are coming soon. Once they arrive, what is due will show up here.',
     addLabel: 'Add a task',
     addSymbol: '+',
     seeMore: 'See More',
+    seeMoreLabel: 'See all tasks',
+    loading: 'Loading tasks',
+    empty: 'Nothing to do right now.',
+    /** Named separately: the panel lists open tasks, so this is not "no tasks". */
+    allDone: 'Everything on your list is done.',
   },
 
   errors: {

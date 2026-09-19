@@ -2,12 +2,14 @@ import { configureStore } from '@reduxjs/toolkit'
 import authReducer from './authSlice'
 import calendarEventsReducer from './calendarEventsSlice'
 import studentsReducer from './studentsSlice'
+import tasksReducer from './tasksSlice'
 
 export const store = configureStore({
   reducer: {
     auth: authReducer,
     calendarEvents: calendarEventsReducer,
     students: studentsReducer,
+    tasks: tasksReducer,
   },
 })
 

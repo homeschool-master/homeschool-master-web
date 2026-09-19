@@ -49,6 +49,32 @@ export interface CalendarEvent {
  * sent and never converts, so build them from local input with toISOString.
  */
 /** The fields the students endpoint accepts from web: no photo upload yet. */
+/**
+ * A teacher's own to-do item. completed and completedAt are two faces of one
+ * nullable column server side: completed is the boolean a checkbox binds to,
+ * completedAt is the instant it was ticked. They cannot disagree.
+ */
+export interface Task {
+  id: string
+  teacherId: string
+  title: string
+  description: string | null
+  /** A bare YYYY-MM-DD, not an instant: a to-do is due on a day. */
+  dueDate: string | null
+  completed: boolean
+  completedAt: string | null
+  createdAt: string
+}
+
+export interface TaskInput {
+  title: string
+  description: string | null
+  dueDate: string | null
+}
+
+/** Ticking a checkbox is a partial update, so every field is optional here. */
+export type TaskUpdateInput = Partial<TaskInput> & { completed?: boolean }
+
 export interface StudentInput {
   firstName: string
   middleName: string

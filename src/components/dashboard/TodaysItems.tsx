@@ -4,18 +4,19 @@ import { DASHBOARD_CONTENT } from '../../constants/dashboard'
 const { todaysItems } = DASHBOARD_CONTENT
 
 interface TodaysItemsProps {
-  /** Null while the events request is still in flight. */
+  /** Null while the request behind a card is still in flight. */
   upcomingCount: number | null
+  tasksCount: number | null
   eventsHref: string
+  tasksHref: string
 }
 
 /**
- * Three count cards. Only the first has a backend: the other two render in the
- * same shape, with a "Soon" chip where the number would be, so they read as not
- * built yet rather than as a count that failed to load. Nothing invents a
- * number for them.
+ * Three count cards. Two are real now: events still ahead today, and open
+ * tasks due today or already late. Assignments has no client yet, so it keeps
+ * the "Soon" chip where the number goes rather than inventing one.
  */
-const TodaysItems = ({ upcomingCount, eventsHref }: TodaysItemsProps) => (
+const TodaysItems = ({ upcomingCount, tasksCount, eventsHref, tasksHref }: TodaysItemsProps) => (
   <section className='todays-items'>
     <div className='todays-items__inner'>
       <h2 className='todays-items__heading'>{todaysItems.heading}</h2>
@@ -28,22 +29,30 @@ const TodaysItems = ({ upcomingCount, eventsHref }: TodaysItemsProps) => (
           </Link>
         </li>
 
-        {[todaysItems.tasksToComplete, todaysItems.assignmentsToGrade].map((label) => (
-          <li
-            key={label}
-            className='todays-items__card todays-items__card--disabled'
-            aria-disabled='true'
-            title={todaysItems.comingSoonHint}
+        <li className='todays-items__card'>
+          <Link
+            to={tasksHref}
+            className='todays-items__link'
+            aria-label={todaysItems.tasksToCompleteLabel}
           >
-            <span className='todays-items__count todays-items__count--soon'>
-              {todaysItems.comingSoonCount}
-            </span>
-            <span className='todays-items__label'>
-              {label}
-              <span className='sr-only'> {todaysItems.unavailableNote}</span>
-            </span>
-          </li>
-        ))}
+            <span className='todays-items__count'>{tasksCount ?? ''}</span>
+            <span className='todays-items__label'>{todaysItems.tasksToComplete}</span>
+          </Link>
+        </li>
+
+        <li
+          className='todays-items__card todays-items__card--disabled'
+          aria-disabled='true'
+          title={todaysItems.comingSoonHint}
+        >
+          <span className='todays-items__count todays-items__count--soon'>
+            {todaysItems.comingSoonCount}
+          </span>
+          <span className='todays-items__label'>
+            {todaysItems.assignmentsToGrade}
+            <span className='sr-only'> {todaysItems.unavailableNote}</span>
+          </span>
+        </li>
       </ul>
     </div>
   </section>

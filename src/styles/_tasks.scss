@@ -1,0 +1,330 @@
+@use 'variables' as *;
+@use 'mixins' as *;
+
+.tasks {
+  font-family: $font-family-base;
+  color: $color-text;
+  background-color: $color-white;
+  padding: 0 5px;
+
+  &__inner {
+    @include container;
+    padding-top: $spacing-lg;
+    padding-bottom: $spacing-xl;
+    // A to-do list reads badly at full desktop width: the checkbox and the due
+    // date end up a screen apart.
+    max-width: 52rem;
+  }
+
+  &__header {
+    margin-bottom: $spacing-lg;
+  }
+
+  &__eyebrow {
+    color: $color-accent;
+    font-size: 0.875rem;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    margin-bottom: $spacing-xs;
+  }
+
+  &__heading {
+    font-size: 2rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    color: $color-headline;
+    margin-bottom: $spacing-xs;
+
+    @include respond-to(mobile) {
+      font-size: 1.5rem;
+    }
+  }
+
+  &__subhead {
+    font-size: 1rem;
+    color: $color-text;
+  }
+
+  // Always visible, never behind a disclosure: the filter is the only thing
+  // that explains why a list is empty, and hiding it at phone width is how
+  // that explanation goes missing.
+  &__filters {
+    display: flex;
+    gap: $spacing-xs;
+    margin-bottom: $spacing-md;
+    padding: $spacing-xs;
+    border: 1.5px solid $color-gradient-dark;
+    border-radius: 999px;
+    background-color: $color-surface;
+    width: fit-content;
+
+    @include respond-to(mobile) {
+      width: 100%;
+    }
+  }
+
+  &__filter {
+    padding: $spacing-xs $spacing-md;
+    border: none;
+    border-radius: 999px;
+    background: none;
+    font-family: $font-family-base;
+    font-size: 0.9375rem;
+    font-weight: 600;
+    color: $color-headline;
+    cursor: pointer;
+
+    &:hover {
+      background-color: rgba($color-white, 0.7);
+    }
+
+    &:focus-visible {
+      outline: 2px solid $color-headline;
+      outline-offset: 2px;
+    }
+
+    @include respond-to(mobile) {
+      flex: 1;
+      padding: $spacing-xs $spacing-sm;
+    }
+  }
+
+  &__filter--active {
+    background-color: $color-gradient-light;
+    box-shadow: inset 0 0 0 1.5px $color-accent;
+  }
+
+  &__list {
+    list-style: none;
+    margin: 0 0 $spacing-lg;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: $spacing-sm;
+  }
+
+  &__status {
+    margin-bottom: $spacing-lg;
+    padding: $spacing-md;
+    border: 1px dashed $color-gradient-dark;
+    border-radius: 16px;
+    font-size: 0.9375rem;
+    font-style: italic;
+    color: $color-text;
+  }
+
+  &__error {
+    margin-bottom: $spacing-md;
+    font-size: 0.9375rem;
+    font-weight: 600;
+    color: #b42318;
+  }
+
+  &__actions {
+    display: flex;
+    justify-content: flex-start;
+  }
+
+  &__confirm {
+    margin-top: $spacing-lg;
+    padding: $spacing-md;
+    border: 1.5px solid $color-gradient-dark;
+    border-radius: 16px;
+    background-color: $color-surface;
+  }
+
+  &__confirm-task {
+    margin: $spacing-sm 0;
+    font-size: 1.05rem;
+    font-weight: 700;
+    color: $color-headline;
+  }
+
+  &__confirm-body {
+    margin-bottom: $spacing-md;
+    font-size: 0.9375rem;
+  }
+}
+
+// One row of a to-do list, shared by the tasks page and the dashboard panel.
+.task-row {
+  display: grid;
+  // Checkbox, then the title and due date, then the actions.
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  align-items: center;
+  gap: $spacing-xs $spacing-sm;
+  padding: $spacing-sm $spacing-md;
+  border: 1.5px solid $color-gradient-dark;
+  border-radius: 14px;
+  background-color: $color-white;
+
+  &__checkbox {
+    width: 20px;
+    height: 20px;
+    flex-shrink: 0;
+    accent-color: $color-accent;
+    cursor: pointer;
+
+    &:disabled {
+      cursor: progress;
+    }
+  }
+
+  // A label rather than a div, so the whole line ticks the box.
+  &__body {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    min-width: 0;
+    cursor: pointer;
+  }
+
+  &__title {
+    font-size: 1rem;
+    font-weight: 600;
+    color: $color-headline;
+    overflow-wrap: break-word;
+  }
+
+  &__due {
+    font-size: 0.8125rem;
+    color: $color-text;
+    opacity: 0.8;
+  }
+
+  &__notes {
+    grid-column: 2;
+    font-size: 0.8125rem;
+    color: $color-text;
+    opacity: 0.75;
+  }
+
+  &__actions {
+    display: inline-flex;
+    gap: $spacing-sm;
+    flex-shrink: 0;
+  }
+
+  &__action {
+    background: none;
+    border: none;
+    padding: 0;
+    font-family: $font-family-base;
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: $color-headline;
+    text-decoration: underline;
+    cursor: pointer;
+
+    &:hover {
+      color: $color-accent;
+    }
+
+    &:focus-visible {
+      outline: 2px solid $color-headline;
+      outline-offset: 2px;
+    }
+  }
+}
+
+// Late work is called out on the row itself rather than only in the date: a
+// red left edge is visible while scanning a list of twenty.
+.task-row--overdue {
+  border-color: #b42318;
+  box-shadow: inset 3px 0 0 #b42318;
+
+  .task-row__due {
+    color: #b42318;
+    font-weight: 700;
+    opacity: 1;
+  }
+}
+
+// Done work stays legible but stops competing with what is still open.
+.task-row--done {
+  background-color: $color-surface;
+  border-style: dashed;
+
+  .task-row__title {
+    text-decoration: line-through;
+    opacity: 0.6;
+  }
+
+  .task-row__due {
+    opacity: 0.6;
+  }
+}
+
+// The task form, matching the settings forms: labelled controls on a cream
+// panel, cancel beside the save.
+.task-form {
+  margin-top: $spacing-lg;
+  padding: $spacing-md;
+  border: 1.5px solid $color-gradient-dark;
+  border-radius: 16px;
+  background-color: $color-surface;
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-md;
+
+  &__title {
+    font-size: 1.05rem;
+    font-weight: 700;
+    color: $color-headline;
+  }
+
+  &__hint {
+    margin-top: $spacing-xs;
+    font-size: 0.8125rem;
+    color: $color-text;
+    opacity: 0.8;
+  }
+
+  &__error {
+    margin-top: $spacing-xs;
+    font-size: 0.8125rem;
+    font-weight: 600;
+    color: #b42318;
+  }
+
+  &__actions {
+    display: flex;
+    align-items: center;
+    gap: $spacing-md;
+  }
+
+  &__cancel {
+    background: none;
+    border: none;
+    padding: 0;
+    font-family: $font-family-base;
+    font-size: 0.9375rem;
+    font-weight: 600;
+    color: $color-headline;
+    text-decoration: underline;
+    cursor: pointer;
+
+    &:hover {
+      color: $color-accent;
+    }
+  }
+}
+
+// The dashboard panel reuses the row, on the pale band rather than on white.
+.panel-card__tasks {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-sm;
+
+  .task-row {
+    padding: $spacing-xs $spacing-sm;
+    border-radius: 10px;
+  }
+
+  .task-row__title {
+    font-size: 0.9375rem;
+  }
+}

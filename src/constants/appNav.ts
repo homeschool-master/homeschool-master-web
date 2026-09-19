@@ -22,7 +22,7 @@ export const APP_NAV_CONTENT = {
     { key: 'dashboard', label: 'Dashboard', to: '/dashboard', carriesProfile: true },
     { key: 'settings', label: 'Settings', to: '/settings' },
     { key: 'calendar', label: 'Calendar', to: '/calendar', carriesProfile: true },
-    { key: 'tasks', label: 'Tasks', to: null },
+    { key: 'tasks', label: 'Tasks', to: '/tasks' },
     { key: 'grades', label: 'Grades', to: null },
   ] as AppNavItem[],
 }

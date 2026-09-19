@@ -5,11 +5,13 @@ import type { AppDispatch, RootState } from '../../store'
 import type { CalendarEvent } from '../../types'
 import { fetchCalendarEvents } from '../../store/calendarEventsSlice'
 import { fetchStudents } from '../../store/studentsSlice'
+import { fetchTasks, toggleTask } from '../../store/tasksSlice'
 import {
   DASHBOARD_CONTENT,
   UPCOMING_DAYS,
   UPCOMING_LIMIT,
 } from '../../constants/dashboard'
+import { dueByToday, openTasks } from '../../utils/tasks'
 import {
   eventDateKeys,
   fromDateKey,
@@ -76,6 +78,12 @@ const DashboardPage = () => {
   const { items: students, loaded: studentsLoaded } = useSelector(
     (state: RootState) => state.students
   )
+  const {
+    items: tasks,
+    loading: tasksLoading,
+    error: tasksError,
+    togglingId: taskTogglingId,
+  } = useSelector((state: RootState) => state.tasks)
 
   const profile = readProfile(searchParams)
   const today = todayKey()
@@ -91,6 +99,7 @@ const DashboardPage = () => {
 
   useEffect(() => {
     dispatch(fetchStudents())
+    dispatch(fetchTasks())
   }, [dispatch])
 
   useEffect(() => {
@@ -135,6 +144,11 @@ const DashboardPage = () => {
    * month. See More continues the panel's own chronological list rather than
    * dropping the reader into a grid that is shaped nothing like it.
    */
+  // Tasks belong to the teacher rather than to a student, so the profile does
+  // not narrow them and these links carry none of it.
+  const open = useMemo(() => openTasks(tasks), [tasks])
+  const dueToday = useMemo(() => dueByToday(tasks, today), [tasks, today])
+
   const todayHref = calendarHref(profile, { range: 'day', date: today })
   const seeMoreHref = calendarHref(profile, { view: 'list', date: today })
 
@@ -149,7 +163,9 @@ const DashboardPage = () => {
 
       <TodaysItems
         upcomingCount={loading || error ? null : todayCount}
+        tasksCount={tasksLoading || tasksError ? null : dueToday.length}
         eventsHref={todayHref}
+        tasksHref='/tasks'
       />
 
       <section className='dashboard-home__panels'>
@@ -165,7 +181,15 @@ const DashboardPage = () => {
             eventHref={(event) => withProfile(`/calendar/${event.id}`, profile)}
           />
 
-          <TasksDuePanel />
+          <TasksDuePanel
+            openTasks={open}
+            totalTasks={tasks.length}
+            today={today}
+            loading={tasksLoading}
+            error={tasksError}
+            togglingId={taskTogglingId}
+            onToggle={(task) => dispatch(toggleTask({ id: task.id, completed: !task.completed }))}
+          />
         </div>
       </section>
     </div>
