@@ -23,8 +23,42 @@ export interface Student {
   createdAt: string
 }
 
+/**
+ * How something repeats. Deliberately not a full RRULE: a frequency, which
+ * days of the week, which monthly anchor, and when it stops, because every
+ * field here has to be answerable by a control on a form.
+ */
+export type RecurrenceFrequency = 'daily' | 'weekly' | 'monthly' | 'yearly'
+export type MonthlyAnchor = 'day_of_month' | 'weekday_position'
+
+export interface Recurrence {
+  frequency: RecurrenceFrequency
+  /** 0 for Sunday through 6 for Saturday. Weekly only, and several at once. */
+  weekdays: number[]
+  monthlyAnchor: MonthlyAnchor | null
+  /** The last day the series can produce an occurrence. Null never ends. */
+  untilDate: string | null
+}
+
+/**
+ * How far an edit or a deletion of one occurrence reaches. Absent means all
+ * of it, which is the only answer an event that does not repeat has.
+ */
+export type SeriesScope = 'this' | 'this_and_future' | 'all'
+
 export interface CalendarEvent {
+  /**
+   * A bare uuid for an ordinary event, or "<uuid>:<date>" for one occurrence
+   * of a series. Occurrences are computed rather than stored, so they have no
+   * id of their own: opaque to the client, which hands it straight back.
+   */
   id: string
+  /** The series this occurrence came from, and null for an ordinary event. */
+  seriesId: string | null
+  /** The local date of this occurrence, and null for an ordinary event. */
+  occurrenceDate: string | null
+  /** The rule, on every occurrence of a series and null on anything else. */
+  recurrence: Recurrence | null
   teacherId: string
   title: string
   notes: string | null
@@ -129,6 +163,8 @@ export interface CalendarEventInput {
   allDay: boolean
   studentIds: string[]
   createdTimeZone: string
+  /** Null stops it repeating; absent leaves whatever rule it has alone. */
+  recurrence?: Recurrence | null
 }
 
 /** Update takes the same fields minus createdTimeZone, which is create only. */
