@@ -122,3 +122,102 @@ export interface CalendarEventRange {
   startDate: string
   endDate: string
 }
+
+/**
+ * One student's row on one assignment. The row existing is what gives that
+ * student the work: there is no separate join table. pointsEarned null means
+ * it has not been marked yet, which keeps it out of every average rather than
+ * scoring it zero, and an explicit 0 is a real mark that does count.
+ */
+export interface AssignmentGrade {
+  id: string
+  assignmentId: string
+  studentId: string
+  /**
+   * Decimals arrive as strings, "18.0" rather than 18: the server never
+   * rounds them and parsing here would be the only place that could.
+   */
+  pointsEarned: string | null
+  percentage: string | null
+  graded: boolean
+  gradedAt: string | null
+  notes: string | null
+}
+
+/**
+ * A piece of work in a subject, given to one or more students. It carries what
+ * the work is out of and how much it counts; what each student earned lives on
+ * their own grade row, because one assignment given to three students cannot
+ * carry one score.
+ */
+export interface Assignment {
+  id: string
+  teacherId: string
+  subjectId: string
+  title: string
+  description: string | null
+  /** A bare YYYY-MM-DD. Undated work belongs to no report period. */
+  dueDate: string | null
+  pointsPossible: string
+  weight: string
+  /**
+   * Nested rather than reduced to ids, unlike calendar event attendees: there
+   * the ids kept a month of events small, here the grades are the record.
+   */
+  grades: AssignmentGrade[]
+  createdAt: string
+}
+
+export interface AssignmentInput {
+  subjectId: string
+  title: string
+  description: string | null
+  dueDate: string | null
+  pointsPossible: number
+  weight: number
+  /**
+   * Replaces the assigned set on update. A student dropped from the list has
+   * their grade row deleted, score and all, so the form treats unassigning as
+   * destructive rather than as a tidy up.
+   */
+  studentIds: string[]
+}
+
+/** Recording a mark. Null puts the work back to unmarked and clears gradedAt. */
+export interface ScoreInput {
+  pointsEarned: number | null
+}
+
+/**
+ * The weighted roll up for one subject or for everything at once. percentage
+ * and letter are null when nothing is marked, rather than a zero nobody
+ * earned, so the counts are what tell the reader how much the figure covers.
+ */
+export interface ProgressTotals {
+  assignedCount: number
+  gradedCount: number
+  ungradedCount: number
+  pointsEarned: string
+  pointsPossible: string
+  percentage: string | null
+  letter: string | null
+}
+
+export type ProgressSubject = ProgressTotals & {
+  subjectId: string
+  subjectName: string
+}
+
+export interface StudentProgress {
+  studentId: string
+  from: string
+  to: string
+  subjects: ProgressSubject[]
+  overall: ProgressTotals
+}
+
+/** Both ends required: a roll up with no period answers a different question. */
+export interface ProgressRange {
+  from: string
+  to: string
+}

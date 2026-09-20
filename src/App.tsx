@@ -33,6 +33,7 @@ import NotificationsSection from './components/dashboard/NotificationsSection'
 import OnboardingPage from './pages/app/OnboardingPage'
 import CalendarPage from './pages/app/CalendarPage'
 import TasksPage from './pages/app/TasksPage'
+import GradesPage from './pages/app/GradesPage'
 import EventFormPage from './pages/app/EventFormPage'
 import EventDetailPage from './pages/app/EventDetailPage'
 import FeaturesPage from './pages/marketing/FeaturesPage'
@@ -81,6 +82,7 @@ const App = () => {
                   <Route path='/calendar/:id/edit' element={<EventFormPage />} />
                   <Route path='/dashboard' element={<DashboardPage />} />
                   <Route path='/tasks' element={<TasksPage />} />
+                  <Route path='/grades' element={<GradesPage />} />
 
                   {/* Account settings, moved off /dashboard so that path could
                       become the dashboard the mockup describes. The nested nav

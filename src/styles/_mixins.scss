@@ -62,6 +62,37 @@
   border-color: #c0392b;
 }
 
+/**
+ * Anything rendering a native date or time control. iOS Safari sizes one from
+ * its own value text and treats that as a floor, so width: 100% alone leaves
+ * the field wider than whatever holds it. Dropping the native appearance
+ * removes that floor and clearing the shadow parts stops the rendered value
+ * propping the field back open.
+ *
+ * That height came from the native appearance too. iOS draws nothing at all in
+ * an empty date field, no placeholder text, so the value element holds no
+ * content, lays out no line box and collapses the control to a sliver. The
+ * min-height gives it one line whether or not it has a value, in the same em
+ * the text controls get from their inherited line height.
+ */
+@mixin native-date-control {
+  -webkit-appearance: none;
+  appearance: none;
+  min-width: 0;
+  max-width: 100%;
+
+  &::-webkit-date-and-time-value {
+    min-width: 0;
+    min-height: $line-height-base * 1em;
+    text-align: left;
+    line-height: $line-height-base;
+  }
+
+  &::-webkit-datetime-edit {
+    min-width: 0;
+  }
+}
+
 
 // The panel and rows of a side navigation. The profile settings nav is the
 // original: the app sidebar draws from the same mixins so the two read as one
