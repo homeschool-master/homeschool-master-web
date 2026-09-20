@@ -1,10 +1,12 @@
-import { useEffect } from 'react'
+import { useEffect, useMemo } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { useSearchParams } from 'react-router-dom'
+import { Link, useSearchParams } from 'react-router-dom'
 import type { AppDispatch, RootState } from '../../store'
 import type { ProgressTotals } from '../../types'
+import { fetchAssignments } from '../../store/assignmentsSlice'
 import { fetchStudentProgress } from '../../store/progressSlice'
 import { fetchStudents } from '../../store/studentsSlice'
+import { fetchSubjects } from '../../store/subjectsSlice'
 import { GRADES_CONTENT } from '../../constants/grades'
 import { isDateKey, todayKey } from '../../utils/calendarDates'
 import {
@@ -21,6 +23,18 @@ const { progress } = GRADES_CONTENT
 const STUDENT_PARAM = 'student'
 const FROM_PARAM = 'from'
 const TO_PARAM = 'to'
+
+/** Where the assignments view lives: the same route without the view param. */
+const ASSIGNMENTS_PATH = '/grades'
+const STUDENTS_PATH = '/settings/students'
+const SUBJECTS_PATH = '/settings/subjects'
+
+/**
+ * Why a report has nothing in it. Ordered by what has to be true before the
+ * next one can be: there is no point telling someone to set work when they
+ * have no subject to file it under.
+ */
+type EmptyReason = 'noStudents' | 'noSubjects' | 'noAssignments' | 'unassigned' | 'allUndated' | 'range'
 
 interface TotalsProps {
   label: string
@@ -90,10 +104,21 @@ const ProgressView = () => {
   const { items: students, loading: studentsLoading, loaded: studentsLoaded } = useSelector(
     (state: RootState) => state.students
   )
+  // Telling an empty report apart from a report of nothing needs the work
+  // itself, not just the roll up: the endpoint only answers for the period it
+  // was asked about, so it cannot say whether anything exists outside it.
+  const { items: assignments, loaded: assignmentsLoaded } = useSelector(
+    (state: RootState) => state.assignments
+  )
+  const { items: subjects, loaded: subjectsLoaded } = useSelector(
+    (state: RootState) => state.subjects
+  )
   const { report, loading, error } = useSelector((state: RootState) => state.progress)
 
   useEffect(() => {
     dispatch(fetchStudents())
+    dispatch(fetchSubjects())
+    dispatch(fetchAssignments())
   }, [dispatch])
 
   const today = todayKey()
@@ -139,8 +164,81 @@ const ProgressView = () => {
     ? `${selectedStudent.firstName} ${selectedStudent.lastName}`
     : ''
 
-  const showEmptyRange =
-    !loading && !error && rangeValid && report !== null && report.subjects.length === 0
+  /** Every piece of work this student holds, whenever it is due. */
+  const held = useMemo(
+    () =>
+      studentId === null
+        ? []
+        : assignments.filter((assignment) =>
+            assignment.grades.some((grade) => grade.studentId === studentId)
+          ),
+    [assignments, studentId]
+  )
+
+  /**
+   * The first thing that is missing, which is the only one worth naming: a
+   * teacher with no subjects also has no assignments, and telling her both
+   * would bury the step that unblocks the other.
+   *
+   * The last two look alike and are not. Undated work belongs to no period at
+   * all, so widening the range can never reach it, while work that is simply
+   * due elsewhere is exactly what the range is for.
+   */
+  const emptyReason = (): EmptyReason => {
+    if (students.length === 0) return 'noStudents'
+    if (subjects.length === 0) return 'noSubjects'
+    if (assignments.length === 0) return 'noAssignments'
+    if (held.length === 0) return 'unassigned'
+    if (held.every((assignment) => assignment.dueDate === null)) return 'allUndated'
+
+    return 'range'
+  }
+
+  // Settled only once all three lists have answered: before that an empty one
+  // means "not back yet" rather than "there are none", and naming the wrong
+  // cause is the whole thing this is here to avoid.
+  const settled = studentsLoaded && subjectsLoaded && assignmentsLoaded
+  // The report has to be this student's own, so a report still in flight for
+  // someone else is not read as an empty one for them.
+  const reportIsEmpty =
+    report !== null && report.studentId === studentId && report.subjects.length === 0
+
+  const showEmpty =
+    settled && !loading && !studentsLoading && !error && rangeValid &&
+    (studentId === null || reportIsEmpty)
+
+  /**
+   * The message, and the place the next step is taken. Nothing here sits
+   * behind a disclosure: it is the only thing on the page explaining why a
+   * report is blank.
+   */
+  const renderEmpty = () => {
+    const reason = emptyReason()
+    const { empty } = progress
+    const said = fillTemplate(empty[reason], { name: studentName })
+
+    const action: Record<Exclude<EmptyReason, 'range'>, { label: string; to: string }> = {
+      noStudents: { label: empty.noStudentsAction, to: STUDENTS_PATH },
+      noSubjects: { label: empty.noSubjectsAction, to: SUBJECTS_PATH },
+      noAssignments: { label: empty.noAssignmentsAction, to: ASSIGNMENTS_PATH },
+      unassigned: { label: empty.unassignedAction, to: ASSIGNMENTS_PATH },
+      allUndated: { label: empty.allUndatedAction, to: ASSIGNMENTS_PATH },
+    }
+
+    return (
+      <p className='grades__status'>
+        {said}
+        {reason !== 'range' && (
+          <>
+            {' '}
+            <Link className='grades__status-link' to={action[reason].to}>
+              {action[reason].label}
+            </Link>
+          </>
+        )}
+      </p>
+    )
+  }
 
   return (
     <div className='grades__view'>
@@ -216,10 +314,6 @@ const ProgressView = () => {
         </p>
       )}
 
-      {studentsLoaded && students.length === 0 && (
-        <p className='grades__status'>{progress.noStudents}</p>
-      )}
-
       {(loading || studentsLoading) && <p className='grades__status'>{progress.loading}</p>}
 
       {!loading && error && (
@@ -228,11 +322,7 @@ const ProgressView = () => {
         </p>
       )}
 
-      {showEmptyRange && (
-        <p className='grades__status'>
-          {fillTemplate(progress.emptyRange, { name: studentName })}
-        </p>
-      )}
+      {showEmpty && renderEmpty()}
 
       {!loading && !error && rangeValid && report !== null && report.subjects.length > 0 && (
         <ul className='progress-list'>

@@ -225,6 +225,23 @@ $color-pending: #9a5b0a;
     font-style: italic;
   }
 
+  // The next step, inside the sentence that explains why a view is empty
+  // rather than parked somewhere else on the page.
+  &__status-link {
+    font-weight: 700;
+    color: $color-accent;
+    text-decoration: underline;
+
+    &:hover {
+      color: $color-headline;
+    }
+
+    &:focus-visible {
+      outline: 2px solid $color-headline;
+      outline-offset: 2px;
+    }
+  }
+
   &__error {
     margin-bottom: $spacing-md;
     font-size: 0.9375rem;

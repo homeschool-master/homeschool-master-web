@@ -146,14 +146,44 @@ export const GRADES_CONTENT = {
     explainer: 'Each subject average weighs every assignment by its own weight, not by how many points it was out of. Work you have not marked is left out rather than counted as zero, so the counts below say how much of the period the figure covers.',
     overall: 'Overall',
     notMarked: 'No marks yet',
-    notMarkedHint: 'Nothing in this period has been marked, so there is no average to show.',
     counts: '{graded} of {assigned} marked',
     ungraded: '{ungraded} still to mark',
     points: '{earned} of {possible} points',
     loading: 'Loading progress',
-    emptyRange: 'No work is due in this period for {name}. Try a wider date range, or check the assignment due dates.',
-    noStudents: 'Add a student in Settings before there is progress to show.',
     invalidRange: 'The From date has to come before the To date.',
+
+    /**
+     * An empty report has several causes and they are not interchangeable.
+     * Pointing at the date range when the work was never set sends a teacher
+     * to fiddle with two dates that were never the problem, so each cause
+     * names the one next step that actually changes the answer, and links to
+     * wherever that step is taken.
+     */
+    empty: {
+      noStudents: 'There is nobody to report on yet.',
+      noStudentsAction: 'Add a student in Settings',
+      /** Subjects come first because an assignment cannot exist without one. */
+      noSubjects: 'Every assignment belongs to a subject, and there are none yet.',
+      noSubjectsAction: 'Add a subject in Settings',
+      noAssignments: 'No work has been set yet, so there is nothing to roll up.',
+      noAssignmentsAction: 'Add an assignment',
+      /**
+       * Separate from having no assignments at all: the work exists, this
+       * student is just not on any of it, so the step is editing a piece of
+       * work rather than creating one.
+       */
+      unassigned: '{name} is not on any assignment yet, so no date range will show anything.',
+      unassignedAction: 'Put them on an assignment',
+      /**
+       * Undated work belongs to no report period, so widening the dates can
+       * never surface it. Saying "try a wider range" here would be advice that
+       * cannot work.
+       */
+      allUndated: 'The work {name} holds has no due dates, and undated work counts towards no period.',
+      allUndatedAction: 'Give it a due date',
+      /** The only cause the date range actually answers. */
+      range: 'Nothing {name} holds is due between these dates. Widen the range to see more.',
+    },
   },
 
   errors: {
