@@ -21,13 +21,16 @@ interface CalendarEventResponse {
  */
 export const fetchCalendarEventsRequest = async (
   range: CalendarEventRange,
-  studentId?: string
+  studentIds?: string[]
 ): Promise<CalendarEvent[]> => {
   const response = await api.get<CalendarEventsResponse>('/api/v1/calendar_events', {
     params: {
       startDate: range.startDate,
       endDate: range.endDate,
-      ...(studentId ? { studentId } : {}),
+      // studentIds[]=a&studentIds[]=b, which the endpoint reads as any of
+      // them rather than all of them. Axios repeats the key by default for an
+      // array, and the brackets are what Rails needs to parse it as one.
+      ...(studentIds && studentIds.length > 0 ? { 'studentIds[]': studentIds } : {}),
     },
   })
   return response.data.data

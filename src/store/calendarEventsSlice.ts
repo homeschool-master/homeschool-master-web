@@ -55,18 +55,19 @@ const initialState: CalendarEventsState = {
 }
 
 /**
- * studentId filters server side, through the query param the endpoint already
- * supports. The other filters narrow the loaded range in the page, because they
- * have no server counterpart.
+ * studentIds filters server side, through the query param the endpoint
+ * supports: several ids mean events any of them attend. The other filters
+ * narrow the loaded range in the page, because they have no server
+ * counterpart.
  */
 export const fetchCalendarEvents = createAsyncThunk(
   'calendarEvents/fetchCalendarEvents',
   async (
-    { range, studentId }: { range: CalendarEventRange; studentId?: string },
+    { range, studentIds }: { range: CalendarEventRange; studentIds?: string[] },
     { rejectWithValue }
   ) => {
     try {
-      return await fetchCalendarEventsRequest(range, studentId)
+      return await fetchCalendarEventsRequest(range, studentIds)
     } catch (error: unknown) {
       return rejectWithValue(apiErrorMessage(error, CALENDAR_CONTENT.errors.loadEvents))
     }

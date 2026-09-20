@@ -20,7 +20,13 @@ export const fetchTasksRequest = async (): Promise<Task[]> => {
   return response.data.data
 }
 
-// The api client sends X-Key-Inflection, so dueDate arrives as due_date.
+/**
+ * The api client sends X-Key-Inflection, so dueDate arrives as due_date.
+ *
+ * studentIds has to travel as JSON rather than form encoding: an empty array
+ * is dropped by form encoding, and the server would read that as "leave the
+ * students alone" instead of "take them all off".
+ */
 export const createTaskRequest = async (input: TaskInput): Promise<Task> => {
   const response = await api.post<TaskResponse>('/api/v1/tasks', input)
   return response.data.data

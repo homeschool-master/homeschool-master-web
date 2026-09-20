@@ -4,7 +4,7 @@ import { useDispatch, useSelector } from 'react-redux'
 import { useNavigate, useSearchParams } from 'react-router-dom'
 import type { AppDispatch, RootState } from '../../store'
 import type { CalendarEvent } from '../../types'
-import type { Profile } from '../../utils/profile'
+import type { Scope } from '../../utils/profile'
 import { fetchCalendarEvents } from '../../store/calendarEventsSlice'
 import { fetchStudents } from '../../store/studentsSlice'
 import { CALENDAR_CONTENT, MONTH_NAMES } from '../../constants/calendar'
@@ -34,14 +34,15 @@ import {
   OVERRIDE_PARAM,
   STUDENT_PARAM,
   hasOverride,
-  isUnknownProfile,
-  matchesProfile,
+  matchesScope,
   profileLabel,
   profileSearch,
-  readCalendarScope,
   readProfile,
-  sameProfile,
-  serverStudentId,
+  readScope,
+  scopeLabel,
+  serverStudentIds,
+  unknownStudentIds,
+  writeOverrideIds,
 } from '../../utils/profile'
 import type { CalendarFilterValues, TimingFilter } from '../../components/calendar/CalendarFilters'
 
@@ -81,12 +82,12 @@ const applyClientFilters = (
   events: CalendarEvent[],
   timing: TimingFilter,
   search: string,
-  scope: Profile
+  scope: Scope
 ): CalendarEvent[] => {
   const needle = search.trim().toLowerCase()
 
   return events.filter((event) => {
-    if (!matchesProfile(event, scope)) return false
+    if (!matchesScope(event, scope)) return false
     if (timing === 'allDay' && !event.allDay) return false
     if (timing === 'timed' && event.allDay) return false
     if (!needle) return true
@@ -117,7 +118,7 @@ const CalendarPage = () => {
   // The profile the app is navigating with, and what this visit is actually
   // showing: the same thing unless the student dropdown has overridden it.
   const profile = readProfile(searchParams)
-  const scope = readCalendarScope(searchParams)
+  const scope = readScope(searchParams)
   const overridden = hasOverride(searchParams)
   // Event links carry the profile, never the override, so a detour through an
   // event and back is the same journey as any other: the profile survives it,
@@ -125,12 +126,15 @@ const CalendarPage = () => {
   const eventLinkSearch = profileSearch(profile)
 
   const filterValues: CalendarFilterValues = {
-    studentId: scope.kind === 'student' ? scope.studentId ?? '' : '',
+    studentIds: scope.kind === 'student' ? scope.studentIds : [],
     timing: readTiming(searchParams),
     search: searchParams.get('q') ?? '',
   }
   const { timing, search } = filterValues
-  const studentId = serverStudentId(scope)
+  const studentIds = serverStudentIds(scope)
+  // A stable key for the effect: the array is rebuilt from the URL each
+  // render, so comparing it by identity would refetch on every one.
+  const studentIdsKey = (studentIds ?? []).join(',')
 
   const range = useMemo(() => rangeFor(rangeKind, dateKey), [rangeKind, dateKey])
 
@@ -141,14 +145,16 @@ const CalendarPage = () => {
   }, [dispatch])
 
   useEffect(() => {
-    dispatch(fetchCalendarEvents({ range, studentId }))
-  }, [dispatch, range, studentId])
+    dispatch(fetchCalendarEvents({ range, studentIds }))
+    // studentIds is a fresh array each render, so the key stands in for it.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [dispatch, range, studentIdsKey])
 
   const visibleEvents = useMemo(
     () => applyClientFilters(items, timing, search, scope),
     // Spread rather than the object, which is rebuilt from the URL each render.
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    [items, timing, search, scope.kind, scope.studentId]
+    [items, timing, search, scope.kind, studentIdsKey]
   )
   const eventsByDay = useMemo(() => groupEventsByDay(visibleEvents), [visibleEvents])
   const today = todayKey()
@@ -206,13 +212,19 @@ const CalendarPage = () => {
    * only ever written here, and nothing carries the override onward, so leaving
    * the calendar and coming back lands on the profile again.
    */
-  const setStudentOverride = (value: string): string | null => {
+  const setStudentOverride = (picked: string[]): string | null => {
     // Back to exactly what the profile already says: drop the override rather
     // than pinning the same answer twice.
-    if (value === '' && profile.kind === 'everyone') return null
-    if (value !== '' && profile.kind === 'student' && profile.studentId === value) return null
+    if (picked.length === 0 && profile.kind === 'everyone') return null
+    if (
+      picked.length === 1 &&
+      profile.kind === 'student' &&
+      profile.studentId === picked[0]
+    ) {
+      return null
+    }
 
-    return value === '' ? OVERRIDE_ALL : value
+    return picked.length === 0 ? OVERRIDE_ALL : writeOverrideIds(picked)
   }
 
   const filterPanel = (
@@ -220,11 +232,11 @@ const CalendarPage = () => {
       values={filterValues}
       students={students}
       collapsible={isMobile}
-      scopeLabel={profileLabel(scope, students)}
-      scopeIsDefault={sameProfile(scope, DEFAULT_PROFILE) && !overridden}
+      scopeLabel={scopeLabel(scope, students)}
+      scopeIsDefault={scope.kind === DEFAULT_PROFILE.kind && !overridden}
       profileLabel={overridden ? profileLabel(profile, students) : null}
       onResetToProfile={() => updateParams({ [OVERRIDE_PARAM]: null })}
-      unknownProfile={studentsLoaded && isUnknownProfile(scope, students)}
+      unknownCount={studentsLoaded ? unknownStudentIds(scope, students).length : 0}
       onResetToDefault={() =>
         updateParams({ [MODE_PARAM]: null, [STUDENT_PARAM]: null, [OVERRIDE_PARAM]: null })
       }
@@ -233,9 +245,9 @@ const CalendarPage = () => {
         updateParams({
           // Left out entirely unless the dropdown itself moved, so changing the
           // timing or the search never disturbs the override either way.
-          ...(changes.studentId === undefined
+          ...(changes.studentIds === undefined
             ? {}
-            : { [OVERRIDE_PARAM]: setStudentOverride(next.studentId) }),
+            : { [OVERRIDE_PARAM]: setStudentOverride(next.studentIds) }),
           timing: next.timing === 'all' ? null : next.timing,
           q: next.search || null,
         })

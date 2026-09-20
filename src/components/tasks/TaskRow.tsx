@@ -1,6 +1,7 @@
-import type { Task } from '../../types'
+import type { Student, Task } from '../../types'
 import { TASKS_CONTENT } from '../../constants/tasks'
 import { formatDueDate, isDueToday, isOverdue } from '../../utils/tasks'
+import { ownershipLabel } from '../../utils/taskOwnership'
 
 interface TaskRowProps {
   task: Task
@@ -11,6 +12,8 @@ interface TaskRowProps {
   /** Omitted on the dashboard panel, which lists rather than manages. */
   onEdit?: (task: Task) => void
   onRemove?: (task: Task) => void
+  /** Resolves the student ids the task carries into first names. */
+  students: Student[]
 }
 
 /**
@@ -18,7 +21,15 @@ interface TaskRowProps {
  * Used by the tasks page and by the dashboard panel, so ticking behaves the
  * same in both places.
  */
-const TaskRow = ({ task, today, toggling, onToggle, onEdit, onRemove }: TaskRowProps) => {
+const TaskRow = ({
+  task,
+  today,
+  toggling,
+  onToggle,
+  onEdit,
+  onRemove,
+  students,
+}: TaskRowProps) => {
   const overdue = isOverdue(task, today)
   const dueToday = isDueToday(task, today)
 
@@ -53,6 +64,13 @@ const TaskRow = ({ task, today, toggling, onToggle, onEdit, onRemove }: TaskRowP
         <span className='task-row__title'>{task.title}</span>
         <span className='task-row__due'>{dueLabel()}</span>
       </label>
+
+      {/* Who it involves and whose job it is, in one phrase: either alone
+          leaves the other unanswered. Teacher owned work naming nobody has
+          nothing to add, so it says nothing. */}
+      {ownershipLabel(task, students) && (
+        <p className='task-row__ownership'>{ownershipLabel(task, students)}</p>
+      )}
 
       {task.description && <p className='task-row__notes'>{task.description}</p>}
 
