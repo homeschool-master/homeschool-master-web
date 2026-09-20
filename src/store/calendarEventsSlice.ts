@@ -1,5 +1,6 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit'
 import type {
+  SeriesScope,
   CalendarEvent,
   CalendarEventInput,
   CalendarEventRange,
@@ -102,11 +103,11 @@ export const fetchCalendarEvent = createAsyncThunk(
 export const updateCalendarEvent = createAsyncThunk(
   'calendarEvents/updateCalendarEvent',
   async (
-    { id, input }: { id: string; input: CalendarEventUpdateInput },
+    { id, input, scope }: { id: string; input: CalendarEventUpdateInput; scope?: SeriesScope },
     { rejectWithValue }
   ) => {
     try {
-      return await updateCalendarEventRequest(id, input)
+      return await updateCalendarEventRequest(id, input, scope)
     } catch (error: unknown) {
       return rejectWithValue(apiErrorMessage(error, CALENDAR_CONTENT.errors.updateEvent))
     }
@@ -115,9 +116,9 @@ export const updateCalendarEvent = createAsyncThunk(
 
 export const deleteCalendarEvent = createAsyncThunk(
   'calendarEvents/deleteCalendarEvent',
-  async (id: string, { rejectWithValue }) => {
+  async ({ id, scope }: { id: string; scope?: SeriesScope }, { rejectWithValue }) => {
     try {
-      await deleteCalendarEventRequest(id)
+      await deleteCalendarEventRequest(id, scope)
       return id
     } catch (error: unknown) {
       return rejectWithValue(apiErrorMessage(error, CALENDAR_CONTENT.errors.deleteEvent))
@@ -208,7 +209,7 @@ const calendarEventsSlice = createSlice({
       })
 
       .addCase(deleteCalendarEvent.pending, (state, action) => {
-        state.deletingId = action.meta.arg
+        state.deletingId = action.meta.arg.id
         state.deleteError = null
       })
       .addCase(deleteCalendarEvent.fulfilled, (state, action) => {

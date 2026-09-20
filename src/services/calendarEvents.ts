@@ -4,6 +4,7 @@ import type {
   CalendarEventInput,
   CalendarEventRange,
   CalendarEventUpdateInput,
+  SeriesScope,
 } from '../types'
 
 interface CalendarEventsResponse {
@@ -43,8 +44,14 @@ export const createCalendarEventRequest = async (
   return response.data.data
 }
 
+/**
+ * The id may be a bare uuid or an occurrence's "<uuid>:<date>". It is encoded
+ * because the colon is meaningful in a path otherwise.
+ */
 export const fetchCalendarEventRequest = async (id: string): Promise<CalendarEvent> => {
-  const response = await api.get<CalendarEventResponse>(`/api/v1/calendar_events/${id}`)
+  const response = await api.get<CalendarEventResponse>(
+    `/api/v1/calendar_events/${encodeURIComponent(id)}`
+  )
   return response.data.data
 }
 
@@ -55,16 +62,26 @@ export const fetchCalendarEventRequest = async (id: string): Promise<CalendarEve
  */
 export const updateCalendarEventRequest = async (
   id: string,
-  input: CalendarEventUpdateInput
+  input: CalendarEventUpdateInput,
+  scope?: SeriesScope
 ): Promise<CalendarEvent> => {
   const response = await api.patch<CalendarEventResponse>(
-    `/api/v1/calendar_events/${id}`,
-    input
+    `/api/v1/calendar_events/${encodeURIComponent(id)}`,
+    scope ? { ...input, scope } : input
   )
   return response.data.data
 }
 
-/** Hard delete: attendee rows cascade and the response carries no body. */
-export const deleteCalendarEventRequest = async (id: string): Promise<void> => {
-  await api.delete(`/api/v1/calendar_events/${id}`)
+/**
+ * Hard delete: attendee rows cascade and the response carries no body. On an
+ * occurrence of a series, scope says how far the deletion reaches, and the
+ * server treats an absent scope as all of it.
+ */
+export const deleteCalendarEventRequest = async (
+  id: string,
+  scope?: SeriesScope
+): Promise<void> => {
+  await api.delete(`/api/v1/calendar_events/${encodeURIComponent(id)}`, {
+    params: scope ? { scope } : {},
+  })
 }

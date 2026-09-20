@@ -19,6 +19,8 @@ import { readableTextColor } from '../../utils/studentColor'
 import { resolveAttendees } from '../../utils/attendees'
 import { profileSearch, readProfile } from '../../utils/profile'
 import EventDeleteConfirm from '../../components/calendar/EventDeleteConfirm'
+import SeriesScopeChoice from '../../components/calendar/SeriesScopeChoice'
+import type { SeriesScope } from '../../types'
 
 const { detail } = CALENDAR_CONTENT
 
@@ -69,10 +71,10 @@ const EventDetailPage = () => {
     ? backToCalendar(isoToDateKey(current.startTime))
     : backToCalendar()
 
-  const handleDelete = async () => {
+  const handleDelete = async (scope?: SeriesScope) => {
     if (!current) return
     const eventDate = isoToDateKey(current.startTime)
-    const result = await dispatch(deleteCalendarEvent(current.id))
+    const result = await dispatch(deleteCalendarEvent({ id: current.id, scope }))
     if (deleteCalendarEvent.fulfilled.match(result)) {
       navigate(backToCalendar(eventDate))
     }
@@ -110,6 +112,12 @@ const EventDetailPage = () => {
           <h2 className='event-detail__title'>
             {current.title || CALENDAR_CONTENT.grid.untitledEvent}
           </h2>
+
+          {/* Says the event belongs to a series before anything is edited, so
+              the three way choice further down is not a surprise. */}
+          {current.seriesId && (
+            <span className='event-detail__series'>{CALENDAR_CONTENT.seriesBadge}</span>
+          )}
 
           <div className='event-detail__row'>
             <span className='event-detail__label'>{detail.date}</span>
@@ -169,12 +177,28 @@ const EventDetailPage = () => {
         )}
 
         <div className='event-detail__actions'>
-          {confirmingDelete ? (
+          {/* Deleting one occurrence of a series has three possible meanings,
+              so it asks which rather than picking one. An ordinary event has
+              only ever had the one confirmation, and keeps it. */}
+          {confirmingDelete && current.seriesId ? (
+            <SeriesScopeChoice
+              mode='delete'
+              busy={deletingId === current.id}
+              onConfirm={(scope) => {
+                setConfirmingDelete(false)
+                void handleDelete(scope)
+              }}
+              onCancel={() => {
+                dispatch(clearDeleteError())
+                setConfirmingDelete(false)
+              }}
+            />
+          ) : confirmingDelete ? (
             <EventDeleteConfirm
               title={current.title || CALENDAR_CONTENT.grid.untitledEvent}
               deleting={deletingId === current.id}
               error={deleteError}
-              onConfirm={handleDelete}
+              onConfirm={() => handleDelete()}
               onCancel={() => {
                 dispatch(clearDeleteError())
                 setConfirmingDelete(false)

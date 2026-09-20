@@ -13,8 +13,10 @@ import {
   updateCalendarEvent,
 } from '../../store/calendarEventsSlice'
 import { fetchStudents } from '../../store/studentsSlice'
-import FormField, { FormInput, FormSelect, FormTextarea } from '../../components/shared/FormField'
+import FormField, { FormInput, FormTextarea } from '../../components/shared/FormField'
 import EventDeleteConfirm from '../../components/calendar/EventDeleteConfirm'
+import RecurrenceFields from '../../components/calendar/RecurrenceFields'
+import SeriesScopeChoice from '../../components/calendar/SeriesScopeChoice'
 import { CALENDAR_CONTENT, NEUTRAL_EVENT_COLOR } from '../../constants/calendar'
 import {
   browserTimeZone,
@@ -27,6 +29,7 @@ import {
   toDateKey,
 } from '../../utils/calendarDates'
 import { readableTextColor } from '../../utils/studentColor'
+import type { Recurrence, SeriesScope } from '../../types'
 
 const DEFAULT_START_TIME = '09:00'
 const DEFAULT_END_TIME = '10:00'
@@ -78,6 +81,9 @@ const EventFormPage = () => {
   const [notes, setNotes] = useState('')
   const [validationError, setValidationError] = useState<string | null>(null)
   const [confirmingDelete, setConfirmingDelete] = useState(false)
+  const [recurrence, setRecurrence] = useState<Recurrence | null>(null)
+  // Set while the teacher is being asked how far a change to a series reaches.
+  const [pendingScope, setPendingScope] = useState<'edit' | 'delete' | null>(null)
 
   useEffect(() => {
     dispatch(fetchStudents())
@@ -113,7 +119,13 @@ const EventFormPage = () => {
     setSelectedIds(current.attendeeIds)
     setLocation(current.location ?? '')
     setNotes(current.notes ?? '')
+    setRecurrence(current.recurrence)
   }
+
+  // An occurrence carries its series id; an ordinary event does not. Only the
+  // first needs the three way choice, and only it can be edited narrowly.
+  const isOccurrence = Boolean(current?.seriesId)
+  const editingOneOccurrence = isEditing && isOccurrence
 
   const toggleStudent = (id: string) => {
     setValidationError(null)
@@ -143,7 +155,7 @@ const EventFormPage = () => {
     return null
   }
 
-  const handleSubmit = async (submitEvent: React.FormEvent) => {
+  const handleSubmit = (submitEvent: React.FormEvent) => {
     submitEvent.preventDefault()
 
     const problem = validate()
@@ -153,6 +165,17 @@ const EventFormPage = () => {
     }
     setValidationError(null)
 
+    // Saving one occurrence of a series has three possible meanings, so it
+    // asks rather than picking one and rewriting days nobody looked at.
+    if (editingOneOccurrence) {
+      setPendingScope('edit')
+      return
+    }
+
+    void save()
+  }
+
+  const save = async (scope?: SeriesScope) => {
     // The submitted attendee list replaces the set outright, so it is always
     // the full intended roster for the event rather than a delta.
     const attendeeIds = allStudents ? students.map((student) => student.id) : selectedIds
@@ -169,13 +192,23 @@ const EventFormPage = () => {
 
     if (isEditing && id) {
       // createdTimeZone is create only and is deliberately absent here.
-      const result = await dispatch(updateCalendarEvent({ id, input: fields }))
-      if (updateCalendarEvent.fulfilled.match(result)) navigate(`/calendar/${id}`)
+      // The rule is sent only when the whole series is in scope: a narrower
+      // edit detaches or splits, and neither of those redefines the rule.
+      const result = await dispatch(
+        updateCalendarEvent({
+          id,
+          input: scope && scope !== 'all' ? fields : { ...fields, recurrence },
+          scope,
+        })
+      )
+      if (updateCalendarEvent.fulfilled.match(result)) {
+        navigate(`/calendar?date=${date}`)
+      }
       return
     }
 
     const result = await dispatch(
-      createCalendarEvent({ ...fields, createdTimeZone: browserTimeZone() })
+      createCalendarEvent({ ...fields, recurrence, createdTimeZone: browserTimeZone() })
     )
 
     if (createCalendarEvent.fulfilled.match(result)) {
@@ -183,11 +216,18 @@ const EventFormPage = () => {
     }
   }
 
-  const handleDelete = async () => {
+  const handleDelete = async (scope?: SeriesScope) => {
     if (!id || !current) return
     const eventDate = isoToDateKey(current.startTime)
-    const result = await dispatch(deleteCalendarEvent(id))
+    const result = await dispatch(deleteCalendarEvent({ id, scope }))
     if (deleteCalendarEvent.fulfilled.match(result)) navigate(`/calendar?date=${eventDate}`)
+  }
+
+  // An occurrence asks how far to reach; an ordinary event asks only whether
+  // the teacher is sure, which is the confirmation it has always had.
+  const startDelete = () => {
+    if (editingOneOccurrence) setPendingScope('delete')
+    else setConfirmingDelete(true)
   }
 
   const saving = isEditing ? updating : creating
@@ -209,6 +249,21 @@ const EventFormPage = () => {
 
   return (
     <form className='event-form' onSubmit={handleSubmit}>
+      {pendingScope && (
+        <div className='event-form__scope'>
+          <SeriesScopeChoice
+            mode={pendingScope}
+            busy={saving || deletingId !== null}
+            onConfirm={(scope) => {
+              setPendingScope(null)
+              if (pendingScope === 'delete') void handleDelete(scope)
+              else void save(scope)
+            }}
+            onCancel={() => setPendingScope(null)}
+          />
+        </div>
+      )}
+
       <header className='event-form__bar'>
         <button
           type='button'
@@ -302,17 +357,15 @@ const EventFormPage = () => {
         )}
 
         <div className='event-form__row event-form__row--recurrence'>
-          <FormField label={CALENDAR_CONTENT.form.recurrence} htmlFor='event-recurrence'>
-            <FormSelect
-              id='event-recurrence'
-              value='none'
-              disabled
-              title={CALENDAR_CONTENT.form.recurrenceHint}
-              onChange={() => undefined}
-            >
-              <option value='none'>{CALENDAR_CONTENT.form.recurrenceValue}</option>
-            </FormSelect>
-          </FormField>
+          {/* Editing one occurrence cannot change the rule: the rule belongs
+              to the series, and the scope choice below is what decides how far
+              a change reaches. */}
+          <RecurrenceFields
+            value={recurrence}
+            onChange={setRecurrence}
+            startDate={date}
+            disabled={editingOneOccurrence}
+          />
         </div>
       </section>
 
@@ -405,7 +458,7 @@ const EventFormPage = () => {
               title={current.title || CALENDAR_CONTENT.grid.untitledEvent}
               deleting={deletingId === current.id}
               error={deleteError}
-              onConfirm={handleDelete}
+              onConfirm={() => handleDelete()}
               onCancel={() => {
                 dispatch(clearDeleteError())
                 setConfirmingDelete(false)
@@ -415,7 +468,7 @@ const EventFormPage = () => {
             <button
               type='button'
               className='event-detail__delete'
-              onClick={() => setConfirmingDelete(true)}
+              onClick={startDelete}
               disabled={saving}
             >
               {CALENDAR_CONTENT.form.delete}
