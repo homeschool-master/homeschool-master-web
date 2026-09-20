@@ -1,3 +1,5 @@
+import { RECURRENCE_CONTENT, SERIES_SCOPE_CONTENT } from './recurrence'
+
 export const CALENDAR_CONTENT = {
   grid: {
     weekdays: ['S', 'M', 'T', 'W', 'TH', 'F', 'S'],
@@ -64,34 +66,8 @@ export const CALENDAR_CONTENT = {
     allDay: 'All Day',
     start: 'Start',
     end: 'End',
+    // The rule's own wording is shared with tasks: see RECURRENCE_CONTENT.
     recurrence: 'Is this event reoccurring?',
-    recurrenceValue: 'Does not repeat',
-    recurrenceDaily: 'Every day',
-    recurrenceWeekly: 'Every week',
-    recurrenceMonthly: 'Every month',
-    recurrenceYearly: 'Every year',
-
-    weekdays: 'On these days',
-    weekdaysHint: 'Pick more than one and it is still a single series.',
-    weekdayNames: ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'],
-
-    monthlyAnchor: 'Each month, on',
-    monthlyByDate: 'The same date',
-    monthlyByPosition: 'The same weekday',
-    /**
-     * Says what the app does about the months that have no such day, because
-     * it is the one thing about a monthly repeat that surprises people.
-     */
-    monthlyByDateHint: 'A month without that date is skipped rather than moved.',
-    monthlyByPositionHint: 'A month without that weekday is skipped rather than moved.',
-
-    untilDate: 'Until',
-    /**
-     * A date rather than a number of times. Expanding on read means "the tenth
-     * occurrence" cannot be answered without counting from the beginning of
-     * the series every time any window is drawn, while a date is a comparison.
-     */
-    untilHint: 'Optional. Leave it blank and it repeats indefinitely.',
     attendees: 'Attendees',
     allStudents: 'All Students',
     noStudents: 'No students yet. Add one before inviting attendees.',
@@ -126,21 +102,13 @@ export const CALENDAR_CONTENT = {
   },
   /** Choosing how far an edit or a deletion of one occurrence reaches. */
   scope: {
+    ...SERIES_SCOPE_CONTENT,
     editHeading: 'This event repeats. Which ones are you changing?',
     deleteHeading: 'This event repeats. Which ones are you deleting?',
-    this: 'This occurrence',
-    thisAndFuture: 'This and all later ones',
-    all: 'Every occurrence',
-    thisHint: 'The others stay as they are.',
-    thisAndFutureHint: 'The ones before it stay as they are.',
-    allHint: 'Including the ones already past.',
-    confirmEdit: 'Save',
-    confirmDelete: 'Delete',
-    cancel: 'Cancel',
   },
 
   /** Shown on a row and on the detail page so a series is recognisable. */
-  seriesBadge: 'Repeats',
+  seriesBadge: RECURRENCE_CONTENT.seriesBadge,
 
   validation: {
     titleRequired: 'Please give the event a title.',

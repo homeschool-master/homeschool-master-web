@@ -1,33 +1,51 @@
-import FormField, { FormInput, FormSelect } from '../shared/FormField'
-import { CALENDAR_CONTENT } from '../../constants/calendar'
+import FormField, { FormInput, FormSelect } from './FormField'
+import { RECURRENCE_CONTENT } from '../../constants/recurrence'
 import type { MonthlyAnchor, Recurrence, RecurrenceFrequency } from '../../types'
 
-const { form } = CALENDAR_CONTENT
+const content = RECURRENCE_CONTENT
 
 /** Rendered in this order, the "off" state first. */
-const FREQUENCIES: { value: RecurrenceFrequency | 'none'; label: string }[] = [
-  { value: 'none', label: form.recurrenceValue },
-  { value: 'daily', label: form.recurrenceDaily },
-  { value: 'weekly', label: form.recurrenceWeekly },
-  { value: 'monthly', label: form.recurrenceMonthly },
-  { value: 'yearly', label: form.recurrenceYearly },
+const FREQUENCIES: { value: RecurrenceFrequency | 'none'; labelKey: keyof typeof content }[] = [
+  { value: 'none', labelKey: 'none' },
+  { value: 'daily', labelKey: 'daily' },
+  { value: 'weekly', labelKey: 'weekly' },
+  { value: 'monthly', labelKey: 'monthly' },
+  { value: 'yearly', labelKey: 'yearly' },
 ]
 
 interface RecurrenceFieldsProps {
-  /** Null while the event does not repeat. */
+  /** Null while the record does not repeat. */
   value: Recurrence | null
   onChange: (next: Recurrence | null) => void
-  /** The date the series is anchored on, which the monthly wording reads. */
+  /** The date the series is anchored on, which the weekly and monthly wording reads. */
   startDate: string
+  /**
+   * Namespaces the control ids, so a page holding more than one of these keeps
+   * each label pointing at its own field.
+   */
+  idPrefix: string
+  /** The question above the frequency, which names what is repeating. */
+  label: string
   disabled?: boolean
 }
 
 /**
- * The repeat rule on the event form. Only the fields the chosen frequency
- * actually uses are shown: daily and yearly need no day picked, weekly needs
- * which days, monthly needs which of its two anchors.
+ * The repeat rule, shared by the event form and the task form. Only the fields
+ * the chosen frequency actually uses are shown: daily and yearly need no day
+ * picked, weekly needs which days, monthly needs which of its two anchors.
+ *
+ * Nothing in here knows whether it is repeating a lesson or a to-do. That is
+ * the point: the rule is the same rule, and the only thing the caller supplies
+ * is the noun in the question at the top.
  */
-const RecurrenceFields = ({ value, onChange, startDate, disabled = false }: RecurrenceFieldsProps) => {
+const RecurrenceFields = ({
+  value,
+  onChange,
+  startDate,
+  idPrefix,
+  label,
+  disabled = false,
+}: RecurrenceFieldsProps) => {
   const frequency = value?.frequency ?? 'none'
 
   const selectFrequency = (next: RecurrenceFrequency | 'none') => {
@@ -35,7 +53,7 @@ const RecurrenceFields = ({ value, onChange, startDate, disabled = false }: Recu
 
     onChange({
       frequency: next,
-      // A weekly series starts on the day the event is on, which is the only
+      // A weekly series starts on the day the record is on, which is the only
       // answer that cannot contradict the date above it.
       weekdays: next === 'weekly' ? [weekdayOf(startDate)] : [],
       monthlyAnchor: next === 'monthly' ? 'day_of_month' : null,
@@ -59,9 +77,9 @@ const RecurrenceFields = ({ value, onChange, startDate, disabled = false }: Recu
 
   return (
     <>
-      <FormField label={form.recurrence} htmlFor='event-recurrence'>
+      <FormField label={label} htmlFor={`${idPrefix}-recurrence`}>
         <FormSelect
-          id='event-recurrence'
+          id={`${idPrefix}-recurrence`}
           value={frequency}
           disabled={disabled}
           onChange={(changeEvent) =>
@@ -70,24 +88,24 @@ const RecurrenceFields = ({ value, onChange, startDate, disabled = false }: Recu
         >
           {FREQUENCIES.map((option) => (
             <option key={option.value} value={option.value}>
-              {option.label}
+              {content[option.labelKey] as string}
             </option>
           ))}
         </FormSelect>
       </FormField>
 
       {value?.frequency === 'weekly' && (
-        <fieldset className='event-form__weekdays'>
-          <legend className='event-form__label'>{form.weekdays}</legend>
-          <div className='event-form__weekday-row'>
-            {form.weekdayNames.map((name, day) => (
+        <fieldset className='recurrence-fields__weekdays'>
+          <legend className='recurrence-fields__label'>{content.weekdays}</legend>
+          <div className='recurrence-fields__weekday-row'>
+            {content.weekdayNames.map((name, day) => (
               <label
                 key={name}
                 className={`weekday-chip${value.weekdays.includes(day) ? ' weekday-chip--on' : ''}`}
-                htmlFor={`event-weekday-${day}`}
+                htmlFor={`${idPrefix}-weekday-${day}`}
               >
                 <input
-                  id={`event-weekday-${day}`}
+                  id={`${idPrefix}-weekday-${day}`}
                   type='checkbox'
                   className='weekday-chip__box'
                   checked={value.weekdays.includes(day)}
@@ -98,37 +116,37 @@ const RecurrenceFields = ({ value, onChange, startDate, disabled = false }: Recu
               </label>
             ))}
           </div>
-          <p className='event-form__hint'>{form.weekdaysHint}</p>
+          <p className='recurrence-fields__hint'>{content.weekdaysHint}</p>
         </fieldset>
       )}
 
       {value?.frequency === 'monthly' && (
-        <FormField label={form.monthlyAnchor} htmlFor='event-monthly-anchor'>
+        <FormField label={content.monthlyAnchor} htmlFor={`${idPrefix}-monthly-anchor`}>
           <FormSelect
-            id='event-monthly-anchor'
+            id={`${idPrefix}-monthly-anchor`}
             value={value.monthlyAnchor ?? 'day_of_month'}
             disabled={disabled}
             onChange={(changeEvent) =>
               onChange({ ...value, monthlyAnchor: changeEvent.target.value as MonthlyAnchor })
             }
           >
-            <option value='day_of_month'>{form.monthlyByDate}</option>
-            <option value='weekday_position'>{form.monthlyByPosition}</option>
+            <option value='day_of_month'>{content.monthlyByDate}</option>
+            <option value='weekday_position'>{content.monthlyByPosition}</option>
           </FormSelect>
           {/* Says what happens to the months that have no such day, which is
               the one thing about a monthly repeat that surprises people. */}
-          <p className='event-form__hint'>
+          <p className='recurrence-fields__hint'>
             {value.monthlyAnchor === 'weekday_position'
-              ? form.monthlyByPositionHint
-              : form.monthlyByDateHint}
+              ? content.monthlyByPositionHint
+              : content.monthlyByDateHint}
           </p>
         </FormField>
       )}
 
       {value !== null && (
-        <FormField label={form.untilDate} htmlFor='event-until'>
+        <FormField label={content.untilDate} htmlFor={`${idPrefix}-until`}>
           <FormInput
-            id='event-until'
+            id={`${idPrefix}-until`}
             type='date'
             value={value.untilDate ?? ''}
             disabled={disabled}
@@ -136,7 +154,7 @@ const RecurrenceFields = ({ value, onChange, startDate, disabled = false }: Recu
               onChange({ ...value, untilDate: changeEvent.target.value || null })
             }
           />
-          <p className='event-form__hint'>{form.untilHint}</p>
+          <p className='recurrence-fields__hint'>{content.untilHint}</p>
         </FormField>
       )}
     </>

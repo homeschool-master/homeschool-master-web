@@ -15,8 +15,8 @@ import {
 import { fetchStudents } from '../../store/studentsSlice'
 import FormField, { FormInput, FormTextarea } from '../../components/shared/FormField'
 import EventDeleteConfirm from '../../components/calendar/EventDeleteConfirm'
-import RecurrenceFields from '../../components/calendar/RecurrenceFields'
-import SeriesScopeChoice from '../../components/calendar/SeriesScopeChoice'
+import RecurrenceFields from '../../components/shared/RecurrenceFields'
+import SeriesScopeChoice from '../../components/shared/SeriesScopeChoice'
 import { CALENDAR_CONTENT, NEUTRAL_EVENT_COLOR } from '../../constants/calendar'
 import {
   browserTimeZone,
@@ -253,6 +253,11 @@ const EventFormPage = () => {
         <div className='event-form__scope'>
           <SeriesScopeChoice
             mode={pendingScope}
+            heading={
+              pendingScope === 'delete'
+                ? CALENDAR_CONTENT.scope.deleteHeading
+                : CALENDAR_CONTENT.scope.editHeading
+            }
             busy={saving || deletingId !== null}
             onConfirm={(scope) => {
               setPendingScope(null)
@@ -363,6 +368,8 @@ const EventFormPage = () => {
           <RecurrenceFields
             value={recurrence}
             onChange={setRecurrence}
+            idPrefix='event'
+            label={CALENDAR_CONTENT.form.recurrence}
             startDate={date}
             disabled={editingOneOccurrence}
           />

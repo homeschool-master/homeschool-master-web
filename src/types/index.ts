@@ -89,7 +89,18 @@ export interface CalendarEvent {
  * completedAt is the instant it was ticked. They cannot disagree.
  */
 export interface Task {
+  /**
+   * A bare uuid for an ordinary task, or "<uuid>:<date>" for one occurrence of
+   * a repeating one. Occurrences are computed rather than stored, so they have
+   * no id of their own: opaque to the client, which hands it straight back.
+   */
   id: string
+  /** The series this occurrence came from, and null for an ordinary task. */
+  seriesId: string | null
+  /** The local date of this occurrence, and null for an ordinary task. */
+  occurrenceDate: string | null
+  /** The repeat rule, and null for a task that does not repeat. */
+  recurrence: Recurrence | null
   teacherId: string
   title: string
   description: string | null
@@ -115,6 +126,8 @@ export interface Task {
 export type TaskOwner = 'teacher' | 'student' | 'both'
 
 export interface TaskInput {
+  /** Null stops it repeating, and a rule replaces whatever was there. */
+  recurrence?: Recurrence | null
   title: string
   description: string | null
   dueDate: string | null

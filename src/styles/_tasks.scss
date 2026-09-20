@@ -137,6 +137,11 @@
     margin-bottom: $spacing-lg;
   }
 
+  // Holds the three way question above whatever it is about to act on.
+  &__scope {
+    margin-bottom: $spacing-md;
+  }
+
   &__confirm {
     padding: $spacing-md;
     border: 1.5px solid $color-gradient-dark;
@@ -346,6 +351,20 @@
   font-size: 0.8125rem;
   font-weight: 600;
   color: $color-accent;
+}
+
+// Sits on the due line rather than on its own, so a repeating task costs the
+// row no extra height in a list that is read by scanning down it.
+.task-row__series {
+  display: inline-block;
+  margin-left: $spacing-xs;
+  padding: 1px $spacing-xs;
+  border-radius: 999px;
+  background-color: $color-gradient-light;
+  box-shadow: inset 0 0 0 1px $color-accent;
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: $color-headline;
 }
 
 // The student picker on the tasks page, out in the open like the show filter:

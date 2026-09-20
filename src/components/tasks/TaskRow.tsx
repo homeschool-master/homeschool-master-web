@@ -1,7 +1,8 @@
 import type { Student, Task } from '../../types'
 import { TASKS_CONTENT } from '../../constants/tasks'
-import { formatDueDate, isDueToday, isOverdue } from '../../utils/tasks'
+import { formatDueDate, isDueToday, isOverdue, repeats } from '../../utils/tasks'
 import { ownershipLabel } from '../../utils/taskOwnership'
+import { fillTemplate } from '../../utils/grades'
 
 interface TaskRowProps {
   task: Task
@@ -35,6 +36,15 @@ const TaskRow = ({
 
   const dueLabel = (): string => {
     if (task.completed) {
+      // An occurrence is identified by the day it falls on, so that is what it
+      // keeps saying once it is ticked. An ordinary task has only the one row,
+      // so the day it was finished is the more useful of the two.
+      if (task.occurrenceDate) {
+        return fillTemplate(TASKS_CONTENT.completedOccurrence, {
+          date: formatDueDate(task.occurrenceDate),
+        })
+      }
+
       return task.completedAt
         ? `${TASKS_CONTENT.completedOn} ${formatDueDate(task.completedAt.slice(0, 10))}`
         : TASKS_CONTENT.completedOn
@@ -62,7 +72,14 @@ const TaskRow = ({
 
       <label className='task-row__body' htmlFor={`task-${task.id}`}>
         <span className='task-row__title'>{task.title}</span>
-        <span className='task-row__due'>{dueLabel()}</span>
+        <span className='task-row__due'>
+          {dueLabel()}
+          {/* Says the row is one of many before it is opened, so the three way
+              choice on edit and remove is not a surprise. */}
+          {repeats(task) && (
+            <span className='task-row__series'>{TASKS_CONTENT.seriesBadge}</span>
+          )}
+        </span>
       </label>
 
       {/* Who it involves and whose job it is, in one phrase: either alone

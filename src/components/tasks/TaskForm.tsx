@@ -1,13 +1,14 @@
 import { useState } from 'react'
-import { useForm } from 'react-hook-form'
+import { useForm, useWatch } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
 import FormField, { FormInput, FormTextarea } from '../shared/FormField'
 import Button from '../shared/Button'
+import RecurrenceFields from '../shared/RecurrenceFields'
 import { TASKS_CONTENT } from '../../constants/tasks'
 import { TASK_OWNERS } from '../../utils/taskOwnership'
 import { readableTextColor } from '../../utils/studentColor'
-import type { Student, Task, TaskInput, TaskOwner } from '../../types'
+import type { Recurrence, Student, Task, TaskInput, TaskOwner } from '../../types'
 
 const { form, validation } = TASKS_CONTENT
 
@@ -50,6 +51,7 @@ interface TaskFormProps {
 const TaskForm = ({ task, students, saving, onSubmit, onCancel }: TaskFormProps) => {
   const {
     register,
+    control,
     handleSubmit,
     formState: { errors },
   } = useForm<FormData>({
@@ -67,6 +69,16 @@ const TaskForm = ({ task, students, saving, onSubmit, onCancel }: TaskFormProps)
   // rather than field by field.
   const [studentIds, setStudentIds] = useState<string[]>(() => task?.studentIds ?? [])
   const [ownedBy, setOwnedBy] = useState<TaskOwner>(() => task?.ownedBy ?? 'teacher')
+  const [recurrence, setRecurrence] = useState<Recurrence | null>(() => task?.recurrence ?? null)
+
+  /**
+   * A task with no due date cannot repeat: a rule steps forward from a date,
+   * and there is nothing to step from. The controls stay visible and disabled
+   * rather than appearing out of nowhere once a date is typed, so the reason
+   * is on screen instead of being a thing you have to discover.
+   */
+  const dueDate = useWatch({ control, name: 'dueDate' })
+  const canRepeat = dueDate !== ''
 
   const toggleStudent = (id: string) => {
     setStudentIds((current) =>
@@ -92,6 +104,7 @@ const TaskForm = ({ task, students, saving, onSubmit, onCancel }: TaskFormProps)
       dueDate: values.dueDate || null,
       ownedBy,
       studentIds,
+      recurrence,
     })
     if (saved) onCancel()
   }
@@ -117,9 +130,30 @@ const TaskForm = ({ task, students, saving, onSubmit, onCancel }: TaskFormProps)
       </FormField>
 
       <FormField label={form.dueDate} htmlFor='task-due-date'>
-        <FormInput id='task-due-date' type='date' {...register('dueDate')} />
+        <FormInput
+          id='task-due-date'
+          type='date'
+          {...register('dueDate', {
+            // Clearing the date takes the rule with it. Leaving one behind
+            // would send the server a series with nothing to repeat from,
+            // which it refuses, and the teacher would have no way to see why.
+            onChange: (changeEvent: React.ChangeEvent<HTMLInputElement>) => {
+              if (changeEvent.target.value === '') setRecurrence(null)
+            },
+          })}
+        />
         <p className='task-form__hint'>{form.dueDateHint}</p>
       </FormField>
+
+      <RecurrenceFields
+        value={recurrence}
+        onChange={setRecurrence}
+        startDate={dueDate}
+        idPrefix='task'
+        label={form.recurrence}
+        disabled={!canRepeat}
+      />
+      {!canRepeat && <p className='task-form__hint'>{form.recurrenceNeedsDate}</p>}
 
       <FormField label={form.description} htmlFor='task-description'>
         <FormTextarea

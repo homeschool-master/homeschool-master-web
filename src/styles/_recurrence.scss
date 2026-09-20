@@ -1,0 +1,117 @@
+@use 'variables' as *;
+
+// The repeat rule's own fields, shared by the event form and the task form.
+// Named for the component rather than for either page, because neither owns
+// it: the block used to live under event-form and moved out with the
+// component when tasks started repeating too.
+.recurrence-fields {
+  &__weekdays {
+    border: none;
+    padding: 0;
+    margin: 0;
+    flex: 1 1 100%;
+  }
+
+  &__weekday-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: $spacing-xs;
+    margin-top: $spacing-sm;
+  }
+
+  &__label {
+    font-weight: 600;
+    color: $color-headline;
+  }
+
+  &__hint {
+    margin-top: $spacing-xs;
+    font-size: 0.8125rem;
+    opacity: 0.8;
+  }
+}
+
+// The three way choice, asked before an edit or a deletion touches a series.
+// In the flow rather than in a dialog, so the fields it is about stay readable
+// behind the question.
+.series-scope {
+  padding: $spacing-md;
+  border: 2px solid $color-accent;
+  border-radius: 16px;
+  background-color: $color-surface;
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-sm;
+
+  &__heading {
+    font-size: 1.05rem;
+    font-weight: 700;
+    color: $color-headline;
+  }
+
+  &__options {
+    display: flex;
+    flex-direction: column;
+    gap: $spacing-xs;
+  }
+
+  &__option {
+    display: flex;
+    align-items: flex-start;
+    gap: $spacing-sm;
+    padding: $spacing-sm;
+    border: 1.5px solid $color-gradient-dark;
+    border-radius: 12px;
+    background-color: $color-white;
+    cursor: pointer;
+  }
+
+  &__option--on {
+    border-color: $color-accent;
+    background-color: $color-gradient-light;
+  }
+
+  &__box {
+    margin-top: 2px;
+    width: 18px;
+    height: 18px;
+    flex-shrink: 0;
+    accent-color: $color-accent;
+    cursor: pointer;
+  }
+
+  &__body {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    min-width: 0;
+  }
+
+  &__label {
+    font-weight: 700;
+    color: $color-headline;
+  }
+
+  &__hint {
+    font-size: 0.8125rem;
+    opacity: 0.8;
+  }
+
+  &__actions {
+    display: flex;
+    align-items: center;
+    gap: $spacing-md;
+  }
+
+  &__cancel {
+    background: none;
+    border: none;
+    padding: 0;
+    font-family: $font-family-base;
+    font-size: 0.9375rem;
+    font-weight: 600;
+    color: $color-headline;
+    text-decoration: underline;
+    cursor: pointer;
+  }
+}

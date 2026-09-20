@@ -1,11 +1,12 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit'
-import type { Task, TaskInput, TaskUpdateInput } from '../types'
+import type { SeriesScope, Task, TaskInput, TaskUpdateInput } from '../types'
 import {
   createTaskRequest,
   fetchTasksRequest,
   removeTaskRequest,
   updateTaskRequest,
 } from '../services/tasks'
+import type { TaskWindow } from '../services/tasks'
 import { apiErrorMessage } from '../services/apiError'
 import { TASKS_CONTENT } from '../constants/tasks'
 
@@ -38,9 +39,9 @@ const initialState: TasksState = {
 
 export const fetchTasks = createAsyncThunk(
   'tasks/fetchTasks',
-  async (_arg, { rejectWithValue }) => {
+  async (window: TaskWindow | undefined, { rejectWithValue }) => {
     try {
-      return await fetchTasksRequest()
+      return await fetchTasksRequest(window)
     } catch (error: unknown) {
       return rejectWithValue(apiErrorMessage(error, TASKS_CONTENT.errors.load))
     }
@@ -60,9 +61,12 @@ export const createTask = createAsyncThunk(
 
 export const updateTask = createAsyncThunk(
   'tasks/updateTask',
-  async ({ id, input }: { id: string; input: TaskUpdateInput }, { rejectWithValue }) => {
+  async (
+    { id, input, scope }: { id: string; input: TaskUpdateInput; scope?: SeriesScope },
+    { rejectWithValue }
+  ) => {
     try {
-      return await updateTaskRequest(id, input)
+      return await updateTaskRequest(id, input, scope)
     } catch (error: unknown) {
       return rejectWithValue(apiErrorMessage(error, TASKS_CONTENT.errors.update))
     }
@@ -73,6 +77,10 @@ export const updateTask = createAsyncThunk(
  * Ticking and unticking are the same call. Kept separate from updateTask so a
  * checkbox in flight disables only its own row, rather than the edit form's
  * saving flag standing in for both.
+ *
+ * Never carries a scope. Ticking is always about the one occurrence it names:
+ * this week being done says nothing about next week, and the server records it
+ * against that date rather than against the series.
  */
 export const toggleTask = createAsyncThunk(
   'tasks/toggleTask',
@@ -87,9 +95,9 @@ export const toggleTask = createAsyncThunk(
 
 export const removeTask = createAsyncThunk(
   'tasks/removeTask',
-  async (id: string, { rejectWithValue }) => {
+  async ({ id, scope }: { id: string; scope?: SeriesScope }, { rejectWithValue }) => {
     try {
-      await removeTaskRequest(id)
+      await removeTaskRequest(id, scope)
       return id
     } catch (error: unknown) {
       return rejectWithValue(apiErrorMessage(error, TASKS_CONTENT.errors.remove))
@@ -103,6 +111,9 @@ export const removeTask = createAsyncThunk(
  * reducer replaces in place and the views sort what they render, so one
  * ordering rule lives in one place.
  */
+// Matched on the id the server gave it, which for an occurrence is its
+// series and date joined. So ticking one week replaces that week's entry and
+// leaves every other occurrence of the same series alone.
 const replaceTask = (items: Task[], task: Task): Task[] =>
   items.map((item) => (item.id === task.id ? task : item))
 
@@ -174,7 +185,7 @@ const tasksSlice = createSlice({
       })
 
       .addCase(removeTask.pending, (state, action) => {
-        state.removingId = action.meta.arg
+        state.removingId = action.meta.arg.id
         state.removeError = null
       })
       .addCase(removeTask.fulfilled, (state, action) => {

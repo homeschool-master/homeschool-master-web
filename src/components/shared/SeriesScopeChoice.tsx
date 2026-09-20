@@ -1,9 +1,9 @@
 import { useState } from 'react'
-import Button from '../shared/Button'
-import { CALENDAR_CONTENT } from '../../constants/calendar'
+import Button from './Button'
+import { SERIES_SCOPE_CONTENT } from '../../constants/recurrence'
 import type { SeriesScope } from '../../types'
 
-const { scope: content } = CALENDAR_CONTENT
+const content = SERIES_SCOPE_CONTENT
 
 const OPTIONS: { value: SeriesScope; label: string; hint: string }[] = [
   { value: 'this', label: content.this, hint: content.thisHint },
@@ -13,14 +13,15 @@ const OPTIONS: { value: SeriesScope; label: string; hint: string }[] = [
 
 interface SeriesScopeChoiceProps {
   mode: 'edit' | 'delete'
+  /** Names what repeats, because "this repeats" needs a subject. */
+  heading: string
   busy: boolean
   onConfirm: (scope: SeriesScope) => void
   onCancel: () => void
 }
 
 /**
- * The choice a calendar has to offer before an edit or a deletion touches a
- * series: this occurrence, this and everything after it, or all of it.
+ * The choice to offer before an edit or a deletion touches a series: this occurrence, this and everything after it, or all of it.
  *
  * Asked rather than assumed. Every one of the three is a reasonable thing to
  * mean, two of them are destructive in ways the other is not, and guessing
@@ -28,16 +29,20 @@ interface SeriesScopeChoiceProps {
  * says what happens to the ones it does not touch, which is the part that is
  * hard to picture.
  */
-const SeriesScopeChoice = ({ mode, busy, onConfirm, onCancel }: SeriesScopeChoiceProps) => {
+const SeriesScopeChoice = ({
+  mode,
+  heading,
+  busy,
+  onConfirm,
+  onCancel,
+}: SeriesScopeChoiceProps) => {
   // "This occurrence" first and selected: the narrowest choice is the safest
   // default, and it is what someone editing one day usually means.
   const [scope, setScope] = useState<SeriesScope>('this')
 
   return (
-    <div className='series-scope' role='group' aria-label={content.editHeading}>
-      <p className='series-scope__heading'>
-        {mode === 'edit' ? content.editHeading : content.deleteHeading}
-      </p>
+    <div className='series-scope' role='group' aria-label={heading}>
+      <p className='series-scope__heading'>{heading}</p>
 
       <div className='series-scope__options'>
         {OPTIONS.map((option) => (

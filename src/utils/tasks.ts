@@ -41,13 +41,45 @@ export const applyTaskFilter = (tasks: Task[], filter: TaskFilter): Task[] => {
   return visible.slice().sort(byDueDate)
 }
 
-/** What the dashboard panel lists: still to do, soonest first. */
-export const openTasks = (tasks: Task[]): Task[] => applyTaskFilter(tasks, 'open')
+/** True for one occurrence of a series rather than an ordinary task. */
+export const isOccurrence = (task: Task): boolean => task.seriesId !== null
+
+/** True for anything that repeats, whether shown as a series or an occurrence. */
+export const repeats = (task: Task): boolean => task.recurrence !== null
+
+/**
+ * One row per series: the soonest occurrence still to do, and every ordinary
+ * task untouched.
+ *
+ * The dashboard is a glance at what is next, and a weekly task expanded over a
+ * window is nine rows of the same sentence. Five of them would be the whole
+ * panel, and a daily task left unticked for a month would put thirty on the
+ * count card. The full page still lists every occurrence, which is where
+ * ticking ahead and catching up belong.
+ *
+ * Expects the list already in due date order, so the first of each series kept
+ * is its soonest.
+ */
+export const nextPerSeries = (tasks: Task[]): Task[] => {
+  const seen = new Set<string>()
+
+  return tasks.filter((task) => {
+    if (task.seriesId === null) return true
+    if (seen.has(task.seriesId)) return false
+
+    seen.add(task.seriesId)
+    return true
+  })
+}
+
+/** What the dashboard panel lists: still to do, soonest first, one per series. */
+export const openTasks = (tasks: Task[]): Task[] => nextPerSeries(applyTaskFilter(tasks, 'open'))
 
 /**
  * What the count card counts: open work that is due today or already late.
  * Undated tasks are on the list but not on today's plate, so they are left out
- * of a figure sitting under the heading "Today's Items".
+ * of a figure sitting under the heading "Today's Items". A series counts once,
+ * for the same reason the panel shows it once.
  */
 export const dueByToday = (tasks: Task[], today: string): Task[] =>
   openTasks(tasks).filter((task) => task.dueDate !== null && task.dueDate <= today)

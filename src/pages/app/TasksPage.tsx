@@ -2,7 +2,7 @@ import { useEffect, useMemo, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { useSearchParams } from 'react-router-dom'
 import type { AppDispatch, RootState } from '../../store'
-import type { Task, TaskInput } from '../../types'
+import type { SeriesScope, Task, TaskInput, TaskUpdateInput } from '../../types'
 import {
   clearRemoveError,
   clearSaveError,
@@ -16,7 +16,7 @@ import { fetchStudents } from '../../store/studentsSlice'
 import { TASKS_CONTENT } from '../../constants/tasks'
 import { todayKey } from '../../utils/calendarDates'
 import { fillTemplate } from '../../utils/grades'
-import { TASK_FILTERS, applyTaskFilter, isTaskFilter } from '../../utils/tasks'
+import { TASK_FILTERS, applyTaskFilter, isOccurrence, isTaskFilter, repeats } from '../../utils/tasks'
 import type { TaskFilter } from '../../utils/tasks'
 import {
   DEFAULT_PROFILE,
@@ -35,6 +35,7 @@ import {
 } from '../../utils/profile'
 import Button from '../../components/shared/Button'
 import ScopeNotice from '../../components/shared/ScopeNotice'
+import SeriesScopeChoice from '../../components/shared/SeriesScopeChoice'
 import StudentPicker from '../../components/shared/StudentPicker'
 import TaskForm from '../../components/tasks/TaskForm'
 import TaskRow from '../../components/tasks/TaskRow'
@@ -44,6 +45,15 @@ type Mode =
   | { kind: 'add' }
   | { kind: 'edit'; task: Task }
   | { kind: 'remove'; task: Task }
+
+/**
+ * A save or a removal held back until the teacher says how far it reaches.
+ * Only an occurrence of a repeating task ever produces one: an ordinary task
+ * is the one row it looks like, and goes straight through.
+ */
+type Pending =
+  | { intent: 'edit'; task: Task; input: TaskInput }
+  | { intent: 'delete'; task: Task }
 
 const TasksPage = () => {
   const dispatch = useDispatch<AppDispatch>()
@@ -55,6 +65,7 @@ const TasksPage = () => {
   )
 
   const [mode, setMode] = useState<Mode>({ kind: 'idle' })
+  const [pending, setPending] = useState<Pending | null>(null)
 
   // In the URL like the calendar's view state, so a filtered list is linkable
   // and survives a reload. All is the default and writes no param, so a bare
@@ -155,27 +166,107 @@ const TasksPage = () => {
   }
 
   // Moving between the list, the form and the confirmation drops any error
-  // left over from the previous attempt.
+  // left over from the previous attempt, and any question that went with it.
   const goTo = (next: Mode) => {
     dispatch(clearSaveError())
     dispatch(clearRemoveError())
+    setPending(null)
     setMode(next)
   }
 
-  const handleSubmit = async (values: TaskInput): Promise<boolean> => {
-    const result =
-      mode.kind === 'edit'
-        ? await dispatch(updateTask({ id: mode.task.id, input: values }))
-        : await dispatch(createTask(values))
-
-    return mode.kind === 'edit'
-      ? updateTask.fulfilled.match(result)
-      : createTask.fulfilled.match(result)
+  const close = () => {
+    setPending(null)
+    setMode({ kind: 'idle' })
   }
 
-  const handleRemove = async (task: Task) => {
-    const result = await dispatch(removeTask(task.id))
-    if (removeTask.fulfilled.match(result)) setMode({ kind: 'idle' })
+  /**
+   * A write that touches a series changes rows the response never names:
+   * a new rule expands into occurrences, a split hands the later ones to a
+   * second series, and detaching one gives it an id of its own. None of that
+   * can be patched into the loaded list, so it is read again.
+   */
+  const refetch = () => {
+    void dispatch(fetchTasks())
+  }
+
+  /**
+   * Saving an occurrence stops here and asks how far the change reaches,
+   * rather than guessing. Returning false leaves the form open underneath the
+   * question, so the answer and the fields it applies to stay on screen
+   * together.
+   */
+  const handleSubmit = async (values: TaskInput): Promise<boolean> => {
+    if (mode.kind === 'edit') {
+      if (isOccurrence(mode.task)) {
+        setPending({ intent: 'edit', task: mode.task, input: values })
+        return false
+      }
+
+      return saveEdit(mode.task, values)
+    }
+
+    const result = await dispatch(createTask(values))
+    if (!createTask.fulfilled.match(result)) return false
+
+    // A new rule comes back as one row and means many, so the list is reread.
+    if (values.recurrence) refetch()
+    return true
+  }
+
+  const saveEdit = async (task: Task, input: TaskInput, seriesScope?: SeriesScope) => {
+    // The rule travels only when the whole series is in scope: detaching one
+    // occurrence or splitting the series changes what a task says, not what it
+    // repeats on, and sending the rule again would redefine it by accident.
+    const payload: TaskUpdateInput =
+      seriesScope && seriesScope !== 'all' ? { ...input, recurrence: undefined } : { ...input }
+
+    // The form opened on one occurrence, so its date field holds that date
+    // rather than the day the series starts from. Sending it back with every
+    // occurrence in scope would move the whole series onto it and quietly drop
+    // the ones before, which is not what renaming a task means. A date the
+    // teacher actually changed still travels.
+    if (seriesScope === 'all' && input.dueDate === task.dueDate) delete payload.dueDate
+
+    const result = await dispatch(updateTask({ id: task.id, input: payload, scope: seriesScope }))
+    if (!updateTask.fulfilled.match(result)) return false
+
+    if (seriesScope || repeats(task) || input.recurrence) refetch()
+    return true
+  }
+
+  const handleRemove = async (task: Task, seriesScope?: SeriesScope) => {
+    const result = await dispatch(removeTask({ id: task.id, scope: seriesScope }))
+    if (!removeTask.fulfilled.match(result)) return false
+
+    if (seriesScope) refetch()
+    return true
+  }
+
+  const confirmRemove = async (task: Task) => {
+    if (await handleRemove(task)) close()
+  }
+
+  /**
+   * The chooser stays up while the write is in flight and stays up if it
+   * fails, so the error appears above the question that caused it rather than
+   * on a list the teacher has already been dropped back onto.
+   */
+  const resolvePending = async (seriesScope: SeriesScope) => {
+    if (pending === null) return
+
+    const done =
+      pending.intent === 'edit'
+        ? await saveEdit(pending.task, pending.input, seriesScope)
+        : await handleRemove(pending.task, seriesScope)
+
+    if (done) close()
+  }
+
+  // An occurrence asks how far to reach; an ordinary task asks only whether
+  // the teacher is sure, which is the confirmation it has always had.
+  const startRemove = (task: Task) => {
+    goTo({ kind: 'remove', task })
+    if (isOccurrence(task)) setPending({ intent: 'delete', task })
   }
 
   const showList = !loading && !error && visible.length > 0
@@ -256,6 +347,31 @@ const TasksPage = () => {
             so the slot brings itself into view. */}
         {mode.kind !== 'idle' && (
           <div key={panelKey} className='tasks__slot' ref={revealPanel}>
+            {/* Above whatever it is about to act on: the question comes first,
+                and the form or the row it names stays readable underneath. */}
+            {pending && (
+              <div className='tasks__scope'>
+                {(pending.intent === 'edit' ? saveError : removeError) && (
+                  <p className='tasks__error' role='alert'>
+                    {pending.intent === 'edit' ? saveError : removeError}
+                  </p>
+                )}
+                <SeriesScopeChoice
+                  mode={pending.intent === 'edit' ? 'edit' : 'delete'}
+                  heading={
+                    pending.intent === 'edit'
+                      ? TASKS_CONTENT.scope.editHeading
+                      : TASKS_CONTENT.scope.deleteHeading
+                  }
+                  busy={saving || removingId !== null}
+                  onConfirm={(seriesScope) => {
+                    void resolvePending(seriesScope)
+                  }}
+                  onCancel={() => setPending(null)}
+                />
+              </div>
+            )}
+
             {isEditingOrAdding && (
               <>
                 {saveError && (
@@ -274,7 +390,7 @@ const TasksPage = () => {
               </>
             )}
 
-            {mode.kind === 'remove' && (
+            {mode.kind === 'remove' && pending === null && (
               <div className='tasks__confirm'>
                 {removeError && (
                   <p className='tasks__error' role='alert'>
@@ -295,7 +411,7 @@ const TasksPage = () => {
                   </button>
                   <Button
                     color='danger'
-                    onClick={() => handleRemove(mode.task)}
+                    onClick={() => void confirmRemove(mode.task)}
                     disabled={removingId !== null}
                   >
                     {removingId !== null
@@ -341,7 +457,7 @@ const TasksPage = () => {
                   dispatch(toggleTask({ id: next.id, completed: !next.completed }))
                 }
                 onEdit={(next) => goTo({ kind: 'edit', task: next })}
-                onRemove={(next) => goTo({ kind: 'remove', task: next })}
+                onRemove={startRemove}
                 students={students}
               />
             ))}

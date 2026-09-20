@@ -19,7 +19,7 @@ import { readableTextColor } from '../../utils/studentColor'
 import { resolveAttendees } from '../../utils/attendees'
 import { profileSearch, readProfile } from '../../utils/profile'
 import EventDeleteConfirm from '../../components/calendar/EventDeleteConfirm'
-import SeriesScopeChoice from '../../components/calendar/SeriesScopeChoice'
+import SeriesScopeChoice from '../../components/shared/SeriesScopeChoice'
 import type { SeriesScope } from '../../types'
 
 const { detail } = CALENDAR_CONTENT
@@ -183,6 +183,7 @@ const EventDetailPage = () => {
           {confirmingDelete && current.seriesId ? (
             <SeriesScopeChoice
               mode='delete'
+            heading={CALENDAR_CONTENT.scope.deleteHeading}
               busy={deletingId === current.id}
               onConfirm={(scope) => {
                 setConfirmingDelete(false)
