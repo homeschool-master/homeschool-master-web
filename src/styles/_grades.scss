@@ -1,0 +1,756 @@
+@use 'variables' as *;
+@use 'mixins' as *;
+
+$color-danger: #b42318;
+$color-pending: #9a5b0a;
+
+.grades {
+  // Panels open above the list, so the content below them moves. Without this
+  // the browser compensates by shifting the scroll position, which fights the
+  // panel trying to bring itself into view.
+  overflow-anchor: none;
+  font-family: $font-family-base;
+  color: $color-text;
+  background-color: $color-white;
+  padding: 0 5px;
+
+  &__inner {
+    @include container;
+    padding-top: $spacing-lg;
+    padding-bottom: $spacing-xl;
+    // Wider than the to-do list: an assignment row carries a subject, a date,
+    // what it is out of and how far marking has got.
+    max-width: 56rem;
+  }
+
+  &__header {
+    margin-bottom: $spacing-lg;
+  }
+
+  &__eyebrow {
+    color: $color-accent;
+    font-size: 0.875rem;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    margin-bottom: $spacing-xs;
+  }
+
+  &__heading {
+    font-size: 2rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    color: $color-headline;
+    margin-bottom: $spacing-xs;
+
+    @include respond-to(mobile) {
+      font-size: 1.5rem;
+    }
+  }
+
+  &__subhead {
+    font-size: 1rem;
+  }
+
+  // The two pages behind one heading, switched like the calendar's own views.
+  &__views {
+    display: flex;
+    gap: $spacing-xs;
+    margin: $spacing-md 0;
+    padding: $spacing-xs;
+    border: 1.5px solid $color-gradient-dark;
+    border-radius: 999px;
+    background-color: $color-surface;
+    width: fit-content;
+
+    @include respond-to(mobile) {
+      width: 100%;
+    }
+  }
+
+  &__view-toggle {
+    padding: $spacing-xs $spacing-lg;
+    border: none;
+    border-radius: 999px;
+    background: none;
+    font-family: $font-family-base;
+    font-size: 0.9375rem;
+    font-weight: 600;
+    color: $color-headline;
+    cursor: pointer;
+
+    &:hover {
+      background-color: rgba($color-white, 0.7);
+    }
+
+    &:focus-visible {
+      outline: 2px solid $color-headline;
+      outline-offset: 2px;
+    }
+
+    @include respond-to(mobile) {
+      flex: 1;
+      padding: $spacing-xs $spacing-sm;
+    }
+  }
+
+  &__view-toggle--active {
+    background-color: $color-gradient-light;
+    box-shadow: inset 0 0 0 1.5px $color-accent;
+  }
+
+  // Always visible, never behind a disclosure: the filters and the period are
+  // the only things that explain why a list or a report looks empty, and
+  // hiding them at phone width is how that explanation goes missing.
+  &__filters {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-end;
+    gap: $spacing-md;
+    margin-bottom: $spacing-md;
+  }
+
+  &__filter-field {
+    display: flex;
+    flex-direction: column;
+    gap: $spacing-xs;
+    min-width: 0;
+  }
+
+  &__filter-label {
+    @include form-field-label;
+  }
+
+  &__select,
+  &__date {
+    @include form-control;
+    width: auto;
+    padding: $spacing-xs $spacing-sm;
+    font-size: 0.9375rem;
+  }
+
+  // Bare date inputs rather than full form fields, so they need the native
+  // sizing correction on their own account.
+  &__date {
+    @include native-date-control;
+  }
+
+  &__marks {
+    display: flex;
+    gap: $spacing-xs;
+    padding: $spacing-xs;
+    border: 1.5px solid $color-gradient-dark;
+    border-radius: 999px;
+    background-color: $color-surface;
+
+    @include respond-to(mobile) {
+      width: 100%;
+    }
+  }
+
+  &__mark {
+    padding: $spacing-xs $spacing-md;
+    border: none;
+    border-radius: 999px;
+    background: none;
+    font-family: $font-family-base;
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: $color-headline;
+    cursor: pointer;
+    white-space: nowrap;
+
+    &:hover {
+      background-color: rgba($color-white, 0.7);
+    }
+
+    &:focus-visible {
+      outline: 2px solid $color-headline;
+      outline-offset: 2px;
+    }
+
+    @include respond-to(mobile) {
+      flex: 1;
+      min-width: 0;
+      padding: $spacing-xs;
+      font-size: 0.8125rem;
+      // Three labels share 375px, and "Needs marking" does not fit one line at
+      // that width: wrapping keeps the whole phrase rather than clipping it
+      // into the pill beside it.
+      white-space: normal;
+    }
+  }
+
+  &__mark--active {
+    background-color: $color-gradient-light;
+    box-shadow: inset 0 0 0 1.5px $color-accent;
+  }
+
+  // What a weighted average is, said once above the figures rather than in a
+  // tooltip nobody opens.
+  &__explainer {
+    margin-bottom: $spacing-md;
+    padding: $spacing-sm $spacing-md;
+    border-left: 3px solid $color-gradient-dark;
+    font-size: 0.875rem;
+    color: $color-text;
+    opacity: 0.9;
+  }
+
+  &__actions {
+    display: flex;
+    margin-bottom: $spacing-md;
+  }
+
+  // Holds whichever panel is open: the form, the score panel, or the remove
+  // confirmation. Only one of them can be, so they share the one place.
+  &__slot {
+    margin-bottom: $spacing-lg;
+  }
+
+  &__list {
+    list-style: none;
+    margin: 0 0 $spacing-lg;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: $spacing-sm;
+  }
+
+  &__status {
+    margin-bottom: $spacing-lg;
+    padding: $spacing-md;
+    border: 1px dashed $color-gradient-dark;
+    border-radius: 16px;
+    font-size: 0.9375rem;
+    font-style: italic;
+  }
+
+  &__error {
+    margin-bottom: $spacing-md;
+    font-size: 0.9375rem;
+    font-weight: 600;
+    color: $color-danger;
+  }
+
+  &__confirm {
+    padding: $spacing-md;
+    border: 1.5px solid $color-gradient-dark;
+    border-radius: 16px;
+    background-color: $color-surface;
+  }
+
+  &__confirm-name {
+    margin: $spacing-sm 0;
+    font-size: 1.05rem;
+    font-weight: 700;
+    color: $color-headline;
+  }
+
+  &__confirm-body {
+    margin-bottom: $spacing-md;
+    font-size: 0.9375rem;
+  }
+}
+
+// One piece of work. The head and the meta each take a full line, then the
+// marking figure and the actions share the last one.
+.assignment-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: $spacing-xs $spacing-sm;
+  padding: $spacing-sm $spacing-md;
+  border: 1.5px solid $color-gradient-dark;
+  border-radius: 14px;
+  background-color: $color-white;
+
+  &__head {
+    flex: 1 1 100%;
+    display: flex;
+    align-items: center;
+    gap: $spacing-sm;
+    min-width: 0;
+  }
+
+  &__dot {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    flex-shrink: 0;
+    background-color: $color-gradient-dark;
+  }
+
+  &__title {
+    font-size: 1rem;
+    font-weight: 600;
+    color: $color-headline;
+    overflow-wrap: break-word;
+  }
+
+  &__meta {
+    flex: 1 1 100%;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: $spacing-xs $spacing-sm;
+    padding-left: calc(12px + #{$spacing-sm});
+    font-size: 0.8125rem;
+    opacity: 0.85;
+  }
+
+  &__subject {
+    font-weight: 600;
+  }
+
+  // Weight in words, not a bare number: "2" on a row would read as a quantity
+  // of something rather than as how much the work counts.
+  &__weight {
+    padding: 1px $spacing-sm;
+    border-radius: 999px;
+    background-color: $color-gradient-light;
+    box-shadow: inset 0 0 0 1px $color-gradient-dark;
+    font-weight: 700;
+    opacity: 1;
+  }
+
+  &__notes {
+    flex: 1 1 100%;
+    padding-left: calc(12px + #{$spacing-sm});
+    font-size: 0.8125rem;
+    opacity: 0.75;
+  }
+
+  &__marked {
+    padding-left: calc(12px + #{$spacing-sm});
+    font-size: 0.8125rem;
+    font-weight: 700;
+    color: $color-pending;
+  }
+
+  &__marked--done {
+    color: $color-text;
+    opacity: 0.7;
+  }
+
+  &__actions {
+    margin-left: auto;
+    display: inline-flex;
+    gap: $spacing-sm;
+    flex-shrink: 0;
+  }
+
+  &__action {
+    background: none;
+    border: none;
+    padding: 0;
+    font-family: $font-family-base;
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: $color-headline;
+    text-decoration: underline;
+    cursor: pointer;
+
+    &:hover {
+      color: $color-accent;
+    }
+
+    &:focus-visible {
+      outline: 2px solid $color-headline;
+      outline-offset: 2px;
+    }
+  }
+
+  // Marking is the job this page exists for, so its action is the one that
+  // does not look like a footnote.
+  &__action--score {
+    color: $color-accent;
+  }
+}
+
+// Fully marked work stays legible but stops competing with what still needs
+// attention, the same move the done task row makes.
+.assignment-row--complete {
+  background-color: $color-surface;
+  border-style: dashed;
+}
+
+// The assignment form, matching the task and subject forms.
+.assignment-form {
+  padding: $spacing-md;
+  border: 1.5px solid $color-gradient-dark;
+  border-radius: 16px;
+  background-color: $color-surface;
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-md;
+
+  &__title {
+    font-size: 1.05rem;
+    font-weight: 700;
+    color: $color-headline;
+  }
+
+  &__hint {
+    margin-top: $spacing-xs;
+    font-size: 0.8125rem;
+    opacity: 0.8;
+  }
+
+  // The weight number restated as what it does. Given its own weight on the
+  // page, because it is the sentence that makes the field mean anything.
+  &__weight-says {
+    margin-top: $spacing-xs;
+    padding: $spacing-xs $spacing-sm;
+    border-radius: 10px;
+    background-color: $color-gradient-light;
+    font-size: 0.8125rem;
+    font-weight: 600;
+    color: $color-headline;
+  }
+
+  &__error {
+    margin-top: $spacing-xs;
+    font-size: 0.8125rem;
+    font-weight: 600;
+    color: $color-danger;
+  }
+
+  &__warning {
+    margin-top: $spacing-sm;
+    padding: $spacing-sm;
+    border-radius: 10px;
+    background-color: rgba($color-danger, 0.08);
+    font-size: 0.8125rem;
+    font-weight: 600;
+    color: $color-danger;
+  }
+
+  &__status {
+    font-size: 0.875rem;
+    font-style: italic;
+    opacity: 0.8;
+  }
+
+  // Two short numbers side by side rather than two full width fields: they
+  // belong together and neither needs the room.
+  &__numbers {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: $spacing-md;
+
+    @include respond-to(mobile) {
+      grid-template-columns: minmax(0, 1fr);
+    }
+  }
+
+  &__students {
+    border: none;
+    padding: 0;
+    margin: 0;
+  }
+
+  &__legend {
+    @include form-field-label;
+    padding: 0;
+  }
+
+  &__pills {
+    display: flex;
+    flex-wrap: wrap;
+    gap: $spacing-sm;
+    margin-top: $spacing-sm;
+  }
+
+  &__actions {
+    display: flex;
+    align-items: center;
+    gap: $spacing-md;
+  }
+
+  &__cancel {
+    background: none;
+    border: none;
+    padding: 0;
+    font-family: $font-family-base;
+    font-size: 0.9375rem;
+    font-weight: 600;
+    color: $color-headline;
+    text-decoration: underline;
+    cursor: pointer;
+
+    &:hover {
+      color: $color-accent;
+    }
+  }
+}
+
+// A student this work is given to. Off is an outline, on fills with the
+// student's own colour, the same colour language the calendar uses.
+.assignment-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: $spacing-sm;
+  padding: $spacing-xs $spacing-md;
+  border: 1.5px solid $color-gradient-dark;
+  border-radius: 999px;
+  background-color: $color-white;
+  font-size: 0.9375rem;
+  cursor: pointer;
+
+  &__box {
+    width: 18px;
+    height: 18px;
+    accent-color: $color-accent;
+    cursor: pointer;
+  }
+
+  &--on {
+    border-color: $color-accent;
+    font-weight: 600;
+  }
+
+  &:focus-within {
+    outline: 2px solid $color-headline;
+    outline-offset: 2px;
+  }
+}
+
+// Marking, opened from a row. Every student on the assignment at once, because
+// a stack of work gets marked in one sitting.
+.score-panel {
+  padding: $spacing-md;
+  border: 1.5px solid $color-accent;
+  border-radius: 16px;
+  background-color: $color-surface;
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-sm;
+
+  &__title {
+    font-size: 1.05rem;
+    font-weight: 700;
+    color: $color-headline;
+  }
+
+  &__subject {
+    font-size: 0.875rem;
+    opacity: 0.85;
+  }
+
+  // The blank against zero rule. Not a footnote: it changes what the average
+  // means, so it sits above the boxes it governs.
+  &__hint {
+    padding: $spacing-sm;
+    border-radius: 10px;
+    background-color: $color-gradient-light;
+    font-size: 0.8125rem;
+    font-weight: 600;
+    color: $color-headline;
+  }
+
+  &__status {
+    font-size: 0.875rem;
+    font-style: italic;
+    opacity: 0.8;
+  }
+
+  &__list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: $spacing-xs;
+  }
+
+  &__actions {
+    display: flex;
+    align-items: center;
+    gap: $spacing-md;
+    margin-top: $spacing-xs;
+  }
+
+  &__cancel {
+    background: none;
+    border: none;
+    padding: 0;
+    font-family: $font-family-base;
+    font-size: 0.9375rem;
+    font-weight: 600;
+    color: $color-headline;
+    text-decoration: underline;
+    cursor: pointer;
+  }
+
+  &__unchanged {
+    font-size: 0.8125rem;
+    font-style: italic;
+    opacity: 0.75;
+  }
+}
+
+.score-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto auto;
+  align-items: center;
+  gap: $spacing-sm;
+  padding: $spacing-xs $spacing-sm;
+  border-radius: 10px;
+  background-color: $color-white;
+
+  &__name {
+    font-size: 0.9375rem;
+    font-weight: 600;
+    color: $color-headline;
+    overflow-wrap: break-word;
+    cursor: pointer;
+  }
+
+  &__entry {
+    display: inline-flex;
+    align-items: baseline;
+    gap: $spacing-xs;
+  }
+
+  &__input {
+    width: 5rem;
+    padding: $spacing-xs $spacing-sm;
+    border: 1.5px solid $color-accent;
+    border-radius: 10px;
+    background-color: $color-white;
+    font-family: $font-family-base;
+    font-size: 0.9375rem;
+    color: $color-text;
+
+    &:focus {
+      outline: none;
+      border-color: $color-headline;
+    }
+  }
+
+  &__input--error {
+    border-color: $color-danger;
+  }
+
+  &__of {
+    font-size: 0.8125rem;
+    opacity: 0.8;
+    white-space: nowrap;
+  }
+
+  &__result {
+    min-width: 5.5rem;
+    text-align: right;
+    font-size: 0.875rem;
+    font-weight: 700;
+    color: $color-headline;
+  }
+
+  // An empty box says so in words. Blank space would read as a zero, which is
+  // the one thing it is not.
+  &__result--unmarked {
+    font-weight: 600;
+    font-style: italic;
+    color: $color-pending;
+  }
+
+  &__extra {
+    display: block;
+    font-size: 0.6875rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    color: $color-accent;
+  }
+
+  @include respond-to(mobile) {
+    grid-template-columns: minmax(0, 1fr) auto;
+
+    &__result {
+      grid-column: 2;
+      justify-self: end;
+    }
+  }
+}
+
+.progress-list {
+  list-style: none;
+  margin: 0 0 $spacing-lg;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-sm;
+}
+
+// One subject's figures, or the overall roll up in the same shape. The counts
+// sit under the percentage rather than beside it, so the figure is never read
+// without knowing how much of the period it covers.
+.progress-card {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: baseline;
+  gap: $spacing-xs $spacing-md;
+  padding: $spacing-sm $spacing-md;
+  border: 1.5px solid $color-gradient-dark;
+  border-radius: 14px;
+  background-color: $color-white;
+
+  &__name {
+    font-size: 1rem;
+    font-weight: 600;
+    color: $color-headline;
+    overflow-wrap: break-word;
+  }
+
+  &__figure {
+    display: inline-flex;
+    align-items: baseline;
+    gap: $spacing-sm;
+    justify-self: end;
+  }
+
+  &__percent {
+    font-size: 1.25rem;
+    font-weight: 800;
+    color: $color-headline;
+  }
+
+  &__letter {
+    padding: 1px $spacing-sm;
+    border-radius: 999px;
+    background-color: $color-gradient-light;
+    box-shadow: inset 0 0 0 1px $color-accent;
+    font-size: 0.875rem;
+    font-weight: 800;
+    color: $color-headline;
+  }
+
+  &__unmarked {
+    font-size: 0.9375rem;
+    font-style: italic;
+    color: $color-pending;
+  }
+
+  &__counts {
+    grid-column: 1 / -1;
+    display: flex;
+    flex-wrap: wrap;
+    gap: $spacing-xs $spacing-md;
+    font-size: 0.8125rem;
+    opacity: 0.85;
+  }
+
+  &__count--pending {
+    font-weight: 700;
+    color: $color-pending;
+    opacity: 1;
+  }
+}
+
+.progress-card--headline {
+  background-color: $color-surface;
+  border-color: $color-accent;
+
+  .progress-card__percent {
+    font-size: 1.75rem;
+  }
+}
