@@ -1,13 +1,15 @@
 import { useState } from 'react'
 import type { Student } from '../../types'
 import { CALENDAR_CONTENT } from '../../constants/calendar'
-import { PROFILE_CONTENT } from '../../constants/profile'
 import FormField, { FormInput, FormSelect } from '../shared/FormField'
+import ScopeNotice from '../shared/ScopeNotice'
+import StudentPicker from '../shared/StudentPicker'
 
 export type TimingFilter = 'all' | 'allDay' | 'timed'
 
 export interface CalendarFilterValues {
-  studentId: string
+  /** Any number of students. Empty means everyone rather than nobody. */
+  studentIds: string[]
   timing: TimingFilter
   search: string
 }
@@ -29,8 +31,8 @@ interface CalendarFiltersProps {
   /** The profile being overridden, and null while the two agree. */
   profileLabel: string | null
   onResetToProfile: () => void
-  /** The URL names a student the roster does not have. */
-  unknownProfile: boolean
+  /** How many students the URL names that the roster does not have. */
+  unknownCount: number
   onResetToDefault: () => void
 }
 
@@ -39,16 +41,18 @@ const { filters } = CALENDAR_CONTENT
 /** Only one of the two placements renders at a time, so a fixed id is safe. */
 const FIELDS_ID = 'calendar-filter-fields'
 
+// Students count as one filter however many are picked: the count says how
+// many fields are narrowing the calendar, not how many values they hold.
 const countActive = (values: CalendarFilterValues): number =>
-  (values.studentId === '' ? 0 : 1) +
+  (values.studentIds.length === 0 ? 0 : 1) +
   (values.timing === 'all' ? 0 : 1) +
   (values.search.trim() === '' ? 0 : 1)
 
 /**
- * Student filters server side, through the query param the events endpoint
- * supports. Timing and search narrow the loaded range in the page: neither has
- * a server counterpart, and both are cheap over a range that is already bounded
- * by the visible dates.
+ * Students filter server side, through the query param the events endpoint
+ * supports: several ids mean events any of them attend. Timing and search
+ * narrow the loaded range in the page: neither has a server counterpart, and
+ * both are cheap over a range already bounded by the visible dates.
  */
 const CalendarFilters = ({
   values,
@@ -60,7 +64,7 @@ const CalendarFilters = ({
   scopeIsDefault,
   profileLabel,
   onResetToProfile,
-  unknownProfile,
+  unknownCount,
   onResetToDefault,
 }: CalendarFiltersProps) => {
   const [open, setOpen] = useState(false)
@@ -107,70 +111,30 @@ const CalendarFilters = ({
 
       {/* Outside the collapsible fields on purpose: at phone width those are
           shut by default, and an explanation for an empty calendar is no use
-          behind a toggle. A link can outlive the student it names, and without
-          this the result reads as a load that failed. */}
-      {unknownProfile && (
-        <p className='calendar-filters__unknown' role='status'>
-          <strong>{PROFILE_CONTENT.unknownHeading}</strong> {PROFILE_CONTENT.unknownNote}{' '}
-          <button
-            type='button'
-            className='calendar-filters__reset'
-            onClick={onResetToDefault}
-          >
-            {PROFILE_CONTENT.unknownReset}
-          </button>
-        </p>
-      )}
-
-      {/* Says what the dropdown alone cannot: the profile can narrow the
-          calendar to the teacher's own items or to anything with a student on
-          it, neither of which is a value this select can hold. Outside the
-          collapsible fields for the same reason the notice above is: at phone
-          width those are shut, and a calendar showing a third of its events
-          needs to say why without being opened first. The default scope has
-          nothing to explain, so mobile hides that one case. */}
-      <p
-        className={`calendar-filters__scope${
-          scopeIsDefault ? ' calendar-filters__scope--default' : ''
-        }`}
-      >
-        <span className='calendar-filters__scope-label'>{PROFILE_CONTENT.viewing}:</span>{' '}
-        <strong className='calendar-filters__scope-value'>{scopeLabel}</strong>
-        {profileLabel !== null && (
-          <>
-            {' '}
-            <span className='calendar-filters__scope-note'>
-              {PROFILE_CONTENT.overrideSuffix}. {PROFILE_CONTENT.profile}: {profileLabel}.
-            </span>{' '}
-            <button
-              type='button'
-              className='calendar-filters__reset'
-              onClick={onResetToProfile}
-              aria-label={PROFILE_CONTENT.resetLabel}
-            >
-              {PROFILE_CONTENT.reset}
-            </button>
-          </>
-        )}
-      </p>
+          behind a toggle. Says what the picker alone cannot, since the profile
+          can narrow to the teacher's own items or to anything with a student
+          on it, neither of which is a set of students. */}
+      <ScopeNotice
+        scopeLabel={scopeLabel}
+        scopeIsDefault={scopeIsDefault}
+        profileLabel={profileLabel}
+        onResetToProfile={onResetToProfile}
+        unknownCount={unknownCount}
+        onResetToDefault={onResetToDefault}
+        className='calendar-filters'
+      />
 
       {/* hidden rather than unmounted, so aria-controls always points at a real
           element: the attribute also takes the fields out of the tab order. */}
       <div className='calendar-filters__fields' id={FIELDS_ID} hidden={!expanded}>
-        <FormField label={filters.student} htmlFor='filter-student'>
-          <FormSelect
-            id='filter-student'
-            value={values.studentId}
-            onChange={(changeEvent) => onChange({ studentId: changeEvent.target.value })}
-          >
-            <option value=''>{filters.allStudents}</option>
-            {students.map((student) => (
-              <option key={student.id} value={student.id}>
-                {student.firstName}
-              </option>
-            ))}
-          </FormSelect>
-        </FormField>
+        <StudentPicker
+          students={students}
+          selected={values.studentIds}
+          onChange={(studentIds) => onChange({ studentIds })}
+          idPrefix='filter-student'
+          label={filters.student}
+          allLabel={filters.allStudents}
+        />
 
         <FormField label={filters.timing} htmlFor='filter-timing'>
           <FormSelect

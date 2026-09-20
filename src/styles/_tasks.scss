@@ -338,3 +338,236 @@
     font-size: 0.9375rem;
   }
 }
+
+// Who a task involves and whose job it is, under the title. One phrase rather
+// than two chips: either fact alone leaves the other unanswered.
+.task-row__ownership {
+  grid-column: 2;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  color: $color-accent;
+}
+
+// The student picker on the tasks page, out in the open like the show filter:
+// it is the other thing that explains an empty list.
+.tasks__students {
+  margin-bottom: $spacing-md;
+}
+
+.tasks__scope {
+  margin-bottom: $spacing-sm;
+  font-size: 0.875rem;
+}
+
+.tasks__scope--default {
+  @include respond-to(mobile) {
+    // The default scope has nothing to explain, so the phone drops that one
+    // case rather than spending a line on it.
+    display: none;
+  }
+}
+
+.tasks__scope-label {
+  opacity: 0.75;
+}
+
+.tasks__scope-value {
+  color: $color-headline;
+}
+
+.tasks__scope-note {
+  font-size: 0.8125rem;
+  opacity: 0.75;
+}
+
+.tasks__unknown {
+  margin-bottom: $spacing-sm;
+  padding: $spacing-sm $spacing-md;
+  border-radius: 12px;
+  background-color: $color-gradient-light;
+  font-size: 0.875rem;
+}
+
+.tasks__reset {
+  background: none;
+  border: none;
+  padding: 0;
+  font-family: $font-family-base;
+  font-size: 0.8125rem;
+  font-weight: 700;
+  color: $color-accent;
+  text-decoration: underline;
+  cursor: pointer;
+
+  &:hover {
+    color: $color-headline;
+  }
+
+  &:focus-visible {
+    outline: 2px solid $color-headline;
+    outline-offset: 2px;
+  }
+}
+
+// A student on the task form, the same control the assignment form uses.
+.task-form__legend {
+  @include form-field-label;
+  padding: 0;
+}
+
+.task-form__students,
+.task-form__owner {
+  border: none;
+  padding: 0;
+  margin: 0;
+}
+
+.task-form__pills {
+  display: flex;
+  flex-wrap: wrap;
+  gap: $spacing-sm;
+  margin-top: $spacing-sm;
+}
+
+.task-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: $spacing-sm;
+  padding: $spacing-xs $spacing-md;
+  border: 1.5px solid $color-gradient-dark;
+  border-radius: 999px;
+  background-color: $color-white;
+  font-size: 0.9375rem;
+  cursor: pointer;
+
+  &__box {
+    width: 18px;
+    height: 18px;
+    accent-color: $color-accent;
+    cursor: pointer;
+  }
+
+  &--on {
+    border-color: $color-accent;
+    font-weight: 600;
+  }
+
+  &:focus-within {
+    outline: 2px solid $color-headline;
+    outline-offset: 2px;
+  }
+}
+
+// Three exclusive answers, all worth reading at once, so each carries its own
+// sentence rather than hiding behind a select.
+.task-form__owner-options {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: $spacing-sm;
+  margin-top: $spacing-sm;
+
+  @include respond-to(mobile) {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+.task-owner {
+  display: flex;
+  align-items: flex-start;
+  gap: $spacing-sm;
+  padding: $spacing-sm;
+  border: 1.5px solid $color-gradient-dark;
+  border-radius: 14px;
+  background-color: $color-white;
+  cursor: pointer;
+
+  &__box {
+    margin-top: 2px;
+    width: 18px;
+    height: 18px;
+    flex-shrink: 0;
+    accent-color: $color-accent;
+    cursor: pointer;
+  }
+
+  &__body {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    min-width: 0;
+  }
+
+  &__label {
+    font-size: 0.9375rem;
+    font-weight: 700;
+    color: $color-headline;
+  }
+
+  &__hint {
+    font-size: 0.75rem;
+    opacity: 0.8;
+  }
+
+  &--on {
+    border-color: $color-accent;
+    background-color: $color-gradient-light;
+  }
+
+  &:focus-within {
+    outline: 2px solid $color-headline;
+    outline-offset: 2px;
+  }
+}
+
+// Picks any number of students, shared by the calendar filters and the tasks
+// page. Checkboxes rather than a multiple select, which needs a modifier key
+// nobody discovers and hides whatever is not scrolled to.
+.student-picker {
+  border: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+
+  &__legend {
+    @include form-field-label;
+    padding: 0;
+    margin-bottom: $spacing-xs;
+  }
+
+  &__row {
+    display: flex;
+    align-items: center;
+    gap: $spacing-sm;
+    padding: $spacing-xs $spacing-sm;
+    border-radius: 10px;
+    cursor: pointer;
+
+    &:hover {
+      background-color: $color-gradient-light;
+    }
+  }
+
+  &__box {
+    width: 18px;
+    height: 18px;
+    flex-shrink: 0;
+    accent-color: $color-accent;
+    cursor: pointer;
+  }
+
+  &__dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    flex-shrink: 0;
+    background-color: $color-gradient-dark;
+  }
+
+  &__name {
+    font-size: 0.9375rem;
+    min-width: 0;
+    overflow-wrap: break-word;
+  }
+}

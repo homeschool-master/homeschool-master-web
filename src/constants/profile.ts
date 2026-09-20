@@ -13,8 +13,12 @@ export const PROFILE_CONTENT = {
   // A link can outlive the student it names. This explains the empty result
   // rather than letting it read as a page that failed to load.
   unknownHeading: 'That student is not on this roster.',
+  unknownHeadingMany: 'Some of those students are not on this roster.',
   unknownNote: 'They may have been removed since this link was made.',
   unknownReset: 'Show Teacher & Students',
+
+  /** Joins several names in the Viewing line: "Eliza, Samuel and Ruth". */
+  and: 'and',
 
   viewing: 'Viewing',
   profile: 'Profile',

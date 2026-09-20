@@ -8,6 +8,8 @@ export const TASKS_CONTENT = {
 
   filters: {
     label: 'Show',
+    students: 'Students',
+    allStudents: 'Everyone',
     open: 'To do',
     done: 'Done',
     all: 'All',
@@ -24,6 +26,13 @@ export const TASKS_CONTENT = {
     all: 'No tasks yet. Add your first one with the button above.',
   },
 
+  /** Replaces the wording above when a student filter is what emptied it. */
+  emptyForScope: {
+    open: 'Nothing to do for {names}.',
+    done: 'Nothing completed for {names} yet.',
+    all: 'No tasks for {names}. Change the students above to see more.',
+  },
+
   loading: 'Loading tasks',
   overdue: 'Overdue',
   dueToday: 'Due today',
@@ -32,6 +41,18 @@ export const TASKS_CONTENT = {
   /** Announced with the checkbox, since the visible label is the title alone. */
   completeLabel: 'Mark complete',
   uncompleteLabel: 'Mark not complete',
+
+  /**
+   * Who a task involves and whose job it is, said as one phrase. The two are
+   * separate fields because they answer different questions, but a reader
+   * scanning a list needs them together.
+   */
+  ownership: {
+    teacherAbout: 'About {names}',
+    student: '{names} to do',
+    shared: '{names} and you',
+    formerStudent: 'a former student',
+  },
 
   addButton: 'Add a task',
   editAction: 'Edit',
@@ -46,6 +67,26 @@ export const TASKS_CONTENT = {
     descriptionPlaceholder: 'Anything you need to remember',
     dueDate: 'Due date',
     dueDateHint: 'Optional. Leave it blank if it is not due on a particular day.',
+
+    students: 'Who it involves',
+    studentsHint: 'Leave it empty for something that concerns nobody in particular.',
+    noStudents: 'Add a student in Settings to put one on a task.',
+
+    /**
+     * Asked as a question rather than labelled "Owner", because the field is
+     * not a property of the task so much as an answer about it. The three
+     * options say what they mean in the teacher's own terms: naming a student
+     * does not say who has to do the work, which is the whole reason this is
+     * here.
+     */
+    owner: 'Whose job is it?',
+    ownerTeacher: 'Mine',
+    ownerStudent: 'Theirs',
+    ownerBoth: 'Both of us',
+    ownerTeacherHint: 'Yours to do. It can still be about a student.',
+    ownerStudentHint: 'The student does it. You are tracking it.',
+    ownerBothHint: 'You do it together.',
+
     save: 'Save task',
     saving: 'Saving',
     cancel: 'Cancel',
@@ -54,6 +95,12 @@ export const TASKS_CONTENT = {
   validation: {
     title: 'Give the task a title',
     titleLength: 'Keep the title under 255 characters',
+    /**
+     * The server refuses this rather than quietly handing the task back to the
+     * teacher, so the form says the same thing before it is sent and names
+     * both ways out.
+     */
+    ownerNeedsStudent: 'Name at least one student, or make it your job instead.',
   },
 
   remove: {

@@ -63,13 +63,29 @@ export interface Task {
   dueDate: string | null
   completed: boolean
   completedAt: string | null
+  /**
+   * Whose job it is, which naming students cannot express on its own:
+   * "Export report cards" names Scarlett and is the teacher's work, while
+   * "Finish the science fair project" names her and is hers.
+   */
+  ownedBy: TaskOwner
+  /**
+   * Who the task concerns. Ids only, like event attendees: the client
+   * resolves names and colours from the students slice.
+   */
+  studentIds: string[]
   createdAt: string
 }
+
+/** A task that is a student's, or shared, has to name at least one student. */
+export type TaskOwner = 'teacher' | 'student' | 'both'
 
 export interface TaskInput {
   title: string
   description: string | null
   dueDate: string | null
+  ownedBy: TaskOwner
+  studentIds: string[]
 }
 
 /** Ticking a checkbox is a partial update, so every field is optional here. */

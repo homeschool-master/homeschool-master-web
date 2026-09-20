@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom'
-import type { Task } from '../../types'
+import type { Student, Task } from '../../types'
 import { DASHBOARD_CONTENT } from '../../constants/dashboard'
 import { DASHBOARD_TASK_LIMIT } from '../../constants/tasks'
 import TaskRow from '../tasks/TaskRow'
@@ -16,6 +16,13 @@ interface TasksDuePanelProps {
   error: string | null
   togglingId: string | null
   onToggle: (task: Task) => void
+  /**
+   * Carries the profile onward, so See More opens the same narrowed list this
+   * panel is showing rather than everything.
+   */
+  tasksHref: string
+  /** Names the students on each row, the way the event pills do. */
+  students: Student[]
 }
 
 /**
@@ -31,6 +38,8 @@ const TasksDuePanel = ({
   error,
   togglingId,
   onToggle,
+  tasksHref,
+  students,
 }: TasksDuePanelProps) => {
   const visible = openTasks.slice(0, DASHBOARD_TASK_LIMIT)
   const isEmpty = !loading && !error && visible.length === 0
@@ -47,7 +56,7 @@ const TasksDuePanel = ({
 
         <h2 className='panel-card__title'>{tasks.heading}</h2>
 
-        <Link to='/tasks' className='panel-card__add' aria-label={tasks.addLabel}>
+        <Link to={tasksHref} className='panel-card__add' aria-label={tasks.addLabel}>
           {tasks.addSymbol}
         </Link>
       </header>
@@ -72,6 +81,7 @@ const TasksDuePanel = ({
                 today={today}
                 toggling={togglingId === task.id}
                 onToggle={onToggle}
+                students={students}
               />
             ))}
           </ul>
@@ -79,7 +89,7 @@ const TasksDuePanel = ({
 
         {visible.length > 0 && (
           <div className='panel-card__footer'>
-            <Link to='/tasks' className='panel-card__more' aria-label={tasks.seeMoreLabel}>
+            <Link to={tasksHref} className='panel-card__more' aria-label={tasks.seeMoreLabel}>
               {tasks.seeMore}
             </Link>
           </div>

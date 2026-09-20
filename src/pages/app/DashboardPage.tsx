@@ -24,11 +24,13 @@ import {
   DEFAULT_PROFILE,
   calendarHref,
   isUnknownProfile,
-  matchesProfile,
+  matchesScope,
+  matchesTaskScope,
   profileParams,
   readProfile,
   sameProfile,
-  serverStudentId,
+  scopeOf,
+  serverStudentIds,
   withProfile,
 } from '../../utils/profile'
 import type { Profile } from '../../utils/profile'
@@ -95,7 +97,11 @@ const DashboardPage = () => {
     [today]
   )
 
-  const studentId = serverStudentId(profile)
+  // One scope for both panels, so the events and the tasks on this page are
+  // always answering the same question.
+  const scope = useMemo(() => scopeOf(profile), [profile])
+  const studentIds = serverStudentIds(scope)
+  const studentIdsKey = (studentIds ?? []).join(',')
 
   useEffect(() => {
     dispatch(fetchStudents())
@@ -103,14 +109,16 @@ const DashboardPage = () => {
   }, [dispatch])
 
   useEffect(() => {
-    dispatch(fetchCalendarEvents({ range, studentId }))
-  }, [dispatch, range, studentId])
+    dispatch(fetchCalendarEvents({ range, studentIds }))
+    // studentIds is rebuilt each render, so the key stands in for it.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [dispatch, range, studentIdsKey])
 
   // A named student is already filtered by the server: the other profiles have
   // no server counterpart, so they are applied to the loaded range here.
   const visible = useMemo(
-    () => events.filter((event) => matchesProfile(event, profile)),
-    [events, profile]
+    () => events.filter((event) => matchesScope(event, scope)),
+    [events, scope]
   )
 
   const ahead = useMemo(() => upcomingEvents(visible), [visible])
@@ -144,13 +152,28 @@ const DashboardPage = () => {
    * month. See More continues the panel's own chronological list rather than
    * dropping the reader into a grid that is shaped nothing like it.
    */
-  // Tasks belong to the teacher rather than to a student, so the profile does
-  // not narrow them and these links carry none of it.
-  const open = useMemo(() => openTasks(tasks), [tasks])
-  const dueToday = useMemo(() => dueByToday(tasks, today), [tasks, today])
+  /**
+   * Tasks now name students, so the profile narrows them the way it narrows
+   * events. Both the panel and the count read the same filtered list, so the
+   * number above the panel always counts what is in it.
+   *
+   * The Teacher and All Students profiles read whose job a task is, while a
+   * named student reads who it concerns: a task about Eliza that is the
+   * teacher's own work belongs on Eliza's profile, because someone reviewing
+   * her wants to see what is owed to her.
+   */
+  const scopedTasks = useMemo(
+    () => tasks.filter((task) => matchesTaskScope(task, scope)),
+    [tasks, scope]
+  )
+  const open = useMemo(() => openTasks(scopedTasks), [scopedTasks])
+  const dueToday = useMemo(() => dueByToday(scopedTasks, today), [scopedTasks, today])
 
   const todayHref = calendarHref(profile, { range: 'day', date: today })
   const seeMoreHref = calendarHref(profile, { view: 'list', date: today })
+  // The tasks page reads the same profile, so the panel's links carry it: the
+  // count and the list it opens would otherwise disagree.
+  const tasksHref = withProfile('/tasks', profile)
 
   return (
     <div className='dashboard-home'>
@@ -165,7 +188,7 @@ const DashboardPage = () => {
         upcomingCount={loading || error ? null : todayCount}
         tasksCount={tasksLoading || tasksError ? null : dueToday.length}
         eventsHref={todayHref}
-        tasksHref='/tasks'
+        tasksHref={tasksHref}
       />
 
       <section className='dashboard-home__panels'>
@@ -183,7 +206,9 @@ const DashboardPage = () => {
 
           <TasksDuePanel
             openTasks={open}
-            totalTasks={tasks.length}
+            totalTasks={scopedTasks.length}
+            tasksHref={tasksHref}
+            students={students}
             today={today}
             loading={tasksLoading}
             error={tasksError}

@@ -12,11 +12,30 @@ import {
   toggleTask,
   updateTask,
 } from '../../store/tasksSlice'
+import { fetchStudents } from '../../store/studentsSlice'
 import { TASKS_CONTENT } from '../../constants/tasks'
 import { todayKey } from '../../utils/calendarDates'
+import { fillTemplate } from '../../utils/grades'
 import { TASK_FILTERS, applyTaskFilter, isTaskFilter } from '../../utils/tasks'
 import type { TaskFilter } from '../../utils/tasks'
+import {
+  DEFAULT_PROFILE,
+  MODE_PARAM,
+  OVERRIDE_ALL,
+  OVERRIDE_PARAM,
+  STUDENT_PARAM,
+  hasOverride,
+  matchesTaskScope,
+  profileLabel,
+  readProfile,
+  readScope,
+  scopeLabel,
+  unknownStudentIds,
+  writeOverrideIds,
+} from '../../utils/profile'
 import Button from '../../components/shared/Button'
+import ScopeNotice from '../../components/shared/ScopeNotice'
+import StudentPicker from '../../components/shared/StudentPicker'
 import TaskForm from '../../components/tasks/TaskForm'
 import TaskRow from '../../components/tasks/TaskRow'
 
@@ -31,6 +50,9 @@ const TasksPage = () => {
   const [searchParams, setSearchParams] = useSearchParams()
   const { items, loading, error, saving, saveError, togglingId, removingId, removeError } =
     useSelector((state: RootState) => state.tasks)
+  const { items: students, loaded: studentsLoaded } = useSelector(
+    (state: RootState) => state.students
+  )
 
   const [mode, setMode] = useState<Mode>({ kind: 'idle' })
 
@@ -41,23 +63,65 @@ const TasksPage = () => {
   const filterParam = searchParams.get('show')
   const filter: TaskFilter = isTaskFilter(filterParam) ? filterParam : 'all'
 
+  /**
+   * Tasks name students now, so this page reads the profile the way the
+   * calendar does, and takes the same temporary override: the picker never
+   * writes the profile and nothing carries the override onward, so leaving and
+   * coming back lands on the profile again. Only the dashboard switcher
+   * changes profiles.
+   */
+  const profile = readProfile(searchParams)
+  const scope = readScope(searchParams)
+  const overridden = hasOverride(searchParams)
+  const pickedIds = scope.kind === 'student' ? scope.studentIds : []
+  const pickedKey = pickedIds.join(',')
+
   const today = todayKey()
 
   useEffect(() => {
     dispatch(fetchTasks())
+    // The rows name the students a task holds, so a direct link needs the
+    // roster as much as the tasks.
+    dispatch(fetchStudents())
   }, [dispatch])
 
-  const visible = useMemo(() => applyTaskFilter(items, filter), [items, filter])
+  const visible = useMemo(
+    () => applyTaskFilter(items.filter((task) => matchesTaskScope(task, scope)), filter),
+    // scope is rebuilt from the URL each render, so its parts stand in for it.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [items, filter, scope.kind, pickedKey]
+  )
 
-  const selectFilter = (next: TaskFilter) => {
+  const updateParams = (changes: Record<string, string | null>) => {
     setSearchParams((current) => {
       const params = new URLSearchParams(current)
-      // The default carries no param, so a bare /tasks is the whole list.
-      if (next === 'all') params.delete('show')
-      else params.set('show', next)
+
+      Object.entries(changes).forEach(([key, value]) => {
+        if (value === null || value === '') params.delete(key)
+        else params.set(key, value)
+      })
 
       return params
     })
+  }
+
+  const selectFilter = (next: TaskFilter) => {
+    // The default carries no param, so a bare /tasks is the whole list.
+    updateParams({ show: next === 'all' ? null : next })
+  }
+
+  /**
+   * The picker writes the override, never the profile's own studentId. Picking
+   * exactly what the profile already says drops the override rather than
+   * pinning the same answer twice.
+   */
+  const setStudentOverride = (picked: string[]): string | null => {
+    if (picked.length === 0 && profile.kind === 'everyone') return null
+    if (picked.length === 1 && profile.kind === 'student' && profile.studentId === picked[0]) {
+      return null
+    }
+
+    return picked.length === 0 ? OVERRIDE_ALL : writeOverrideIds(picked)
   }
 
   /**
@@ -134,7 +198,36 @@ const TasksPage = () => {
         </header>
 
         {/* Out in the open rather than behind a disclosure: at phone width a
-            collapsed panel hides the one thing that explains an empty list. */}
+            collapsed panel hides the one thing that explains an empty list.
+            The same is true of the scope line and the student picker, so
+            neither of them collapses either. */}
+        <ScopeNotice
+          scopeLabel={scopeLabel(scope, students)}
+          scopeIsDefault={scope.kind === DEFAULT_PROFILE.kind && !overridden}
+          profileLabel={overridden ? profileLabel(profile, students) : null}
+          onResetToProfile={() => updateParams({ [OVERRIDE_PARAM]: null })}
+          unknownCount={studentsLoaded ? unknownStudentIds(scope, students).length : 0}
+          onResetToDefault={() =>
+            updateParams({ [MODE_PARAM]: null, [STUDENT_PARAM]: null, [OVERRIDE_PARAM]: null })
+          }
+          className='tasks'
+        />
+
+        {students.length > 0 && (
+          <div className='tasks__students'>
+            <StudentPicker
+              students={students}
+              selected={pickedIds}
+              onChange={(picked) =>
+                updateParams({ [OVERRIDE_PARAM]: setStudentOverride(picked) })
+              }
+              idPrefix='task-filter-student'
+              label={TASKS_CONTENT.filters.students}
+              allLabel={TASKS_CONTENT.filters.allStudents}
+            />
+          </div>
+        )}
+
         <div className='tasks__filters' role='group' aria-label={TASKS_CONTENT.filters.label}>
           {TASK_FILTERS.map((option) => (
             <button
@@ -173,6 +266,7 @@ const TasksPage = () => {
                 <TaskForm
                   key={mode.kind === 'edit' ? mode.task.id : 'new'}
                   task={mode.kind === 'edit' ? mode.task : null}
+                  students={students}
                   saving={saving}
                   onSubmit={handleSubmit}
                   onCancel={() => goTo({ kind: 'idle' })}
@@ -222,7 +316,18 @@ const TasksPage = () => {
           </p>
         )}
 
-        {showEmpty && <p className='tasks__status'>{TASKS_CONTENT.empty[filter]}</p>}
+        {/* A list emptied by the student picker is a different question from
+            an empty list, and pointing at "add your first task" when the
+            answer is "change the students" is the wrong next step. */}
+        {showEmpty && (
+          <p className='tasks__status'>
+            {scope.kind === 'student'
+              ? fillTemplate(TASKS_CONTENT.emptyForScope[filter], {
+                  names: scopeLabel(scope, students),
+                })
+              : TASKS_CONTENT.empty[filter]}
+          </p>
+        )}
 
         {showList && (
           <ul className='tasks__list'>
@@ -237,6 +342,7 @@ const TasksPage = () => {
                 }
                 onEdit={(next) => goTo({ kind: 'edit', task: next })}
                 onRemove={(next) => goTo({ kind: 'remove', task: next })}
+                students={students}
               />
             ))}
           </ul>
