@@ -28,9 +28,15 @@
     // than the card it sits in. Dropping the native appearance removes that
     // floor, min-width: 0 lets the control shrink inside a flex or grid
     // parent, and clearing the shadow parts stops the rendered value from
-    // propping the field back open. The explicit line height on the value
-    // keeps an empty field the same height as its siblings, which the native
-    // appearance was supplying before.
+    // propping the field back open.
+    //
+    // That height came from the native appearance too. iOS draws nothing at
+    // all in an empty date field, no placeholder text, so the value element
+    // holds no content, lays out no line box and collapses the control to a
+    // sliver next to the text fields. The min-height gives it one line
+    // whether or not it has a value, in the same em the text controls get
+    // from their inherited line height, so the two match by construction
+    // rather than by a repeated pixel figure.
     &[type='date'],
     &[type='time'],
     &[type='datetime-local'],
@@ -43,6 +49,7 @@
 
       &::-webkit-date-and-time-value {
         min-width: 0;
+        min-height: $line-height-base * 1em;
         text-align: left;
         line-height: $line-height-base;
       }
