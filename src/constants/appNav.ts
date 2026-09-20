@@ -11,6 +11,16 @@ export interface AppNavItem {
    * them keeps it: settings has nothing to do with it and stays a plain link.
    */
   carriesProfile?: boolean
+  /**
+   * The order sections move into More as the strip runs out of slots: 1 goes
+   * first. Required rather than optional, so a new section cannot be added
+   * without someone deciding where it sits in that queue.
+   *
+   * Settings leads because it is the one section nobody visits during a school
+   * day, then Grades, which is read at the end of a term rather than daily.
+   * The three that are open every morning are last and in practice never move.
+   */
+  overflowRank: number
 }
 
 export const APP_NAV_CONTENT = {
@@ -18,11 +28,20 @@ export const APP_NAV_CONTENT = {
   ariaLabel: 'App sections',
   comingSoonBadge: 'Soon',
   comingSoonHint: 'Coming soon',
+  /**
+   * The strip's overflow control. "More" is what is drawn, and the longer
+   * accessible name says more of what it opens while still starting with the
+   * visible word, so speaking the label still hits the button.
+   */
+  more: 'More',
+  moreAriaLabel: 'More sections',
+  /** Names the popover for screen readers, since its trigger just says More. */
+  moreMenuLabel: 'More app sections',
   items: [
-    { key: 'dashboard', label: 'Dashboard', to: '/dashboard', carriesProfile: true },
-    { key: 'settings', label: 'Settings', to: '/settings' },
-    { key: 'calendar', label: 'Calendar', to: '/calendar', carriesProfile: true },
-    { key: 'tasks', label: 'Tasks', to: '/tasks', carriesProfile: true },
-    { key: 'grades', label: 'Grades', to: '/grades' },
+    { key: 'dashboard', label: 'Dashboard', to: '/dashboard', carriesProfile: true, overflowRank: 5 },
+    { key: 'settings', label: 'Settings', to: '/settings', overflowRank: 1 },
+    { key: 'calendar', label: 'Calendar', to: '/calendar', carriesProfile: true, overflowRank: 4 },
+    { key: 'tasks', label: 'Tasks', to: '/tasks', carriesProfile: true, overflowRank: 3 },
+    { key: 'grades', label: 'Grades', to: '/grades', overflowRank: 2 },
   ] as AppNavItem[],
 }

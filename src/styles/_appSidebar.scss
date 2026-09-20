@@ -114,6 +114,81 @@
   }
 }
 
+// The strip's overflow control and what it opens. Neither exists above the
+// mobile breakpoint: the desktop column has room for every section, so nothing
+// ever moves and the wrapper is never rendered.
+.app-nav__more {
+  position: relative;
+
+  @include respond-to(mobile) {
+    // A slot like any other, so the arithmetic that decides how many sections
+    // fit can count it as one of them.
+    flex: 1;
+    min-width: 0;
+  }
+}
+
+.app-nav__more-toggle {
+  // The dots are filled rather than stroked, so they need no stroke width to
+  // read at 22px.
+  svg {
+    stroke: none;
+  }
+}
+
+.app-nav__menu {
+  @include nav-panel;
+
+  position: absolute;
+  top: calc(100% + #{$spacing-xs});
+  right: 0;
+  // Wide enough for the longest label with its icon, and never wider than the
+  // screen it drops onto.
+  min-width: 11rem;
+  max-width: calc(100vw - #{$spacing-lg});
+  padding: $spacing-xs;
+  gap: 2px;
+  // Above the page band that reaches back under the sidebar, and above the
+  // page content the menu drops over.
+  z-index: 3;
+  box-shadow: 0 8px 24px rgba($color-headline, 0.16);
+
+  // nav-panel sets display: flex, which beats the browser's own hidden rule, so
+  // the shut state has to be said again here. The menu leans on hidden for its
+  // tab order as much as for its looks: the same fix the calendar filters and
+  // the event list panel both needed.
+  &[hidden] {
+    display: none;
+  }
+
+  // The rows go back to reading like the desktop column: the strip squeezes
+  // them into centred columns at 0.6875rem, and a popover has room for the
+  // full sentence.
+  .app-nav__item {
+    flex-direction: row;
+    gap: $spacing-sm;
+    padding: $spacing-sm;
+    font-size: 0.9375rem;
+    text-align: left;
+  }
+
+  .app-nav__label {
+    max-width: none;
+    overflow: visible;
+  }
+
+  .app-nav__icon {
+    width: 22px;
+    height: 22px;
+  }
+
+  .app-nav__badge {
+    margin-left: auto;
+    font-size: 0.5625rem;
+    padding: 1px $spacing-xs;
+  }
+}
+
 .app-nav__badge {
   margin-left: auto;
   flex-shrink: 0;
