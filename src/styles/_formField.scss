@@ -22,5 +22,34 @@
       opacity: 0.8;
       cursor: not-allowed;
     }
+
+    // iOS Safari sizes a native date or time control from its own value text
+    // and treats that as a floor, so width: 100% alone leaves the field wider
+    // than the card it sits in. Dropping the native appearance removes that
+    // floor, min-width: 0 lets the control shrink inside a flex or grid
+    // parent, and clearing the shadow parts stops the rendered value from
+    // propping the field back open. The explicit line height on the value
+    // keeps an empty field the same height as its siblings, which the native
+    // appearance was supplying before.
+    &[type='date'],
+    &[type='time'],
+    &[type='datetime-local'],
+    &[type='month'],
+    &[type='week'] {
+      -webkit-appearance: none;
+      appearance: none;
+      min-width: 0;
+      max-width: 100%;
+
+      &::-webkit-date-and-time-value {
+        min-width: 0;
+        text-align: left;
+        line-height: $line-height-base;
+      }
+
+      &::-webkit-datetime-edit {
+        min-width: 0;
+      }
+    }
   }
 }
