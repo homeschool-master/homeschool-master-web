@@ -255,7 +255,15 @@ export interface AssignmentInput {
   description: string | null
   dueDate: string | null
   pointsPossible: number
-  weight: number
+  /**
+   * Who owns the weight, said by what is sent rather than by the number:
+   *
+   *   undefined  she did not touch the field. Left exactly as it is, which on
+   *              a new assignment means the type's default.
+   *   null       hand it back to the type and follow the default again.
+   *   a number   she set it. Hers, even when it equals the default.
+   */
+  weight?: number | null
   /**
    * Replaces the assigned set on update. A student dropped from the list has
    * their grade row deleted, score and all, so the form treats unassigning as

@@ -46,6 +46,21 @@ export const letterScore = (letter: string, pointsPossible: string): number | nu
   return Math.round((possible * entry.percentage) / 100 * 100) / 100
 }
 
+/**
+ * Above this, a weight gets a warning rather than a chip.
+ *
+ * Five is the top of what a teacher plausibly means: a final exam counting
+ * five times an ordinary piece of work is heavy but sane. Past it the likely
+ * explanation is a typo, and the cost of that typo is a subject average
+ * decided by one assignment.
+ */
+export const LARGE_WEIGHT = 5
+
+export const isLargeWeight = (weight: string | number | null): boolean => {
+  const parsed = typeof weight === 'number' ? weight : toNumber(weight)
+  return parsed !== null && parsed > LARGE_WEIGHT
+}
+
 export type MarkFilter = 'all' | 'unmarked' | 'marked'
 
 /** Rendered in this order, default first: the view maps straight over it. */

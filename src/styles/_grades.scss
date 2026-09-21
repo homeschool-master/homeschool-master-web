@@ -1510,3 +1510,42 @@ $color-pending: #9a5b0a;
     color: $color-headline;
   }
 }
+
+
+// A weight past five, which is usually a typo that would let one assignment
+// decide a subject average on its own. Loud enough to catch the eye, and not
+// an error: she can still save it.
+.assignment-form__weight-warning {
+  margin-top: $spacing-xs;
+  padding: $spacing-xs $spacing-sm;
+  border-left: 3px solid #b42318;
+  border-radius: 0 8px 8px 0;
+  background-color: rgba(180, 35, 24, 0.07);
+  font-size: 0.8125rem;
+  font-weight: 600;
+  color: #b42318;
+}
+
+// Hands a weight back to its type, offered only when there is something to
+// undo.
+.assignment-form__weight-reset {
+  margin-top: 2px;
+  padding: 0;
+  border: none;
+  background: none;
+  font-family: $font-family-base;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  color: $color-headline;
+  text-decoration: underline;
+  cursor: pointer;
+
+  &:hover {
+    color: $color-accent;
+  }
+
+  &:focus-visible {
+    outline: 2px solid $color-headline;
+    outline-offset: 2px;
+  }
+}

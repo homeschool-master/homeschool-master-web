@@ -21,6 +21,9 @@ export const ASSIGNMENT_TYPES_CONTENT = {
     namePlaceholder: 'Narration',
     nameBuiltInHint: 'A built in type keeps its name, so the work already filed under it still reads.',
     defaultWeight: 'Counts by default',
+    /** The same warning the assignment form gives, for the same mistake. */
+    weightLarge:
+      'That is a large weight. Every new piece of work of this kind will count {factor} times as much as an ordinary one. If you meant a smaller number, change it now. You can still save it.',
     save: 'Save type',
     saving: 'Saving',
     cancel: 'Cancel',

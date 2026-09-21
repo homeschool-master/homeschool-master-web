@@ -6,7 +6,7 @@ import Button from '../shared/Button'
 import HintTooltip from '../shared/HintTooltip'
 import { ASSIGNMENT_TYPES_CONTENT } from '../../constants/assignmentTypes'
 import { GRADES_CONTENT } from '../../constants/grades'
-import { formatDecimal, weightSentence } from '../../utils/grades'
+import { fillTemplate, formatDecimal, isLargeWeight, weightSentence } from '../../utils/grades'
 import type { AssignmentType } from '../../types'
 
 const { form, validation, builtInBadge } = ASSIGNMENT_TYPES_CONTENT
@@ -141,6 +141,15 @@ const AssignmentTypeForm = ({
             {errors.defaultWeight.message}
           </p>
         )}
+        {/* The same warning the assignment form gives, for the same typo: a
+            default of 30 makes every new piece of work of this kind swallow
+            the average. It warns and does not block. */}
+        {isLargeWeight(weightValue) && (
+          <p className='assignment-form__weight-warning' role='status'>
+            {fillTemplate(form.weightLarge, { factor: formatDecimal(weightValue) })}
+          </p>
+        )}
+
         {/* The number said as what it does, updating as it is typed. */}
         <p className='assignment-form__weight-says' aria-live='polite'>
           {weightSentence(weightValue)}

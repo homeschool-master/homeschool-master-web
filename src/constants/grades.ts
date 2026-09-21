@@ -136,6 +136,18 @@ export const GRADES_CONTENT = {
     /** Says which way the number in the box got there, and what follows from it. */
     weightFromType: 'This is what {name} counts by default. Changing that default later will move this too.',
     weightOverridden: 'You set this weight yourself, so changing what {name} counts by default will leave it alone.',
+    /** The way back, once a weight is hers. */
+    weightUseDefault: 'Use the {name} default instead',
+    /**
+     * Shown above a weight of more than five, on an assignment or on a type.
+     *
+     * It exists for one mistake: typing 30 when 3 was meant. A weight like
+     * that lets a single piece of work swallow a subject average, and without
+     * this there is nothing on screen saying so. It warns and does not block,
+     * because a large weight is a real thing to want.
+     */
+    weightLarge:
+      'That is a large weight. This will count {factor} times as much as an ordinary piece of work, so it will dominate the subject average. If you meant a smaller number, change it now. You can still save it.',
     students: 'Given to',
     studentsHint: 'Each student gets their own row to mark.',
     noStudents: 'Add a student in Settings before setting work.',
