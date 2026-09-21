@@ -2,13 +2,15 @@ import { useEffect, useMemo } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { Link, useSearchParams } from 'react-router-dom'
 import type { AppDispatch, RootState } from '../../store'
-import type { ProgressTotals } from '../../types'
+import type { ProgressEntry, ProgressTotals } from '../../types'
 import { fetchAssignments } from '../../store/assignmentsSlice'
 import { fetchStudentProgress } from '../../store/progressSlice'
 import { fetchStudents } from '../../store/studentsSlice'
 import { fetchSubjects } from '../../store/subjectsSlice'
 import { GRADES_CONTENT } from '../../constants/grades'
+import GradebookRow from './GradebookRow'
 import { isDateKey, todayKey } from '../../utils/calendarDates'
+import { readProfile } from '../../utils/profile'
 import {
   defaultProgressRange,
   fillTemplate,
@@ -19,13 +21,14 @@ import {
 } from '../../utils/grades'
 
 const { progress } = GRADES_CONTENT
+const { book } = progress
 
 const STUDENT_PARAM = 'student'
 const FROM_PARAM = 'from'
 const TO_PARAM = 'to'
 
-/** Where the assignments view lives: the same route without the view param. */
-const ASSIGNMENTS_PATH = '/grades'
+/** Assignments is its own section now, so every link out points at it. */
+const ASSIGNMENTS_PATH = '/assignments'
 const STUDENTS_PATH = '/settings/students'
 const SUBJECTS_PATH = '/settings/subjects'
 
@@ -41,6 +44,13 @@ interface TotalsProps {
   totals: ProgressTotals
   /** The overall roll up is the headline, so it is drawn larger. */
   headline?: boolean
+  /**
+   * The work this figure was summed from, listed beneath it. The roll up is
+   * the heading of the group it rolls up, so the number and the rows that
+   * produced it are read together rather than on two separate screens.
+   */
+  entries?: ProgressEntry[]
+  assignmentHref?: (entry: ProgressEntry) => string
 }
 
 /**
@@ -48,7 +58,13 @@ interface TotalsProps {
  * never appears without the counts beside it: 100% of one marked piece out of
  * nine is not the same claim as 100% of nine.
  */
-const TotalsCard = ({ label, totals, headline = false }: TotalsProps) => {
+const TotalsCard = ({
+  label,
+  totals,
+  headline = false,
+  entries,
+  assignmentHref,
+}: TotalsProps) => {
   const percent = formatPercentage(totals.percentage)
 
   return (
@@ -87,6 +103,18 @@ const TotalsCard = ({ label, totals, headline = false }: TotalsProps) => {
           </span>
         )}
       </span>
+
+      {entries && entries.length > 0 && assignmentHref && (
+        <ul className='gradebook' aria-label={fillTemplate(book.subjectWork, { name: label })}>
+          {entries.map((entry) => (
+            <GradebookRow
+              key={entry.assignmentId}
+              entry={entry}
+              href={assignmentHref(entry)}
+            />
+          ))}
+        </ul>
+      )}
     </li>
   )
 }
@@ -124,12 +152,30 @@ const ProgressView = () => {
   const today = todayKey()
   const fallback = defaultProgressRange(today)
 
-  // A student id that is not on the roster falls back to the first one rather
-  // than asking the server for a report it will refuse.
+  /**
+   * Whose gradebook this is.
+   *
+   * The page keeps its own student param rather than following the profile
+   * switcher: a gradebook is one student's by definition, and two of the
+   * switcher's four answers cannot name one. "Teacher" has no marks at all and
+   * "Teacher & Students" is not a person, so following the profile would mean
+   * inventing a meaning for both. What the profile does do is choose the
+   * opening student when it names one, so arriving from a dashboard set to
+   * Eliza lands on Eliza. This page's own param wins over it, which is what
+   * makes a gradebook link a link to that gradebook.
+   *
+   * An id that is not on the roster falls back to the first student rather
+   * than asking the server for a report it will refuse.
+   */
+  const profile = readProfile(searchParams)
+  const onRoster = (id: string | null): boolean =>
+    id !== null && students.some((student) => student.id === id)
+
   const studentParam = searchParams.get(STUDENT_PARAM)
-  const studentId =
-    studentParam !== null && students.some((student) => student.id === studentParam)
-      ? studentParam
+  const studentId = onRoster(studentParam)
+    ? studentParam
+    : onRoster(profile.studentId)
+      ? profile.studentId
       : (students[0]?.id ?? null)
 
   const fromParam = searchParams.get(FROM_PARAM)
@@ -157,6 +203,17 @@ const ProgressView = () => {
 
       return params
     })
+  }
+
+  /**
+   * Where a mark is opened. Grades reads and never scores, so the row links
+   * into the Assignments section rather than growing a score box: one place
+   * does the marking, and this page points at it. The subject filter comes
+   * along so the list lands narrowed to the work in hand.
+   */
+  const assignmentHref = (entry: ProgressEntry): string => {
+    const params = new URLSearchParams({ open: entry.assignmentId })
+    return `${ASSIGNMENTS_PATH}?${params.toString()}`
   }
 
   const selectedStudent = students.find((student) => student.id === studentId) ?? null
@@ -325,12 +382,38 @@ const ProgressView = () => {
       {showEmpty && renderEmpty()}
 
       {!loading && !error && rangeValid && report !== null && report.subjects.length > 0 && (
-        <ul className='progress-list'>
-          <TotalsCard label={progress.overall} totals={report.overall} headline />
-          {report.subjects.map((subject) => (
-            <TotalsCard key={subject.subjectId} label={subject.subjectName} totals={subject} />
-          ))}
-        </ul>
+        <>
+          <ul className='progress-list'>
+            {/* The headline first, then each subject as the heading of the work
+                it was summed from: one page, so the figure and the rows behind
+                it are never two separate claims. */}
+            <TotalsCard label={progress.overall} totals={report.overall} headline />
+            {report.subjects.map((subject) => (
+              <TotalsCard
+                key={subject.subjectId}
+                label={subject.subjectName}
+                totals={subject}
+                entries={subject.assignments}
+                assignmentHref={assignmentHref}
+              />
+            ))}
+          </ul>
+        </>
+      )}
+
+      {/* Below every figure and outside all of them, with the reason in the
+          open: a teacher who cannot find a piece of work in the report needs
+          to be told where it went rather than left widening the dates. */}
+      {!loading && !error && rangeValid && report !== null && report.undated.length > 0 && (
+        <section className='gradebook-undated'>
+          <h2 className='gradebook-undated__heading'>{book.undatedHeading}</h2>
+          <p className='gradebook-undated__note'>{book.undatedNote}</p>
+          <ul className='gradebook'>
+            {report.undated.map((entry) => (
+              <GradebookRow key={entry.assignmentId} entry={entry} href={assignmentHref(entry)} />
+            ))}
+          </ul>
+        </section>
       )}
     </div>
   )

@@ -144,6 +144,23 @@
       grid-column: 2;
     }
   }
+
+  // A row with nothing in the first column has one fewer column. Left on the
+  // three column track above, the body lands in the auto sized first column,
+  // which does not shrink, and the actions are pushed into a track of zero
+  // width: on a phone that puts Remove off the side of the screen, drawn but
+  // out of reach. Declared after the block above so it wins on source order.
+  &--no-dot {
+    grid-template-columns: minmax(0, 1fr) auto;
+
+    @include respond-to(mobile) {
+      grid-template-columns: minmax(0, 1fr);
+
+      .subject-row__actions {
+        grid-column: 1;
+      }
+    }
+  }
 }
 
 .subject-form {
@@ -182,4 +199,49 @@
       color: $color-accent;
     }
   }
+}
+
+// Says a type comes with every account, so the missing Remove control on its
+// row reads as a rule rather than as something broken.
+.assignment-type__badge {
+  display: inline-block;
+  margin-left: $spacing-sm;
+  padding: 1px $spacing-sm;
+  border-radius: 999px;
+  background-color: rgba($color-headline, 0.08);
+  color: rgba($color-headline, 0.55);
+  font-size: 0.625rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  vertical-align: middle;
+}
+
+// Holds the three way question above the form it is about.
+.subjects__scope {
+  margin-bottom: $spacing-md;
+}
+
+.assignment-type__date {
+  margin-bottom: $spacing-sm;
+}
+
+// The promise a teacher cannot see from the list, said where she is choosing.
+.assignment-type__override-note {
+  margin-bottom: $spacing-sm;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  color: $color-accent;
+}
+
+// What actually happened, since the three modes look identical until they run.
+.assignment-type__result {
+  margin-bottom: $spacing-md;
+  padding: $spacing-sm $spacing-md;
+  border-radius: 12px;
+  background-color: $color-gradient-light;
+  box-shadow: inset 0 0 0 1.5px $color-accent;
+  font-size: 0.9375rem;
+  font-weight: 600;
+  color: $color-headline;
 }

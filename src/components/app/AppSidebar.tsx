@@ -36,6 +36,12 @@ const GradesIcon = () => (
     <circle cx='12' cy='9' r='5' /><path d='M8.5 13.5L7 21l5-2.5L17 21l-1.5-7.5' />
   </svg>
 )
+const AssignmentsIcon = () => (
+  <svg viewBox='0 0 24 24' fill='none' stroke='currentColor' strokeWidth='2' strokeLinecap='round' strokeLinejoin='round'>
+    <path d='M8 3h8a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2z' />
+    <path d='M9.5 8.5h5M9.5 12h5M9.5 15.5h3' />
+  </svg>
+)
 // Three dots rather than a chevron: a chevron says "open downward", which is
 // also what the strip's own rows look like they might do.
 const MoreIcon = () => (
@@ -49,6 +55,7 @@ const ICONS: Record<AppNavKey, () => React.ReactElement> = {
   settings: SettingsIcon,
   calendar: CalendarIcon,
   tasks: TasksIcon,
+  assignments: AssignmentsIcon,
   grades: GradesIcon,
 }
 

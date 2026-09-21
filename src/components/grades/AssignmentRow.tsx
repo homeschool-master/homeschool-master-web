@@ -12,6 +12,12 @@ interface AssignmentRowProps {
   onScore: (assignment: Assignment) => void
   onEdit: (assignment: Assignment) => void
   onRemove: (assignment: Assignment) => void
+  /**
+   * True when this is the row a link from the gradebook asked for. The row
+   * marks itself and scrolls itself into view, so arriving from a mark lands
+   * on the work rather than at the top of a list of twenty.
+   */
+  highlighted?: boolean
 }
 
 /**
@@ -25,14 +31,41 @@ const AssignmentRow = ({
   onScore,
   onEdit,
   onRemove,
+  highlighted = false,
 }: AssignmentRowProps) => {
   const total = assignment.grades.length
   const marked = markedCount(assignment)
   const chip = weightChip(assignment.weight)
   const complete = total > 0 && marked === total
 
+  /**
+   * Brings the linked row into view once it is in the document. Measured and
+   * scrolled synchronously in the ref, the same way the panels on the tasks
+   * and subjects pages do it: an animation frame never runs while the document
+   * is hidden and would leave the row quietly off screen.
+   *
+   * The test is whether the whole row is on screen, not just its top edge.
+   * Those panels open where the button that opened them was, so moving a panel
+   * already under the eye would be the jolt rather than the fix. This arrives
+   * from another page with nothing to preserve, and a row whose top is barely
+   * above the fold is not somewhere a teacher has landed.
+   */
+  const reveal = (node: HTMLLIElement | null) => {
+    if (node === null || !highlighted) return
+
+    const box = node.getBoundingClientRect()
+    if (box.top >= 0 && box.bottom <= window.innerHeight) return
+
+    node.scrollIntoView({ block: 'center' })
+  }
+
   return (
-    <li className={`assignment-row${complete ? ' assignment-row--complete' : ''}`}>
+    <li
+      ref={reveal}
+      className={`assignment-row${complete ? ' assignment-row--complete' : ''}${
+        highlighted ? ' assignment-row--linked' : ''
+      }`}
+    >
       <span className='assignment-row__head'>
         <span
           className='assignment-row__dot'
@@ -44,6 +77,11 @@ const AssignmentRow = ({
 
       <span className='assignment-row__meta'>
         <span className='assignment-row__subject'>{subject?.name ?? row.unknownSubject}</span>
+        {/* What kind of work it is, beside the subject: the two together are
+            how a row is recognised at a glance. */}
+        {assignment.assignmentTypeName && (
+          <span className='assignment-row__type'>{assignment.assignmentTypeName}</span>
+        )}
         <span className='assignment-row__due'>
           {assignment.dueDate ? formatDueDate(assignment.dueDate) : row.noDueDate}
         </span>

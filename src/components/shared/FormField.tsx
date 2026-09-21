@@ -6,6 +6,12 @@ interface FormFieldProps {
   /** Id of the control this labels. */
   htmlFor: string
   className?: string
+  /**
+   * Sits beside the label rather than inside it, for a control that belongs to
+   * the field but must not become part of what the label announces: a hint
+   * button inside the label would be read out as part of the field's name.
+   */
+  labelAfter?: ReactNode
   children: ReactNode
 }
 
@@ -18,11 +24,20 @@ const controlClasses = (className?: string) =>
  * FormInput, FormTextarea or FormSelect so the control picks up the same
  * styling.
  */
-const FormField = ({ label, htmlFor, className = '', children }: FormFieldProps) => (
+const FormField = ({
+  label,
+  htmlFor,
+  className = '',
+  labelAfter,
+  children,
+}: FormFieldProps) => (
   <div className={['form-field', className].filter(Boolean).join(' ')}>
-    <label className='form-field__label' htmlFor={htmlFor}>
-      {label}
-    </label>
+    <span className='form-field__label-row'>
+      <label className='form-field__label' htmlFor={htmlFor}>
+        {label}
+      </label>
+      {labelAfter}
+    </span>
     {children}
   </div>
 )

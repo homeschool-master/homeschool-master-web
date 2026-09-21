@@ -16,6 +16,7 @@ import {
 } from '../../store/assignmentsSlice'
 import { fetchStudents } from '../../store/studentsSlice'
 import { fetchSubjects } from '../../store/subjectsSlice'
+import { fetchAssignmentTypes } from '../../store/assignmentTypesSlice'
 import { GRADES_CONTENT } from '../../constants/grades'
 import { MARK_FILTERS, applyAssignmentFilters, isMarkFilter } from '../../utils/grades'
 import type { MarkFilter } from '../../utils/grades'
@@ -33,6 +34,8 @@ type Mode =
 
 const SUBJECT_PARAM = 'subject'
 const MARK_PARAM = 'show'
+/** Names the one piece of work a link from the gradebook came to open. */
+const OPEN_PARAM = 'open'
 
 /**
  * The list of work, following the tasks and subjects pages: one shared fetch,
@@ -56,6 +59,7 @@ const AssignmentsView = () => {
     scoreError,
   } = useSelector((state: RootState) => state.assignments)
   const { items: subjects } = useSelector((state: RootState) => state.subjects)
+  const { items: assignmentTypes } = useSelector((state: RootState) => state.assignmentTypes)
   const { items: students, loading: studentsLoading } = useSelector(
     (state: RootState) => state.students
   )
@@ -67,6 +71,8 @@ const AssignmentsView = () => {
     // The row names its subject and the form offers them, so both lists are
     // needed here rather than only on the page that edits them.
     dispatch(fetchSubjects())
+    // The form needs the types to offer, and a row names the kind of work.
+    dispatch(fetchAssignmentTypes())
     dispatch(fetchStudents())
   }, [dispatch])
 
@@ -77,6 +83,8 @@ const AssignmentsView = () => {
   const mark: MarkFilter = isMarkFilter(markParam) ? markParam : 'all'
 
   const subjectParam = searchParams.get(SUBJECT_PARAM)
+  // The work a gradebook mark linked to, marked and scrolled to on arrival.
+  const openParam = searchParams.get(OPEN_PARAM)
   // A subject that is no longer on the list would filter everything away with
   // no way to tell why, so an unknown id falls back to showing all of them.
   const subjectId =
@@ -246,6 +254,7 @@ const AssignmentsView = () => {
                 key={mode.kind === 'edit' ? mode.assignment.id : 'new'}
                 assignment={mode.kind === 'edit' ? current : null}
                 subjects={subjects}
+                assignmentTypes={assignmentTypes}
                 students={students}
                 studentsLoading={studentsLoading}
                 saving={saving}
@@ -328,6 +337,7 @@ const AssignmentsView = () => {
               onScore={(next) => goTo({ kind: 'score', assignment: next })}
               onEdit={(next) => goTo({ kind: 'edit', assignment: next })}
               onRemove={(next) => goTo({ kind: 'remove', assignment: next })}
+              highlighted={assignment.id === openParam}
             />
           ))}
         </ul>

@@ -205,6 +205,12 @@ export interface AssignmentGrade {
   pointsEarned: string | null
   percentage: string | null
   graded: boolean
+  /**
+   * The letter the teacher chose, or null when she typed a number. Provenance
+   * only: pointsEarned is still what everything calculates with, so reopening
+   * a mark can show the A she picked rather than the 95 it became.
+   */
+  enteredLetter: string | null
   gradedAt: string | null
   notes: string | null
 }
@@ -219,12 +225,21 @@ export interface Assignment {
   id: string
   teacherId: string
   subjectId: string
+  assignmentTypeId: string
+  /** Carried on the row so a list can name the kind of work without a lookup. */
+  assignmentTypeName: string | null
   title: string
   description: string | null
   /** A bare YYYY-MM-DD. Undated work belongs to no report period. */
   dueDate: string | null
   pointsPossible: string
   weight: string
+  /**
+   * False when the weight is the type's default, true when the teacher set it
+   * on this one piece of work. An overridden weight is never moved by a later
+   * change to the type's default, and the form says so.
+   */
+  weightOverridden: boolean
   /**
    * Nested rather than reduced to ids, unlike calendar event attendees: there
    * the ids kept a month of events small, here the grades are the record.
@@ -235,6 +250,7 @@ export interface Assignment {
 
 export interface AssignmentInput {
   subjectId: string
+  assignmentTypeId: string
   title: string
   description: string | null
   dueDate: string | null
@@ -248,9 +264,42 @@ export interface AssignmentInput {
   studentIds: string[]
 }
 
-/** Recording a mark. Null puts the work back to unmarked and clears gradedAt. */
+/**
+ * Recording a mark, one way or the other. A number is a percentage of the
+ * points; a letter is sent as itself and becomes a score on the server, once,
+ * so the two entry styles cannot drift apart. Null points puts the work back
+ * to unmarked and clears both gradedAt and the letter.
+ */
 export interface ScoreInput {
   pointsEarned: number | null
+  enteredLetter?: string | null
+}
+
+/** One of the five letters on the scale. */
+export type GradeLetter = 'A' | 'B' | 'C' | 'D' | 'F'
+
+/**
+ * A kind of work, and what that kind counts by default. Three are built in for
+ * every teacher and cannot be renamed or removed; the rest are her own.
+ */
+export interface AssignmentType {
+  id: string
+  teacherId: string
+  name: string
+  defaultWeight: string
+  isBuiltIn: boolean
+  createdAt: string
+}
+
+/** How far back a changed default weight reaches. */
+export type WeightApplyMode = 'new_only' | 'all' | 'from_date'
+
+export interface AssignmentTypeInput {
+  name: string
+  defaultWeight?: number
+  applyMode?: WeightApplyMode
+  /** Required by the from_date mode, ignored by the other two. */
+  fromDate?: string | null
 }
 
 /**
@@ -268,9 +317,33 @@ export interface ProgressTotals {
   letter: string | null
 }
 
+/**
+ * One piece of work as a single student holds it. Comes out of the same pass
+ * that produces the figures above it, so the list and the percentage are one
+ * calculation rather than two.
+ */
+export interface ProgressEntry {
+  assignmentId: string
+  title: string
+  assignmentTypeName: string | null
+  /** Null for work that belongs to no period. */
+  dueDate: string | null
+  weight: string
+  pointsPossible: string
+  /** Null while unmarked, which is not the same as a zero. */
+  pointsEarned: string | null
+  graded: boolean
+  percentage: string | null
+  letter: string | null
+  /** The letter she chose, when she marked it by letter rather than by number. */
+  enteredLetter: string | null
+}
+
 export type ProgressSubject = ProgressTotals & {
   subjectId: string
   subjectName: string
+  /** The work this subject's figures were summed from, in due date order. */
+  assignments: ProgressEntry[]
 }
 
 export interface StudentProgress {
@@ -279,6 +352,11 @@ export interface StudentProgress {
   to: string
   subjects: ProgressSubject[]
   overall: ProgressTotals
+  /**
+   * Work with no due date. In none of the figures above, because it sits in no
+   * period, and reported anyway so it is not silently missing from the page.
+   */
+  undated: ProgressEntry[]
 }
 
 /** Both ends required: a roll up with no period answers a different question. */

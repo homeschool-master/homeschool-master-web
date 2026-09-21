@@ -1,5 +1,6 @@
 import { configureStore } from '@reduxjs/toolkit'
 import assignmentsReducer from './assignmentsSlice'
+import assignmentTypesReducer from './assignmentTypesSlice'
 import authReducer from './authSlice'
 import calendarEventsReducer from './calendarEventsSlice'
 import progressReducer from './progressSlice'
@@ -10,6 +11,7 @@ import tasksReducer from './tasksSlice'
 export const store = configureStore({
   reducer: {
     assignments: assignmentsReducer,
+    assignmentTypes: assignmentTypesReducer,
     auth: authReducer,
     calendarEvents: calendarEventsReducer,
     progress: progressReducer,

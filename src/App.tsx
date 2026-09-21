@@ -25,6 +25,7 @@ import NotFoundPage from './pages/NotFoundPage'
 import UnderConstructionPage from './pages/UnderConstructionPage'
 import StudentsSection from './components/dashboard/StudentsSection'
 import SubjectsSection from './components/dashboard/SubjectsSection'
+import AssignmentTypesSection from './components/dashboard/AssignmentTypesSection'
 import DataPrivacySection from './components/dashboard/DataPrivacySection'
 import SubscriptionSection from './components/dashboard/SubscriptionSection'
 import ScrollToTop from './components/shared/ScrollToTop'
@@ -33,6 +34,7 @@ import NotificationsSection from './components/dashboard/NotificationsSection'
 import OnboardingPage from './pages/app/OnboardingPage'
 import CalendarPage from './pages/app/CalendarPage'
 import TasksPage from './pages/app/TasksPage'
+import AssignmentsPage from './pages/app/AssignmentsPage'
 import GradesPage from './pages/app/GradesPage'
 import EventFormPage from './pages/app/EventFormPage'
 import EventDetailPage from './pages/app/EventDetailPage'
@@ -82,6 +84,10 @@ const App = () => {
                   <Route path='/calendar/:id/edit' element={<EventFormPage />} />
                   <Route path='/dashboard' element={<DashboardPage />} />
                   <Route path='/tasks' element={<TasksPage />} />
+                  {/* Two sections rather than one page with a toggle:
+                      Assignments is where work is set and marked, Grades is
+                      where it is read back. */}
+                  <Route path='/assignments' element={<AssignmentsPage />} />
                   <Route path='/grades' element={<GradesPage />} />
 
                   {/* Account settings, moved off /dashboard so that path could
@@ -94,6 +100,7 @@ const App = () => {
                     <Route path='profile' element={<ProfileSection />} />
                     <Route path='students' element={<StudentsSection />} />
                     <Route path='subjects' element={<SubjectsSection />} />
+                    <Route path='assignment-types' element={<AssignmentTypesSection />} />
                     <Route path='subscription' element={<SubscriptionSection />} />
                     <Route path='data-privacy' element={<DataPrivacySection />} />
                     <Route path='notifications' element={<NotificationsSection />} />

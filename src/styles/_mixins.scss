@@ -207,8 +207,14 @@
   }
 
   // No transition and no delay: it is there the moment the pointer arrives.
+  //
+  // The attribute is the touch path. A phone has no hover, and a tap does not
+  // match :focus-visible, so a control that only answers to those two is
+  // silent on the device most likely to need the explanation. Nothing that
+  // does not set the attribute is affected.
   &:hover::after,
-  &:focus-visible::after {
+  &:focus-visible::after,
+  &[data-tooltip-open='true']::after {
     opacity: 1;
     visibility: visible;
   }

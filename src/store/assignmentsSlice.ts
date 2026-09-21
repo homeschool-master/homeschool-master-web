@@ -108,6 +108,10 @@ export const recordScores = createAsyncThunk(
         saved.push(
           await recordScoreRequest(assignmentId, change.gradeId, {
             pointsEarned: change.pointsEarned,
+            // Null rather than left out: the server reads a present letter as
+            // the mark and an absent one as "this was typed as a number", so
+            // sending nothing would leave a stale letter beside a new score.
+            enteredLetter: change.enteredLetter ?? null,
           })
         )
       }

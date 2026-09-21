@@ -45,6 +45,7 @@ const navItems = [
   { to: 'profile', label: 'Profile', Icon: ProfileIcon },
   { to: 'students', label: 'Students', Icon: FamilyIcon },
   { to: 'subjects', label: 'Subjects', Icon: SubjectIcon },
+  { to: 'assignment-types', label: 'Assignment types', Icon: SubjectIcon },
   { to: 'subscription', label: 'Subscription', Icon: SubscriptionIcon },
   { to: 'data-privacy', label: 'Data & Privacy', Icon: DataIcon },
   { to: 'notifications', label: 'Notifications', Icon: BellIcon },

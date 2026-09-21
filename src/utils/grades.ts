@@ -1,5 +1,5 @@
 import type { Assignment } from '../types'
-import { GRADES_CONTENT } from '../constants/grades'
+import { GRADES_CONTENT, LETTER_SCALE } from '../constants/grades'
 import { fromDateKey, toDateKey } from './calendarDates'
 
 /**
@@ -31,6 +31,19 @@ export const formatDecimal = (value: string | null): string => {
 export const formatPercentage = (value: string | null): string | null => {
   const parsed = toNumber(value)
   return parsed === null ? null : `${Math.round(parsed * 10) / 10}%`
+}
+
+/**
+ * What a letter is worth on this assignment, as a share of the points rather
+ * than as a flat number: an A is 19 on a twenty point quiz. The server does
+ * the same arithmetic on save, so this is a preview of what it will record.
+ */
+export const letterScore = (letter: string, pointsPossible: string): number | null => {
+  const entry = LETTER_SCALE.find((candidate) => candidate.letter === letter)
+  const possible = toNumber(pointsPossible)
+  if (!entry || possible === null) return null
+
+  return Math.round((possible * entry.percentage) / 100 * 100) / 100
 }
 
 export type MarkFilter = 'all' | 'unmarked' | 'marked'

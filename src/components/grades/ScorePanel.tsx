@@ -1,7 +1,13 @@
 import { useState } from 'react'
 import Button from '../shared/Button'
-import { GRADES_CONTENT } from '../../constants/grades'
-import { fillTemplate, formatDecimal, formatPercentage, toNumber } from '../../utils/grades'
+import { GRADES_CONTENT, LETTER_SCALE } from '../../constants/grades'
+import {
+  fillTemplate,
+  formatDecimal,
+  formatPercentage,
+  letterScore,
+  toNumber,
+} from '../../utils/grades'
 import type { ScoreChange } from '../../store/assignmentsSlice'
 import type { Assignment, AssignmentGrade, Student } from '../../types'
 
@@ -12,6 +18,10 @@ type Entries = Record<string, string>
 
 const initialEntries = (grades: AssignmentGrade[]): Entries =>
   Object.fromEntries(grades.map((grade) => [grade.id, formatDecimal(grade.pointsEarned)]))
+
+/** Blank for a mark typed as a number, which is most of them. */
+const initialLetters = (grades: AssignmentGrade[]): Entries =>
+  Object.fromEntries(grades.map((grade) => [grade.id, grade.enteredLetter ?? '']))
 
 /** Blank is unmarked, which is a value rather than a missing one. */
 const entryValue = (raw: string): number | null => (raw.trim() === '' ? null : Number(raw))
@@ -50,6 +60,28 @@ const ScorePanel = ({
   onCancel,
 }: ScorePanelProps) => {
   const [entries, setEntries] = useState<Entries>(() => initialEntries(assignment.grades))
+  const [letters, setLetters] = useState<Entries>(() => initialLetters(assignment.grades))
+
+  /**
+   * Picking a letter fills the points box with what that letter is worth here
+   * and records that this is how the mark was given. Typing in the box instead
+   * clears the letter, because the number is no longer the one the letter
+   * stands for. Both boxes are on every row rather than behind a mode switch,
+   * so a row marked as a number never has to pretend it is unmarked to sit in
+   * a letter view.
+   */
+  const chooseLetter = (gradeId: string, letter: string) => {
+    setLetters((current) => ({ ...current, [gradeId]: letter }))
+    if (letter === '') return
+
+    const points = letterScore(letter, assignment.pointsPossible)
+    setEntries((current) => ({ ...current, [gradeId]: points === null ? '' : String(points) }))
+  }
+
+  const typePoints = (gradeId: string, raw: string) => {
+    setEntries((current) => ({ ...current, [gradeId]: raw }))
+    setLetters((current) => ({ ...current, [gradeId]: '' }))
+  }
 
   const possible = toNumber(assignment.pointsPossible) ?? 0
 
@@ -76,10 +108,20 @@ const ScorePanel = ({
    */
   const changes: ScoreChange[] = ordered
     .filter((grade) => isValidEntry(entries[grade.id] ?? ''))
-    .map((grade) => ({ gradeId: grade.id, pointsEarned: entryValue(entries[grade.id] ?? '') }))
+    .map((grade) => ({
+      gradeId: grade.id,
+      pointsEarned: entryValue(entries[grade.id] ?? ''),
+      enteredLetter: (letters[grade.id] ?? '') || null,
+    }))
     .filter((change) => {
       const grade = assignment.grades.find((candidate) => candidate.id === change.gradeId)
-      return toNumber(grade?.pointsEarned ?? null) !== change.pointsEarned
+      // A row counts as changed if either the number or the letter moved: a
+      // mark switched from 95 typed to an A entered is the same score and a
+      // different record of how it was given.
+      return (
+        toNumber(grade?.pointsEarned ?? null) !== change.pointsEarned ||
+        (grade?.enteredLetter ?? null) !== change.enteredLetter
+      )
     })
 
   const anyInvalid = ordered.some((grade) => !isValidEntry(entries[grade.id] ?? ''))
@@ -102,6 +144,24 @@ const ScorePanel = ({
           the one thing about this screen that is easy to get wrong, and it
           changes what the average means. */}
       <p className='score-panel__hint'>{score.hint}</p>
+
+      {/* Out in the open rather than behind a disclosure: a teacher typing a
+          letter has to be able to see that it is becoming a number, and which
+          number, without going looking for it. */}
+      <div className='score-panel__key'>
+        <p className='score-panel__key-heading'>{score.keyHeading}</p>
+        <ul className='score-panel__key-list'>
+          {LETTER_SCALE.map((entry) => (
+            <li key={entry.letter} className='score-panel__key-item'>
+              {fillTemplate(score.letterWorth, {
+                letter: entry.letter,
+                percentage: String(entry.percentage),
+              })}
+            </li>
+          ))}
+        </ul>
+        <p className='score-panel__key-note'>{score.keyNote}</p>
+      </div>
 
       {assignment.grades.length === 0 && <p className='score-panel__status'>{score.noStudents}</p>}
 
@@ -132,16 +192,25 @@ const ScorePanel = ({
                     inputMode='decimal'
                     value={raw}
                     aria-label={fillTemplate(score.inputLabel, { name: nameFor(grade) })}
-                    onChange={(changeEvent) =>
-                      setEntries((current) => ({
-                        ...current,
-                        [grade.id]: changeEvent.target.value,
-                      }))
-                    }
+                    onChange={(changeEvent) => typePoints(grade.id, changeEvent.target.value)}
                   />
                   <span className='score-row__of'>
                     / {formatDecimal(assignment.pointsPossible)}
                   </span>
+
+                  <select
+                    className='score-row__letter'
+                    value={letters[grade.id] ?? ''}
+                    aria-label={fillTemplate(score.letterLabel, { name: nameFor(grade) })}
+                    onChange={(changeEvent) => chooseLetter(grade.id, changeEvent.target.value)}
+                  >
+                    <option value=''>{score.byPercentage}</option>
+                    {LETTER_SCALE.map((entry) => (
+                      <option key={entry.letter} value={entry.letter}>
+                        {entry.letter}
+                      </option>
+                    ))}
+                  </select>
                 </span>
 
                 {/* An empty box reads as "Not marked" in words rather than as
@@ -152,6 +221,13 @@ const ScorePanel = ({
                   {value === null ? score.notMarked : (percent ?? '')}
                   {value !== null && possible > 0 && value > possible && (
                     <span className='score-row__extra'>{score.over}</span>
+                  )}
+                  {/* Says the mark came from a letter, so reopening it shows
+                      what she chose rather than only what it became. */}
+                  {(letters[grade.id] ?? '') !== '' && (
+                    <span className='score-row__letter-said'>
+                      {fillTemplate(score.enteredAsLetter, { letter: letters[grade.id] ?? '' })}
+                    </span>
                   )}
                 </span>
               </li>

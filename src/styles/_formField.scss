@@ -35,3 +35,59 @@
     }
   }
 }
+
+// Holds the label and anything that belongs beside it, like a hint control.
+.form-field__label-row {
+  display: flex;
+  align-items: center;
+}
+
+// The question mark beside a label that has something to explain. A real
+// button, so it is in the tab order and answers to a tap as well as to hover.
+.hint-tooltip {
+  @include tooltip-host;
+  @include touch-target(24px);
+
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 18px;
+  height: 18px;
+  margin-left: $spacing-xs;
+  padding: 0;
+  border: 1.5px solid $color-gradient-dark;
+  border-radius: 999px;
+  background-color: $color-white;
+  color: $color-headline;
+  font-family: $font-family-base;
+  font-size: 0.6875rem;
+  font-weight: 700;
+  line-height: 1;
+  cursor: pointer;
+  vertical-align: middle;
+
+  &:hover,
+  &[data-tooltip-open='true'] {
+    border-color: $color-accent;
+    color: $color-accent;
+  }
+
+  &:focus-visible {
+    outline: 2px solid $color-headline;
+    outline-offset: 2px;
+  }
+}
+
+// The same words the bubble draws, in the document so they can be read out:
+// generated content is not a DOM node and never reaches a screen reader.
+.hint-tooltip__text {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}

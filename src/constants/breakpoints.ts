@@ -20,23 +20,28 @@ export const MOBILE_MAX_WIDTH = TABLET_MIN_WIDTH - 1
  * while it happens. The numbers come from measuring once, by hand:
  *
  * A slot is (viewport - 32px of sidebar padding - 4px of panel padding - 2px
- * per gap) / slots. The widest label in the nav is "Dashboard" at 63px at the
- * strip's 0.6875rem, so a slot narrower than that truncates a real word. Each
- * band below keeps at least 67px per slot at its narrowest point:
+ * per gap) / slots, and a slot narrower than the widest label showing in it
+ * truncates a real word. "Assignments" is 74px at the strip's 0.6875rem, which
+ * is wider than "Dashboard" at 63px: adding that section moved the five slot
+ * threshold up from half of $bp-tablet to five eighths of it, because five
+ * slots at 384px gave 67px and "Assignments" does not fit in that.
  *
- *   4 slots at 320px: 69px measured    5 slots at 384px: 67px measured
- *   6 slots at 512px: 77px               7 slots at 576px: 75px
+ * Each band's narrowest point, against the widest label that can appear in it:
  *
- * The first two were read off the rendered strip; the second two are the same
- * arithmetic on a panel width that was measured, since five sections never ask
- * for six slots. All of them are roomier than the strip this replaces, where
- * 375px gave each of five items 66px. Ordered widest first, and the last step
- * has no minimum so there is always an answer.
+ *   4 slots at 320px: 69px, widest visible "Dashboard" at 63px
+ *   5 slots at 480px: 87px, widest visible "Assignments" at 74px
+ *   6 slots at 512px: 77px    7 slots at 576px: 75px
+ *
+ * The one case left is "Assignments" being the active section below about
+ * 338px, where it is held in the strip by that rule and ellipsises. 320px is
+ * the only common width that reaches, and a truncated word there beats
+ * dropping a slot for every phone. Ordered widest first, and the last step has
+ * no minimum so there is always an answer.
  */
 export const NAV_SLOT_STEPS: { minWidth: number; slots: number }[] = [
   { minWidth: (TABLET_MIN_WIDTH * 3) / 4, slots: 7 },
   { minWidth: (TABLET_MIN_WIDTH * 2) / 3, slots: 6 },
-  { minWidth: TABLET_MIN_WIDTH / 2, slots: 5 },
+  { minWidth: (TABLET_MIN_WIDTH * 5) / 8, slots: 5 },
   { minWidth: 0, slots: 4 },
 ]
 

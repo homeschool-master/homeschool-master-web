@@ -1,13 +1,43 @@
+import type { GradeLetter } from '../types'
+
 /**
  * Every string the grades pages render. Templates carry {named} placeholders
  * filled by fillTemplate, so the wording stays here as plain data rather than
  * being assembled out of fragments at the call site.
  */
+/**
+ * What each letter is worth, mirroring LetterScale on the server.
+ *
+ * Held here because the key has to be drawn on the page and the box has to
+ * fill in as soon as a letter is picked, neither of which can wait for a round
+ * trip. The server is still the authority: it recomputes the score from the
+ * letter it is sent, so if these ever drifted the saved mark would be the
+ * server's and the box would correct itself, rather than a wrong number being
+ * stored.
+ *
+ * Each value sits in the middle of its band under the 90/80/70/60 scale, which
+ * is what makes an entered A average back out as an A.
+ */
+export const LETTER_SCALE: { letter: GradeLetter; percentage: number }[] = [
+  { letter: 'A', percentage: 95 },
+  { letter: 'B', percentage: 85 },
+  { letter: 'C', percentage: 75 },
+  { letter: 'D', percentage: 65 },
+  { letter: 'F', percentage: 50 },
+]
+
 export const GRADES_CONTENT = {
   page: {
     eyebrow: 'Planning',
     heading: 'Grades',
-    subhead: 'The work you set, what each student earned, and how it adds up.',
+    subhead: 'How the work you have set and marked adds up, by subject.',
+  },
+
+  /** The working section: setting work and marking it. */
+  assignmentsPage: {
+    eyebrow: 'Planning',
+    heading: 'Assignments',
+    subhead: 'The work you set, who holds it, and what each student earned.',
   },
 
   views: {
@@ -90,8 +120,22 @@ export const GRADES_CONTENT = {
     dueDateHint: 'Optional, but work with no due date counts towards no report period.',
     pointsPossible: 'Out of',
     pointsPossibleHint: 'What a perfect piece of work scores. Marking out of 100 means you can type the percentage straight in; marking pass or fail means 1.',
+    assignmentType: 'Kind of work',
+    assignmentTypeHint: 'Sets the starting weight below. Manage your types in Settings.',
     weight: 'Weight',
     weightHint: 'How much this counts towards the subject average next to other work. Leave it at 1 for ordinary work.',
+    /**
+     * The worked example, for a parent who has never weighted anything. A bare
+     * "3" reads as a quantity rather than as a multiplier, and the sentence
+     * that fixes that is too long to sit under every form field, so it rides
+     * on the hint control beside the label.
+     */
+    weightTooltip:
+      'Weight is how many times a piece of work counts. A test at 3 counts as if it appeared three times next to ordinary work at 1. At 0 it is marked but kept out of the average.',
+    weightTooltipLabel: 'What does weight mean?',
+    /** Says which way the number in the box got there, and what follows from it. */
+    weightFromType: 'This is what {name} counts by default. Changing that default later will move this too.',
+    weightOverridden: 'You set this weight yourself, so changing what {name} counts by default will leave it alone.',
     students: 'Given to',
     studentsHint: 'Each student gets their own row to mark.',
     noStudents: 'Add a student in Settings before setting work.',
@@ -104,6 +148,7 @@ export const GRADES_CONTENT = {
   },
 
   validation: {
+    assignmentType: 'Choose a kind of work',
     subject: 'Choose a subject for this assignment',
     title: 'Give the assignment a title',
     titleLength: 'Keep the title under 255 characters',
@@ -117,6 +162,21 @@ export const GRADES_CONTENT = {
     /** The one rule that is easy to get wrong, said where marks are entered. */
     hint: 'Leave a box empty for work you have not marked yet. Empty is not the same as 0: empty stays out of the average, 0 counts in it as a zero.',
     notMarked: 'Not marked',
+    /**
+     * Letter entry. The key is rendered from the same values the server maps
+     * with, and it sits in the open beside the boxes rather than behind a
+     * toggle: a teacher typing A has to be able to see that it is becoming a
+     * number, and what number.
+     */
+    byPercentage: 'By points',
+    byLetter: 'By letter',
+    entryLabel: 'How are you marking?',
+    keyHeading: 'What each letter is worth',
+    keyNote: 'A letter is stored as its score, so it averages in like any other mark. The letter you picked is remembered.',
+    letterLabel: 'Letter for {name}',
+    letterClear: 'Not marked',
+    letterWorth: '{letter} is {percentage}%',
+    enteredAsLetter: 'Entered as {letter}',
     over: 'Extra credit',
     noStudents: 'This assignment is not given to anyone yet. Edit it to add students.',
     unknownStudent: 'Student removed',
@@ -183,6 +243,42 @@ export const GRADES_CONTENT = {
       allUndatedAction: 'Give it a due date',
       /** The only cause the date range actually answers. */
       range: 'Nothing {name} holds is due between these dates. Widen the range to see more.',
+    },
+
+    /**
+     * The gradebook itself: every piece of work behind the figures. The list
+     * sits under the subject it belongs to, because that subject's percentage
+     * is the sum of exactly those rows, and seeing them together is what makes
+     * the number checkable rather than a claim.
+     */
+    book: {
+      heading: 'The work behind these figures',
+      subjectWork: 'Work in {name}',
+      /** Column headings, shown once per subject on desktop. */
+      columnWork: 'Work',
+      columnGrade: 'Grade',
+      columnScore: 'Score',
+      notMarked: 'Not marked',
+      notMarkedHint: 'Left out of the average until it is marked.',
+      notCounted: 'Not counted',
+      notCountedHint: 'Marked, but weighted zero, so it moves no average.',
+      enteredAsLetter: 'You entered {letter}',
+      outOf: '{earned} of {possible}',
+      /** Unmarked work has no earned half to report, only what it is out of. */
+      outOfOnly: 'Out of {possible}',
+      noDueDate: 'No due date',
+      openAction: 'Open in Assignments',
+      openLabel: 'Open {title} in Assignments',
+
+      /**
+       * Undated work, in its own block below the figures rather than inside
+       * them. Out in the open with its reason stated, because a teacher who
+       * cannot find a piece of work in the report needs to be told where it
+       * went, not left to widen the dates forever.
+       */
+      undatedHeading: 'Work with no due date',
+      undatedNote:
+        'Undated work belongs to no period, so none of the figures above include it. Give a piece of work a due date to bring it into a report.',
     },
   },
 

@@ -771,3 +771,271 @@ $color-pending: #9a5b0a;
     font-size: 1.75rem;
   }
 }
+
+// The letter key, above the rows rather than behind a control: a teacher
+// typing A has to see that it is becoming a number, and which number.
+.score-panel__key {
+  margin-bottom: $spacing-md;
+  padding: $spacing-sm $spacing-md;
+  border: 1.5px dashed $color-gradient-dark;
+  border-radius: 14px;
+  background-color: $color-white;
+}
+
+.score-panel__key-heading {
+  font-size: 0.875rem;
+  font-weight: 700;
+  color: $color-headline;
+}
+
+.score-panel__key-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: $spacing-xs $spacing-md;
+  margin: $spacing-xs 0;
+  padding: 0;
+  list-style: none;
+  font-size: 0.875rem;
+  font-variant-numeric: tabular-nums;
+}
+
+.score-panel__key-note {
+  font-size: 0.8125rem;
+  color: $color-text;
+  opacity: 0.8;
+}
+
+// Beside the points box, not instead of it: a row marked as a number keeps
+// showing its number while a letter is available on the same line.
+.score-row__letter {
+  margin-left: $spacing-sm;
+  padding: 2px $spacing-xs;
+  border: 1.5px solid $color-gradient-dark;
+  border-radius: 8px;
+  background-color: $color-white;
+  font-family: $font-family-base;
+  font-size: 0.875rem;
+  color: $color-headline;
+  cursor: pointer;
+}
+
+.score-row__letter-said {
+  display: block;
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: $color-accent;
+}
+
+// Which of the two the weight in the box is: the type's default, or hers.
+.assignment-form__weight-source {
+  margin-top: 2px;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  color: $color-accent;
+}
+
+// The kind of work, beside the subject on a row.
+.assignment-row__type {
+  padding: 1px $spacing-sm;
+  border-radius: 999px;
+  background-color: rgba($color-headline, 0.06);
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: rgba($color-headline, 0.7);
+}
+
+// The work behind a subject's figure, listed under it.
+.gradebook {
+  list-style: none;
+  margin: $spacing-sm 0 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-xs;
+  // Spans the card's own columns, so the rows run the full width under the
+  // figures rather than sitting in whichever column they landed in.
+  grid-column: 1 / -1;
+}
+
+// One piece of work. Three columns on a desktop, one stack on a phone: this
+// is the shape a table would have, without the sideways scrolling a table
+// brings to 375px.
+.gradebook-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto auto;
+  align-items: center;
+  gap: $spacing-xs $spacing-md;
+  padding: $spacing-sm $spacing-md;
+  border: 1.5px solid $color-gradient-dark;
+  border-radius: 12px;
+  background-color: $color-white;
+
+  &--unmarked {
+    border-style: dashed;
+    background-color: $color-surface;
+  }
+
+  &__work {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    min-width: 0;
+  }
+
+  &__title {
+    font-size: 0.9375rem;
+    font-weight: 600;
+    color: $color-headline;
+    text-decoration: underline;
+    overflow-wrap: break-word;
+
+    &:hover {
+      color: $color-accent;
+    }
+
+    &:focus-visible {
+      outline: 2px solid $color-headline;
+      outline-offset: 2px;
+    }
+  }
+
+  &__meta {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: $spacing-xs;
+    font-size: 0.75rem;
+    color: $color-text;
+    opacity: 0.8;
+  }
+
+  &__type {
+    padding: 1px $spacing-sm;
+    border-radius: 999px;
+    background-color: rgba($color-headline, 0.06);
+    font-weight: 700;
+    color: rgba($color-headline, 0.7);
+  }
+
+  &__grade,
+  &__score {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 2px;
+    flex-shrink: 0;
+  }
+
+  // Visible only once the columns stack, where a heading further up the page
+  // would no longer be sitting above the value it names.
+  &__cell-label {
+    display: none;
+    font-size: 0.6875rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    color: rgba($color-headline, 0.5);
+  }
+
+  &__letter {
+    font-size: 1.25rem;
+    font-weight: 800;
+    line-height: 1;
+    color: $color-headline;
+  }
+
+  &__entered {
+    font-size: 0.6875rem;
+    font-weight: 700;
+    color: $color-accent;
+  }
+
+  &__percent {
+    font-size: 0.9375rem;
+    font-weight: 700;
+    font-variant-numeric: tabular-nums;
+    color: $color-headline;
+  }
+
+  &__points {
+    font-size: 0.75rem;
+    font-variant-numeric: tabular-nums;
+    color: $color-text;
+    opacity: 0.8;
+  }
+
+  // Unmarked reads as a state rather than as a blank: a missing number and a
+  // zero are different facts and must not look alike.
+  &__pending {
+    font-size: 0.875rem;
+    font-weight: 700;
+    font-style: italic;
+    color: rgba($color-headline, 0.55);
+  }
+
+  &__note {
+    grid-column: 1 / -1;
+    font-size: 0.75rem;
+    font-style: italic;
+    color: $color-text;
+    opacity: 0.85;
+  }
+
+  &__note--muted {
+    color: $color-accent;
+    opacity: 1;
+    font-style: normal;
+    font-weight: 600;
+  }
+
+  @include respond-to(mobile) {
+    // One column. The grade and the score drop under the title and pick up
+    // their own labels, so nothing depends on a header row that is no longer
+    // beside the value.
+    grid-template-columns: minmax(0, 1fr);
+
+    &__grade,
+    &__score {
+      flex-direction: row;
+      align-items: baseline;
+      justify-content: flex-start;
+      gap: $spacing-sm;
+      flex-wrap: wrap;
+    }
+
+    &__cell-label {
+      display: inline;
+    }
+
+    &__letter {
+      font-size: 1rem;
+    }
+  }
+}
+
+// Work with no due date, in its own block below every figure.
+.gradebook-undated {
+  margin-top: $spacing-lg;
+  padding: $spacing-md;
+  border: 1.5px dashed $color-gradient-dark;
+  border-radius: 16px;
+  background-color: $color-surface;
+
+  &__heading {
+    font-size: 1.05rem;
+    font-weight: 700;
+    color: $color-headline;
+  }
+
+  &__note {
+    margin-top: $spacing-xs;
+    font-size: 0.875rem;
+    color: $color-text;
+  }
+}
+
+// The row a gradebook mark linked to, so arriving from one lands on the work.
+.assignment-row--linked {
+  border-color: $color-accent;
+  box-shadow: 0 0 0 2px rgba($color-accent, 0.35);
+}
