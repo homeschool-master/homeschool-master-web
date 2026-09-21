@@ -1,0 +1,425 @@
+@use 'variables' as *;
+@use 'mixins' as *;
+
+/**
+ * The report card as a sheet of paper, and as the PDF that comes out of
+ * printing it.
+ *
+ * One layout for both, because they are the same thing: the PDF is this page
+ * through the browser's own print to PDF. Nothing here is duplicated in a
+ * second renderer, so nothing can drift.
+ *
+ * Designed for US letter. The screen view deliberately shows the same column
+ * width the paper gets, so the preview is a preview rather than a different
+ * arrangement that happens to print.
+ */
+
+// 8.5in wide less 0.75in of margin on each side.
+$print-content-width: 7in;
+
+@page {
+  size: letter;
+  margin: 0.75in;
+}
+
+.print-page {
+  min-height: 100dvh;
+  padding: $spacing-lg $spacing-md;
+  background-color: #f4f1ea;
+  font-family: $font-family-base;
+  color: $color-headline;
+}
+
+// Screen only. Everything in here is gone on paper, which is what lets the
+// sheet carry no controls while still being printable from a browser.
+.print-toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: $spacing-md;
+  max-width: $print-content-width;
+  margin: 0 auto $spacing-lg;
+  padding: $spacing-sm $spacing-md;
+  border-radius: 12px;
+  background-color: $color-white;
+  box-shadow: 0 1px 4px rgba($color-headline, 0.12);
+
+  &__back {
+    font-size: 0.9375rem;
+    font-weight: 600;
+    color: $color-headline;
+  }
+
+  &__toggle {
+    display: inline-flex;
+    align-items: center;
+    gap: $spacing-xs;
+    font-size: 0.875rem;
+    cursor: pointer;
+  }
+
+  &__print {
+    margin-left: auto;
+    padding: $spacing-xs $spacing-md;
+    border: none;
+    border-radius: 999px;
+    background-color: $color-accent;
+    color: $color-white;
+    font-family: $font-family-base;
+    font-size: 0.9375rem;
+    font-weight: 700;
+    cursor: pointer;
+
+    &:disabled {
+      opacity: 0.6;
+      cursor: progress;
+    }
+  }
+
+  // Says where the PDF comes from, since nothing is downloaded from a server.
+  &__hint {
+    flex-basis: 100%;
+    font-size: 0.8125rem;
+    color: $color-text;
+  }
+}
+
+.print-status {
+  padding: $spacing-xl;
+  font-family: $font-family-base;
+  text-align: center;
+  color: $color-text;
+}
+
+// The sheet itself.
+.print-card {
+  max-width: $print-content-width;
+  margin: 0 auto;
+  padding: $spacing-xl;
+  background-color: $color-white;
+  box-shadow: 0 2px 12px rgba($color-headline, 0.14);
+
+  &__header {
+    padding-bottom: $spacing-md;
+    border-bottom: 2px solid $color-headline;
+    // A heading is no use at the foot of a page with nothing under it.
+    break-after: avoid;
+  }
+
+  &__issuer {
+    font-size: 0.8125rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: $color-text;
+  }
+
+  &__title {
+    margin-top: $spacing-xs;
+    font-size: 1.75rem;
+    font-weight: 800;
+    line-height: 1.15;
+  }
+
+  &__student {
+    margin-top: 2px;
+    font-size: 1.25rem;
+    font-weight: 600;
+  }
+
+  &__facts {
+    display: flex;
+    flex-wrap: wrap;
+    gap: $spacing-md $spacing-lg;
+    margin-top: $spacing-md;
+  }
+
+  &__fact {
+    dt {
+      font-size: 0.6875rem;
+      font-weight: 700;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: $color-text;
+    }
+
+    dd {
+      font-size: 0.9375rem;
+      font-weight: 600;
+    }
+  }
+
+  /**
+   * No break-after: avoid here, deliberately.
+   *
+   * Keeping a section heading with the block after it and keeping a subject
+   * whole are contradictory hints when space is tight, and the browser
+   * resolves the pair by breaking inside the subject: the grade lands on one
+   * page and the work it came from on the next. A heading stranded at the
+   * foot of a page is untidy; a subject split in half misreports a grade, so
+   * the subject wins.
+   */
+  &__section {
+    margin: $spacing-lg 0 $spacing-sm;
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: $color-text;
+  }
+
+  &__empty {
+    font-size: 0.9375rem;
+    font-style: italic;
+    color: $color-text;
+  }
+
+  &__footer {
+    margin-top: $spacing-lg;
+    padding-top: $spacing-sm;
+    border-top: 1px solid rgba($color-headline, 0.25);
+    font-size: 0.75rem;
+    color: $color-text;
+  }
+
+  // The sheet's own generous margin is a third of a phone screen, so on screen
+  // at that width it comes in. Paper is unaffected: the @page margin is what
+  // sets the real one.
+  @include respond-to(mobile) {
+    padding: $spacing-lg $spacing-md;
+  }
+}
+
+// A draft and a superseded version have to announce themselves on paper.
+.print-banner {
+  margin-bottom: $spacing-md;
+  padding: $spacing-sm $spacing-md;
+  border: 2px solid $color-headline;
+  border-radius: 4px;
+  font-size: 0.875rem;
+  font-weight: 700;
+  break-inside: avoid;
+
+  &--draft {
+    border-color: #b42318;
+    color: #b42318;
+  }
+
+  &--superseded {
+    border-color: $color-accent;
+    color: $color-accent;
+  }
+}
+
+/**
+ * The draft watermark. Fixed rather than absolute, which is what makes the
+ * browser repeat it on every printed page rather than only the first: a two
+ * page draft with DRAFT on page one only is exactly the sheet that gets handed
+ * over by mistake.
+ */
+.print-watermark {
+  position: fixed;
+  top: 45%;
+  left: 50%;
+  transform: translate(-50%, -50%) rotate(-24deg);
+  z-index: 0;
+  font-size: 7rem;
+  font-weight: 800;
+  letter-spacing: 0.3em;
+  color: rgba(180, 35, 24, 0.13);
+  pointer-events: none;
+  user-select: none;
+  white-space: nowrap;
+}
+
+// One subject, kept whole: a grade on one page and its comment on the next is
+// the break that actually misleads a reader.
+.print-subject {
+  padding: $spacing-sm 0;
+  border-bottom: 1px solid rgba($color-headline, 0.15);
+  break-inside: avoid;
+  page-break-inside: avoid;
+
+  &__line {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: $spacing-md;
+    // The name and its grade are one line: never the name alone at a foot.
+    break-after: avoid;
+  }
+
+  &__name {
+    font-size: 1.0625rem;
+    font-weight: 600;
+  }
+
+  &__grade {
+    display: flex;
+    align-items: baseline;
+    gap: $spacing-sm;
+    font-size: 1.5rem;
+    font-weight: 800;
+  }
+
+  &__percent {
+    font-size: 0.9375rem;
+    font-weight: 600;
+    font-variant-numeric: tabular-nums;
+    color: $color-text;
+  }
+
+  // The calculated grade an override replaced, on paper exactly as honestly
+  // as on screen.
+  &__override {
+    margin-top: 2px;
+    font-size: 0.8125rem;
+    font-weight: 600;
+    color: $color-text;
+  }
+
+  &__override-tag {
+    display: inline-block;
+    margin-right: $spacing-xs;
+    padding: 1px $spacing-xs;
+    border: 1px solid $color-headline;
+    border-radius: 3px;
+    font-size: 0.625rem;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+  }
+
+  &__reason {
+    display: block;
+    margin-top: 2px;
+    font-weight: 400;
+    font-style: italic;
+  }
+
+  &__comments {
+    margin-top: $spacing-xs;
+    font-size: 0.9375rem;
+    line-height: 1.45;
+  }
+}
+
+// The work behind a grade, when a reader has asked for it. Kept whole as a
+// block as well as row by row: a subject's grade on one page and the work it
+// came from on the next is the same split the rule above exists to stop.
+.print-work {
+  list-style: none;
+  margin: $spacing-xs 0 0;
+  padding: 0 0 0 $spacing-md;
+  break-inside: avoid;
+  page-break-inside: avoid;
+
+  &__row {
+    display: flex;
+    justify-content: space-between;
+    gap: $spacing-md;
+    font-size: 0.8125rem;
+    color: $color-text;
+    break-inside: avoid;
+  }
+
+  &__score {
+    flex-shrink: 0;
+    font-variant-numeric: tabular-nums;
+  }
+}
+
+.print-overall {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: $spacing-md;
+  margin-top: $spacing-md;
+  padding: $spacing-md;
+  border: 2px solid $color-headline;
+  break-inside: avoid;
+
+  &__label {
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+  }
+
+  &__grade {
+    display: flex;
+    align-items: baseline;
+    gap: $spacing-sm;
+    margin-left: auto;
+    font-size: 2.25rem;
+    font-weight: 800;
+    line-height: 1;
+  }
+
+  &__percent {
+    font-size: 1rem;
+    font-weight: 600;
+    font-variant-numeric: tabular-nums;
+  }
+
+  &__override {
+    flex-basis: 100%;
+    font-size: 0.8125rem;
+    font-weight: 600;
+    color: $color-text;
+  }
+}
+
+.print-comments {
+  break-inside: avoid;
+
+  p {
+    font-size: 0.9375rem;
+    line-height: 1.5;
+  }
+}
+
+@media print {
+  // The paper is the page: no screen framing, no shadow, no tinted ground.
+  .print-page {
+    min-height: 0;
+    padding: 0;
+    background-color: transparent;
+  }
+
+  .print-card {
+    max-width: none;
+    margin: 0;
+    padding: 0;
+    box-shadow: none;
+  }
+
+  .print-toolbar {
+    display: none;
+  }
+
+  /**
+   * Backgrounds and borders are not decoration here: the override tag, the
+   * draft banner and the watermark are what tell a reader what they are
+   * holding, and browsers drop background colour from print by default.
+   */
+  .print-page,
+  .print-banner,
+  .print-watermark,
+  .print-subject__override-tag,
+  .print-overall {
+    print-color-adjust: exact;
+    -webkit-print-color-adjust: exact;
+  }
+
+  .print-watermark {
+    // Larger on paper than on screen, where the sheet is scaled down.
+    font-size: 8.5rem;
+  }
+
+  // Widows and orphans a report card can do without.
+  p {
+    orphans: 3;
+    widows: 3;
+  }
+}
