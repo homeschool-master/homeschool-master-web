@@ -1039,3 +1039,474 @@ $color-pending: #9a5b0a;
   border-color: $color-accent;
   box-shadow: 0 0 0 2px rgba($color-accent, 0.35);
 }
+
+// The two halves of Grades: the live gradebook, and the cards saved out of it.
+.grades-sections {
+  display: flex;
+  gap: $spacing-xs;
+  margin-bottom: $spacing-md;
+  padding: $spacing-xs;
+  border: 1.5px solid $color-gradient-dark;
+  border-radius: 999px;
+  background-color: $color-surface;
+  width: fit-content;
+
+  @include respond-to(mobile) {
+    width: 100%;
+  }
+
+  &__link {
+    padding: $spacing-xs $spacing-md;
+    border-radius: 999px;
+    font-size: 0.9375rem;
+    font-weight: 600;
+    color: $color-headline;
+    text-decoration: none;
+
+    &:hover {
+      background-color: rgba($color-white, 0.7);
+    }
+
+    &:focus-visible {
+      outline: 2px solid $color-headline;
+      outline-offset: 2px;
+    }
+
+    @include respond-to(mobile) {
+      flex: 1;
+      text-align: center;
+      padding: $spacing-xs $spacing-sm;
+    }
+  }
+
+  &__link--active {
+    background-color: $color-gradient-light;
+    box-shadow: inset 0 0 0 1.5px $color-accent;
+  }
+}
+
+.report-card-list {
+  list-style: none;
+  margin: 0 0 $spacing-lg;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-sm;
+}
+
+.report-card-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: $spacing-md;
+  padding: $spacing-sm $spacing-md;
+  border: 1.5px solid $color-gradient-dark;
+  border-radius: 14px;
+  background-color: $color-white;
+
+  &__body {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    min-width: 0;
+  }
+
+  &__title {
+    font-size: 1rem;
+    font-weight: 600;
+    color: $color-headline;
+    text-decoration: underline;
+
+    &:hover {
+      color: $color-accent;
+    }
+  }
+
+  &__meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: $spacing-sm;
+    font-size: 0.8125rem;
+    color: $color-text;
+    opacity: 0.85;
+  }
+}
+
+// Draft against issued: the thing a teacher scans the list for.
+.report-card-badge {
+  flex-shrink: 0;
+  padding: 2px $spacing-sm;
+  border-radius: 999px;
+  background-color: rgba($color-headline, 0.08);
+  color: rgba($color-headline, 0.6);
+  font-size: 0.6875rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+
+  &--issued {
+    background-color: $color-gradient-light;
+    color: $color-headline;
+    box-shadow: inset 0 0 0 1.5px $color-accent;
+  }
+
+  &--override {
+    margin-right: $spacing-xs;
+    background-color: $color-accent;
+    color: $color-white;
+  }
+}
+
+.report-card-form {
+  padding: $spacing-md;
+  border: 1.5px solid $color-gradient-dark;
+  border-radius: 16px;
+  background-color: $color-surface;
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-md;
+
+  &__title {
+    font-size: 1.05rem;
+    font-weight: 700;
+    color: $color-headline;
+  }
+
+  &__period {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: $spacing-md;
+
+    @include respond-to(mobile) {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  &__error {
+    margin-top: $spacing-xs;
+    font-size: 0.8125rem;
+    font-weight: 600;
+    color: #b42318;
+  }
+
+  &__actions {
+    display: flex;
+    align-items: center;
+    gap: $spacing-md;
+  }
+
+  &__cancel {
+    background: none;
+    border: none;
+    padding: 0;
+    font-family: $font-family-base;
+    font-size: 0.9375rem;
+    font-weight: 600;
+    color: $color-headline;
+    text-decoration: underline;
+    cursor: pointer;
+  }
+}
+
+.report-card__back {
+  margin-bottom: $spacing-md;
+  font-size: 0.875rem;
+
+  a {
+    color: $color-headline;
+    font-weight: 600;
+  }
+}
+
+.report-card__summary {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: $spacing-sm;
+  margin-bottom: $spacing-sm;
+  font-size: 0.9375rem;
+  color: $color-text;
+}
+
+.report-card__student {
+  font-weight: 700;
+  color: $color-headline;
+}
+
+// Which state the card is in, in the open above everything on it.
+.report-card__state {
+  margin-bottom: $spacing-md;
+  padding: $spacing-sm $spacing-md;
+  border-left: 3px solid $color-accent;
+  border-radius: 0 12px 12px 0;
+  background-color: $color-gradient-light;
+  font-size: 0.875rem;
+  color: $color-text;
+}
+
+.report-card__superseded {
+  margin-bottom: $spacing-md;
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: $color-accent;
+}
+
+.report-card__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: $spacing-md;
+  margin-bottom: $spacing-md;
+}
+
+.report-card__action {
+  background: none;
+  border: none;
+  padding: 0;
+  font-family: $font-family-base;
+  font-size: 0.9375rem;
+  font-weight: 600;
+  color: $color-headline;
+  text-decoration: underline;
+  cursor: pointer;
+
+  &:hover {
+    color: $color-accent;
+  }
+
+  &:focus-visible {
+    outline: 2px solid $color-headline;
+    outline-offset: 2px;
+  }
+
+  &--danger {
+    color: #b42318;
+  }
+}
+
+.report-card__confirm {
+  margin-bottom: $spacing-md;
+  padding: $spacing-md;
+  border: 1.5px solid $color-gradient-dark;
+  border-radius: 16px;
+  background-color: $color-surface;
+}
+
+.report-card__confirm-body {
+  margin: $spacing-sm 0 $spacing-md;
+  font-size: 0.9375rem;
+}
+
+.report-card__comments {
+  margin-bottom: $spacing-md;
+  padding: $spacing-md;
+  border: 1.5px dashed $color-gradient-dark;
+  border-radius: 14px;
+  font-size: 0.9375rem;
+}
+
+.report-card__section {
+  margin-bottom: $spacing-sm;
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: $color-headline;
+}
+
+.report-card-subjects {
+  list-style: none;
+  margin: 0 0 $spacing-md;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-sm;
+}
+
+.report-card-subject {
+  padding: $spacing-sm $spacing-md;
+  border: 1.5px solid $color-gradient-dark;
+  border-radius: 14px;
+  background-color: $color-white;
+
+  &--overridden {
+    border-color: $color-accent;
+  }
+
+  &__head {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: $spacing-md;
+  }
+
+  &__name {
+    font-size: 1rem;
+    font-weight: 600;
+    color: $color-headline;
+  }
+
+  &__grade {
+    display: flex;
+    align-items: baseline;
+    gap: $spacing-sm;
+    flex-shrink: 0;
+  }
+
+  &__letter {
+    font-size: 1.5rem;
+    font-weight: 800;
+    line-height: 1;
+    color: $color-headline;
+  }
+
+  &__percent {
+    font-size: 0.875rem;
+    font-variant-numeric: tabular-nums;
+    color: $color-text;
+    opacity: 0.8;
+  }
+
+  &__unmarked {
+    font-size: 0.9375rem;
+    font-style: italic;
+    color: rgba($color-headline, 0.55);
+  }
+
+  // What the override replaced, kept beside it rather than hidden by it.
+  &__was {
+    margin-top: $spacing-xs;
+    font-size: 0.8125rem;
+    font-weight: 600;
+    color: $color-accent;
+  }
+
+  &__reason {
+    display: block;
+    margin-top: 2px;
+    font-weight: 400;
+    font-style: italic;
+    color: $color-text;
+  }
+
+  &__counts {
+    margin-top: 2px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: $spacing-sm;
+    font-size: 0.75rem;
+    color: $color-text;
+    opacity: 0.8;
+  }
+
+  &__fields {
+    display: flex;
+    flex-wrap: wrap;
+    gap: $spacing-sm $spacing-md;
+    margin-top: $spacing-sm;
+  }
+
+  &__field {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    flex: 1 1 12rem;
+  }
+
+  &__label {
+    font-size: 0.75rem;
+    font-weight: 700;
+    color: rgba($color-headline, 0.6);
+  }
+
+  &__select,
+  &__input {
+    padding: $spacing-xs $spacing-sm;
+    border: 1.5px solid $color-gradient-dark;
+    border-radius: 10px;
+    background-color: $color-white;
+    font-family: $font-family-base;
+    font-size: 0.875rem;
+    color: $color-headline;
+  }
+
+  &__comments {
+    margin-top: $spacing-xs;
+    font-size: 0.875rem;
+    color: $color-text;
+  }
+}
+
+.report-card-overall {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: $spacing-md;
+  margin-bottom: $spacing-lg;
+  padding: $spacing-md;
+  border: 2px solid $color-accent;
+  border-radius: 16px;
+  background-color: $color-gradient-light;
+
+  &__label {
+    font-size: 1rem;
+    font-weight: 700;
+    color: $color-headline;
+  }
+
+  &__grade {
+    display: flex;
+    align-items: baseline;
+    gap: $spacing-sm;
+    margin-left: auto;
+    font-size: 2rem;
+    font-weight: 800;
+    color: $color-headline;
+  }
+
+  &__percent {
+    font-size: 1rem;
+    font-weight: 700;
+    font-variant-numeric: tabular-nums;
+  }
+
+  &__was {
+    width: 100%;
+    font-size: 0.8125rem;
+    font-weight: 600;
+    color: $color-accent;
+  }
+}
+
+.report-card-versions {
+  margin-bottom: $spacing-lg;
+
+  &__note {
+    margin-bottom: $spacing-sm;
+    font-size: 0.8125rem;
+    color: $color-text;
+    opacity: 0.85;
+  }
+
+  &__list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: $spacing-xs;
+  }
+
+  &__item {
+    display: flex;
+    align-items: center;
+    gap: $spacing-sm;
+    padding: $spacing-xs $spacing-sm;
+    border: 1.5px solid $color-gradient-dark;
+    border-radius: 10px;
+    background-color: $color-white;
+    font-size: 0.875rem;
+  }
+
+  &__current {
+    font-weight: 700;
+    color: $color-headline;
+  }
+}

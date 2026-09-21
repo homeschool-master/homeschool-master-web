@@ -36,6 +36,8 @@ import CalendarPage from './pages/app/CalendarPage'
 import TasksPage from './pages/app/TasksPage'
 import AssignmentsPage from './pages/app/AssignmentsPage'
 import GradesPage from './pages/app/GradesPage'
+import ReportCardsPage from './pages/app/ReportCardsPage'
+import ReportCardPage from './pages/app/ReportCardPage'
 import EventFormPage from './pages/app/EventFormPage'
 import EventDetailPage from './pages/app/EventDetailPage'
 import FeaturesPage from './pages/marketing/FeaturesPage'
@@ -89,6 +91,10 @@ const App = () => {
                       where it is read back. */}
                   <Route path='/assignments' element={<AssignmentsPage />} />
                   <Route path='/grades' element={<GradesPage />} />
+                  {/* Report cards live under Grades: they are the read side
+                      saved out of it. */}
+                  <Route path='/grades/report-cards' element={<ReportCardsPage />} />
+                  <Route path='/grades/report-cards/:cardId' element={<ReportCardPage />} />
 
                   {/* Account settings, moved off /dashboard so that path could
                       become the dashboard the mockup describes. The nested nav

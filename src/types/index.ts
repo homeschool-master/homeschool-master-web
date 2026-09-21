@@ -359,6 +359,88 @@ export interface StudentProgress {
   undated: ProgressEntry[]
 }
 
+/**
+ * One subject's line on a report card: the calculated figures, whatever the
+ * teacher put over them, and the work the figures were summed from.
+ */
+export interface ReportCardSubject {
+  subjectId: string | null
+  subjectName: string
+  percentage: string | null
+  letter: string | null
+  pointsEarned: string | null
+  pointsPossible: string | null
+  assignedCount: number | null
+  gradedCount: number | null
+  ungradedCount: number | null
+  /** The teacher's letter, and null when she has not set one. */
+  overrideLetter: string | null
+  overrideReason: string | null
+  overridden: boolean
+  /** Her letter when she set one, the calculated one otherwise. */
+  effectiveLetter: string | null
+  comments: string | null
+  assignments: ProgressEntry[]
+}
+
+export interface ReportCardOverall {
+  percentage: string | null
+  letter: string | null
+  overrideLetter: string | null
+  overrideReason: string | null
+  overridden: boolean
+  effectiveLetter: string | null
+}
+
+/**
+ * A saved copy of one student's grades for a period.
+ *
+ * issued says whether it is frozen against later edits. captured says whether
+ * its figures are stored rather than computed, which is the same thing once
+ * issued but is also true of a new version inherited from an issued card.
+ */
+export interface ReportCard {
+  id: string
+  teacherId: string
+  studentId: string
+  /** Shared by every version of one card. */
+  groupId: string
+  version: number
+  title: string
+  periodStart: string
+  periodEnd: string
+  comments: string | null
+  issued: boolean
+  issuedAt: string | null
+  captured: boolean
+  capturedAt: string | null
+  latestVersion: boolean
+  createdAt: string
+  /** Absent on the list, which carries headings only. */
+  subjects?: ReportCardSubject[]
+  overall?: ReportCardOverall
+}
+
+/** What a teacher writes on one subject's line. Her words, never calculated. */
+export interface ReportCardEntryInput {
+  subjectId: string | null
+  subjectName?: string
+  overrideLetter?: string | null
+  overrideReason?: string | null
+  comments?: string | null
+}
+
+export interface ReportCardInput {
+  studentId?: string
+  title?: string
+  periodStart?: string
+  periodEnd?: string
+  comments?: string | null
+  overallOverrideLetter?: string | null
+  overallOverrideReason?: string | null
+  entries?: ReportCardEntryInput[]
+}
+
 /** Both ends required: a roll up with no period answers a different question. */
 export interface ProgressRange {
   from: string

@@ -4,6 +4,7 @@ import assignmentTypesReducer from './assignmentTypesSlice'
 import authReducer from './authSlice'
 import calendarEventsReducer from './calendarEventsSlice'
 import progressReducer from './progressSlice'
+import reportCardsReducer from './reportCardsSlice'
 import studentsReducer from './studentsSlice'
 import subjectsReducer from './subjectsSlice'
 import tasksReducer from './tasksSlice'
@@ -15,6 +16,7 @@ export const store = configureStore({
     auth: authReducer,
     calendarEvents: calendarEventsReducer,
     progress: progressReducer,
+    reportCards: reportCardsReducer,
     students: studentsReducer,
     subjects: subjectsReducer,
     tasks: tasksReducer,

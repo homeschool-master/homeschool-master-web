@@ -1,6 +1,7 @@
 import { useEffect } from 'react'
 import { useNavigate, useSearchParams } from 'react-router-dom'
 import { GRADES_CONTENT } from '../../constants/grades'
+import GradesSectionNav from '../../components/grades/GradesSectionNav'
 import ProgressView from '../../components/grades/ProgressView'
 
 /**
@@ -30,6 +31,8 @@ const GradesPage = () => {
           <h1 className='grades__heading'>{GRADES_CONTENT.page.heading}</h1>
           <p className='grades__subhead'>{GRADES_CONTENT.page.subhead}</p>
         </header>
+
+        <GradesSectionNav />
 
         <ProgressView />
       </div>
