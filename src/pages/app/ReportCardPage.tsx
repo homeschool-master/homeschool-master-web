@@ -190,6 +190,14 @@ const ReportCardPage = () => {
               <button type='button' className='report-card__action' onClick={() => goTo('edit')}>
                 {content.actions.edit}
               </button>
+              {/* Opens the sheet itself: the same page a printer or a PDF
+                  gets, rather than a preview of a different design. */}
+              <Link
+                className='report-card__action'
+                to={`/grades/report-cards/${current.id}/print`}
+              >
+                {content.actions.printView}
+              </Link>
               {!current.issued && (
                 <button
                   type='button'

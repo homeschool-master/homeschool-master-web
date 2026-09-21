@@ -40,6 +40,7 @@ export const REPORT_CARDS_CONTENT = {
     removing: 'Deleting',
     back: 'Back to report cards',
     viewVersion: 'View',
+    printView: 'Print or save as PDF',
   },
 
   /** Asked before freezing, since issuing is the one step that cannot be undone. */
@@ -92,6 +93,37 @@ export const REPORT_CARDS_CONTENT = {
     workHeading: 'Work behind this grade',
     /** Says the list is a copy, not a live query, on an issued card. */
     workCaptured: 'Saved with the card on {date}.',
+  },
+
+  /**
+   * The sheet that leaves the app. Wording is deliberately plainer than the
+   * app's: a reader of the paper is a co-op, an evaluator or a grandparent,
+   * not someone who knows what a draft means here.
+   */
+  print: {
+    back: 'Back to the card',
+    print: 'Print or save as PDF',
+    preparing: 'Preparing',
+    /** Says where the PDF actually comes from, since no file is downloaded. */
+    pdfHint: 'Choose "Save as PDF" as the destination in the print dialog.',
+    includeWork: 'Include the work behind each grade',
+
+    periodLabel: 'Period',
+    versionLabel: 'Version',
+    issuedLabel: 'Issued',
+    notIssued: 'Not issued',
+    notMarkedShort: 'Not marked',
+
+    draftWatermark: 'DRAFT',
+    draftBanner:
+      'This is a draft, not an issued report card. The grades on it are still changing and it should not be given to anyone.',
+    supersededBanner:
+      'This is version {version}. It has been replaced by version {current}, which is the current report card.',
+    overrideTag: 'Teacher grade',
+    commentsHeading: 'Comments',
+    footer: '{student}: report card, version {version}, {state}.',
+    footerIssued: 'issued',
+    footerDraft: 'draft, not issued',
   },
 
   versions: {

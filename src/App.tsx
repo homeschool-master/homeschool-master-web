@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom'
 import ProtectedRoutes from './components/app/ProtectedRoute'
 import AppLayout from './components/app/AppLayout'
+import AppShell from './components/app/AppShell'
 import DashboardPage from './pages/app/DashboardPage'
 import SettingsPage from './pages/app/SettingsPage'
 import LoginPage from './pages/app/LoginPage'
@@ -13,8 +14,6 @@ import { useDispatch, useSelector } from 'react-redux'
 import type { RootState, AppDispatch } from './store'
 import { setUser } from './store/authSlice'
 import api from './services/api'
-import Navbar from './components/layout/Navbar'
-import Footer from './components/layout/Footer'
 import PricingPage from './pages/marketing/PricingPage'
 import ContactPage from './pages/marketing/ContactPage'
 import ForgotPasswordPage from './components/auth/ForgotPasswordPage'
@@ -29,7 +28,6 @@ import AssignmentTypesSection from './components/dashboard/AssignmentTypesSectio
 import DataPrivacySection from './components/dashboard/DataPrivacySection'
 import SubscriptionSection from './components/dashboard/SubscriptionSection'
 import ScrollToTop from './components/shared/ScrollToTop'
-import BackToTopButton from './components/shared/BakToTopButton'
 import NotificationsSection from './components/dashboard/NotificationsSection'
 import OnboardingPage from './pages/app/OnboardingPage'
 import CalendarPage from './pages/app/CalendarPage'
@@ -38,6 +36,7 @@ import AssignmentsPage from './pages/app/AssignmentsPage'
 import GradesPage from './pages/app/GradesPage'
 import ReportCardsPage from './pages/app/ReportCardsPage'
 import ReportCardPage from './pages/app/ReportCardPage'
+import ReportCardPrintPage from './pages/app/ReportCardPrintPage'
 import EventFormPage from './pages/app/EventFormPage'
 import EventDetailPage from './pages/app/EventDetailPage'
 import FeaturesPage from './pages/marketing/FeaturesPage'
@@ -70,10 +69,18 @@ const App = () => {
   return (
     <Router>
       <ScrollToTop />
-      <div className='app-shell'>
-        <Navbar />
-          <div className='app-shell__main'>
-            <Routes>
+      <Routes>
+        {/* Outside the shell on purpose: a sheet meant for paper carries no
+            navbar, footer or back to top control, and hiding them only at
+            print time would still leave them in the preview. */}
+        <Route element={<ProtectedRoutes />}>
+          <Route
+            path='/grades/report-cards/:cardId/print'
+            element={<ReportCardPrintPage />}
+          />
+        </Route>
+
+        <Route element={<AppShell />}>
               <Route element={<ProtectedRoutes />}>
                 {/* Onboarding is a linear first run flow with its own exits, so
                     it stays outside the app nav: protected, but no sidebar. */}
@@ -139,11 +146,8 @@ const App = () => {
                 <Route path='/register' element={user ? <Navigate to={authedRedirect} /> : <RegisterPage />} />
               </Route>
               <Route path='*' element={<NotFoundPage />} />
-            </Routes>
-          </div>
-        <Footer />
-        <BackToTopButton />
-      </div>
+        </Route>
+      </Routes>
     </Router>
   )
 }
