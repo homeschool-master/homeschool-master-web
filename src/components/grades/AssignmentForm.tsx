@@ -6,7 +6,7 @@ import FormField, { FormInput, FormSelect, FormTextarea } from '../shared/FormFi
 import Button from '../shared/Button'
 import HintTooltip from '../shared/HintTooltip'
 import { GRADES_CONTENT } from '../../constants/grades'
-import { fillTemplate, formatDecimal, weightSentence } from '../../utils/grades'
+import { fillTemplate, formatDecimal, isLargeWeight, weightSentence } from '../../utils/grades'
 import { readableTextColor } from '../../utils/studentColor'
 import type { Assignment, AssignmentInput, AssignmentType, Student, Subject } from '../../types'
 
@@ -120,12 +120,33 @@ const AssignmentForm = ({
   }
 
   /**
-   * Whether the number in the box is the type's or the teacher's. The server
-   * decides this the same way on save, by comparing the two, so what the form
-   * says will be what is recorded.
+   * Who owns the weight.
+   *
+   * Touching the field is the decision, not the number that comes out of it,
+   * so this tracks what she did rather than comparing the box against the
+   * default. A teacher who deliberately types the same number the default
+   * already says has still chosen it, and the next change to that default
+   * must leave her work alone.
+   *
+   *   untouched  send nothing. A new assignment takes the type's default; an
+   *              existing one keeps whatever it already had.
+   *   set        she typed it. Hers.
+   *   inherit    she asked for the type default back.
    */
-  const weightMatchesType =
-    selectedType !== null && Number(weightValue) === Number(selectedType.defaultWeight)
+  const [weightIntent, setWeightIntent] = useState<'untouched' | 'set' | 'inherit'>('untouched')
+
+  // Picking a type refills the box, which is not her editing it: the intent is
+  // only reset when the box was already following the type.
+  const useTypeDefault = () => {
+    if (selectedType) {
+      setValue('weight', formatDecimal(selectedType.defaultWeight), { shouldValidate: true })
+    }
+    setWeightIntent('inherit')
+  }
+
+  /** What the form will say about this weight, before anything is saved. */
+  const weightIsHers =
+    weightIntent === 'set' || (weightIntent === 'untouched' && (assignment?.weightOverridden ?? false))
 
   // Held outside react-hook-form: a set of checkboxes is a set, and threading
   // it through the resolver buys nothing when the server accepts an empty one.
@@ -153,7 +174,14 @@ const AssignmentForm = ({
       description: values.description.trim() || null,
       dueDate: values.dueDate || null,
       pointsPossible: Number(values.pointsPossible),
-      weight: Number(values.weight),
+      // Three states, and "left alone" is not the same as "set to what it
+      // already showed": an untouched field sends nothing at all.
+      weight:
+        weightIntent === 'set'
+          ? Number(values.weight)
+          : weightIntent === 'inherit'
+            ? null
+            : undefined,
       studentIds,
     })
     if (saved) onCancel()
@@ -269,7 +297,11 @@ const AssignmentForm = ({
             step='any'
             inputMode='decimal'
             className={errors.weight ? 'form-field__control--error' : ''}
-            {...register('weight')}
+            {...register('weight', {
+              // Typing in the box is the whole decision, so it is recorded the
+              // moment she does it rather than inferred from the value later.
+              onChange: () => setWeightIntent('set'),
+            })}
           />
           {errors.weight && (
             <p className='assignment-form__error' role='alert'>
@@ -277,6 +309,16 @@ const AssignmentForm = ({
             </p>
           )}
           <p className='assignment-form__hint'>{form.weightHint}</p>
+
+          {/* A weight past five is usually 30 typed for 3, and one assignment
+              at 30 decides the subject average on its own. Said in the open,
+              and it does not stop her saving. */}
+          {isLargeWeight(weightValue) && (
+            <p className='assignment-form__weight-warning' role='status'>
+              {fillTemplate(form.weightLarge, { factor: formatDecimal(weightValue) })}
+            </p>
+          )}
+
           {/* The number restated as what it does, updating as it is typed: a
               bare "2" means nothing to a teacher new to weighting. */}
           <p className='assignment-form__weight-says' aria-live='polite'>
@@ -287,11 +329,20 @@ const AssignmentForm = ({
               later will move this piece of work or leave it where she put it. */}
           {selectedType && (
             <p className='assignment-form__weight-source'>
-              {fillTemplate(
-                weightMatchesType ? form.weightFromType : form.weightOverridden,
-                { name: selectedType.name }
-              )}
+              {fillTemplate(weightIsHers ? form.weightOverridden : form.weightFromType, {
+                name: selectedType.name,
+              })}
             </p>
+          )}
+          {/* The way back. Only offered when there is something to undo. */}
+          {selectedType && weightIsHers && (
+            <button
+              type='button'
+              className='assignment-form__weight-reset'
+              onClick={useTypeDefault}
+            >
+              {fillTemplate(form.weightUseDefault, { name: selectedType.name })}
+            </button>
           )}
         </FormField>
       </div>

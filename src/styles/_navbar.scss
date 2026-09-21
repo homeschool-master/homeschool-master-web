@@ -85,8 +85,12 @@
   &__links {
     display: flex;
     align-items: center;
-    gap: $spacing-lg;
+    // Fluid rather than fixed: the gap is the first thing that should give
+    // when the bar is tight, and a clamp does it continuously instead of
+    // jumping at one breakpoint.
+    gap: clamp(0.75rem, 2.4vw, #{$spacing-lg});
     list-style: none;
+    min-width: 0;
 
     a {
       color: $color-text;
@@ -104,6 +108,9 @@
     display: flex;
     align-items: center;
     gap: $spacing-sm;
+    // Never squeezed to nothing by the links beside it: the sign in controls
+    // are the one part of the bar that has to stay hittable.
+    flex-shrink: 0;
   }
 
   &__btn {
@@ -165,6 +172,36 @@
     background: #f0f0f0;
     width: 100%;
     margin: 0;
+  }
+
+  /**
+   * The band between the hamburger switching off and the width where the full
+   * bar fits comfortably.
+   *
+   * At 768px the desktop bar wants 862px: logo, four links and two buttons,
+   * inside 32px of container padding a side. It used to simply run off the
+   * side of the screen, which is a tablet held in landscape. Nothing here
+   * hides anything: the frame comes in and the type steps down a little, which
+   * is enough to fit without reaching for the hamburger at a width that has
+   * room for the real thing.
+   */
+  @media (min-width: #{$bp-tablet}) and (max-width: 899px) {
+    &__inner {
+      padding-left: $container-padding-mobile;
+      padding-right: $container-padding-mobile;
+    }
+
+    &__logo {
+      font-size: 1rem;
+
+      &-icon img {
+        height: 34px;
+      }
+    }
+
+    &__btn {
+      padding: 0.35rem 0.75rem;
+    }
   }
 
   @include respond-to(mobile) {

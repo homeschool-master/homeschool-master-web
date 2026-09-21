@@ -84,6 +84,49 @@ snake_case does appear in comments that describe what Rails receives, in
 those comments document the server side of the boundary, and they are not an
 exception to the rule for code.
 
+## Traps that have bitten this codebase
+
+Three mistakes have been made here more than once. Each is easy to make, none
+of them looks wrong in review, and all three are invisible until someone opens
+the app at the wrong width or follows the wrong link.
+
+### Explanatory content inside a collapsible
+
+A panel that collapses at mobile width takes its contents with it. Put the one
+sentence that explains an empty or filtered view inside that panel and it
+disappears exactly when it is needed most: a teacher on a phone sees an empty
+list and nothing saying why.
+
+**Avoid it by** keeping anything that explains state outside the collapsible.
+The filter fields can collapse; the line saying "nothing matches these filters"
+cannot. This applies to empty states, scope notices, override warnings and the
+status of a draft.
+
+### A display rule beating the browser's `[hidden]`
+
+`hidden` on an element is a UA stylesheet rule, so any author rule that sets
+`display` beats it. A component that toggles `hidden` while its class sets
+`display: flex` stays visible, and its contents stay in the tab order, which is
+the part that is easy to miss.
+
+**Avoid it by** pairing every `display` rule on a hideable element with its own
+`&[hidden] { display: none; }`. It has been needed on the calendar filters, the
+event list panel and the nav overflow menu, and it will be needed again by
+anything that reaches for a mixin setting `display`.
+
+### Links left pointing at a moved route
+
+When a page moves, links to it do not follow. They keep resolving, so nothing
+errors: the link just lands somewhere that is no longer the thing it names.
+Assignments moving out of `/grades` left three empty state actions pointing at
+the page the teacher was already looking at.
+
+**Avoid it by** grepping for the old path across the repo when a route moves,
+including paths built as constants and template strings, and by opening the
+pages that link to it rather than trusting the route file. Constants like
+`ASSIGNMENTS_PATH` are the ones that go stale quietly, because the name still
+reads correctly while the value no longer does.
+
 ## Deployment
 
 The Rails API is deployed to Heroku with PostgreSQL via the Heroku Postgres add-on. The React web app is deployed to Vercel.
