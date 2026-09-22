@@ -12,6 +12,9 @@ interface AssignmentRowProps {
   onScore: (assignment: Assignment) => void
   onEdit: (assignment: Assignment) => void
   onRemove: (assignment: Assignment) => void
+  onDocuments: (assignment: Assignment) => void
+  /** How many documents are filed against this row, so it can say so. */
+  documentCount?: number
   /**
    * True when this is the row a link from the gradebook asked for. The row
    * marks itself and scrolls itself into view, so arriving from a mark lands
@@ -31,6 +34,8 @@ const AssignmentRow = ({
   onScore,
   onEdit,
   onRemove,
+  onDocuments,
+  documentCount = 0,
   highlighted = false,
 }: AssignmentRowProps) => {
   const total = assignment.grades.length
@@ -117,6 +122,15 @@ const AssignmentRow = ({
           onClick={() => onEdit(assignment)}
         >
           {GRADES_CONTENT.editAction}
+        </button>
+        <button
+          type='button'
+          className='assignment-row__action'
+          onClick={() => onDocuments(assignment)}
+        >
+          {documentCount > 0
+            ? `${GRADES_CONTENT.documentsAction} (${documentCount})`
+            : GRADES_CONTENT.documentsAction}
         </button>
         <button
           type='button'

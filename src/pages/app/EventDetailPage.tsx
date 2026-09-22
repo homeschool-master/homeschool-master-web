@@ -20,6 +20,7 @@ import { resolveAttendees } from '../../utils/attendees'
 import { profileSearch, readProfile } from '../../utils/profile'
 import EventDeleteConfirm from '../../components/calendar/EventDeleteConfirm'
 import SeriesScopeChoice from '../../components/shared/SeriesScopeChoice'
+import AttachedDocuments from '../../components/documents/AttachedDocuments'
 import type { SeriesScope } from '../../types'
 
 const { detail } = CALENDAR_CONTENT
@@ -175,6 +176,18 @@ const EventDetailPage = () => {
             )}
           </section>
         )}
+
+        {/* Below what the event is and above what can be done to it: a
+            document is part of the record rather than an action on it. On one
+            occurrence of a series the panel says so itself, because filing a
+            receipt against every co-op morning is the mistake to prevent. */}
+        <section className='event-detail__card'>
+          <AttachedDocuments
+            attachableType='CalendarEvent'
+            targetId={current.id}
+            repeats={Boolean(current.seriesId)}
+          />
+        </section>
 
         <div className='event-detail__actions'>
           {/* Deleting one occurrence of a series has three possible meanings,

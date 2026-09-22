@@ -72,6 +72,8 @@ export const GRADES_CONTENT = {
   loading: 'Loading assignments',
   addButton: 'Add an assignment',
   scoreAction: 'Score',
+  /** Carries a count when there are any, so a row says it has files. */
+  documentsAction: 'Documents',
   editAction: 'Edit',
   removeAction: 'Remove',
 

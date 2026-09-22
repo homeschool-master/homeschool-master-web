@@ -14,6 +14,9 @@ import {
 } from '../../store/tasksSlice'
 import { fetchStudents } from '../../store/studentsSlice'
 import { TASKS_CONTENT } from '../../constants/tasks'
+import { DOCUMENTS_CONTENT } from '../../constants/documents'
+import { countsByTarget } from '../../utils/documents'
+import { fetchDocuments } from '../../store/documentsSlice'
 import { todayKey } from '../../utils/calendarDates'
 import { fillTemplate } from '../../utils/grades'
 import { TASK_FILTERS, applyTaskFilter, isOccurrence, isTaskFilter, repeats } from '../../utils/tasks'
@@ -39,12 +42,14 @@ import SeriesScopeChoice from '../../components/shared/SeriesScopeChoice'
 import StudentPicker from '../../components/shared/StudentPicker'
 import TaskForm from '../../components/tasks/TaskForm'
 import TaskRow from '../../components/tasks/TaskRow'
+import AttachedDocuments from '../../components/documents/AttachedDocuments'
 
 type Mode =
   | { kind: 'idle' }
   | { kind: 'add' }
   | { kind: 'edit'; task: Task }
   | { kind: 'remove'; task: Task }
+  | { kind: 'documents'; task: Task }
 
 /**
  * A save or a removal held back until the teacher says how far it reaches.
@@ -63,9 +68,20 @@ const TasksPage = () => {
   const { items: students, loaded: studentsLoaded } = useSelector(
     (state: RootState) => state.students
   )
+  const { items: documents, loaded: documentsLoaded } = useSelector(
+    (state: RootState) => state.documents
+  )
 
   const [mode, setMode] = useState<Mode>({ kind: 'idle' })
   const [pending, setPending] = useState<Pending | null>(null)
+
+  // Fetched once for the whole page: the rows say how many documents they
+  // carry, and the panel reads the same list rather than fetching its own.
+  useEffect(() => {
+    if (!documentsLoaded) void dispatch(fetchDocuments())
+  }, [dispatch, documentsLoaded])
+
+  const documentCounts = useMemo(() => countsByTarget(documents, 'Task'), [documents])
 
   // In the URL like the calendar's view state, so a filtered list is linkable
   // and survives a reload. All is the default and writes no param, so a bare
@@ -390,6 +406,29 @@ const TasksPage = () => {
               </>
             )}
 
+            {/* In the same slot every other panel uses, so opening the
+                documents on a row twenty lines down does not send the eye
+                somewhere else. */}
+            {mode.kind === 'documents' && (
+              <div className='tasks__confirm'>
+                <p className='tasks__confirm-task'>{mode.task.title}</p>
+                <AttachedDocuments
+                  attachableType='Task'
+                  targetId={mode.task.id}
+                  repeats={repeats(mode.task)}
+                />
+                <div className='task-form__actions'>
+                  <button
+                    type='button'
+                    className='task-form__cancel'
+                    onClick={() => goTo({ kind: 'idle' })}
+                  >
+                    {DOCUMENTS_CONTENT.attached.done}
+                  </button>
+                </div>
+              </div>
+            )}
+
             {mode.kind === 'remove' && pending === null && (
               <div className='tasks__confirm'>
                 {removeError && (
@@ -458,6 +497,8 @@ const TasksPage = () => {
                 }
                 onEdit={(next) => goTo({ kind: 'edit', task: next })}
                 onRemove={startRemove}
+                onDocuments={(next) => goTo({ kind: 'documents', task: next })}
+                documentCount={documentCounts[task.id] ?? 0}
                 students={students}
               />
             ))}

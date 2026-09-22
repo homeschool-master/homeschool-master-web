@@ -534,7 +534,7 @@ export const LEGAL_CONTENT: Record<LegalSlug, LegalDocument> = {
 
   privacy: {
     title: 'Privacy Policy',
-    lastUpdated: 'September 2, 2026',
+    lastUpdated: 'September 21, 2026',
     intro:
       'This policy explains what Homeschool Master collects, why we collect it, where it is stored, and what control you have over it. We built this app for our own family first, so the short version is: we collect what the app needs to work, we do not sell it, and there are no ads.',
     sections: [
@@ -543,6 +543,7 @@ export const LEGAL_CONTENT: Record<LegalSlug, LegalDocument> = {
         body: [
           'Account information: your name, email address, and password. Passwords are stored only as a salted hash, never as readable text.',
           'Family and student records: the student profiles, subjects, assignments, grades, calendar events, tasks, expenses, and notes you enter. Student profiles hold only what you choose to type in, typically a first name, a grade level, and school work.',
+          'Files you upload: photos, PDFs and documents you add to your library and file against work, along with the title you give each one and its file name, type and size. Typically this is schoolwork, worksheets and receipts. Whatever is inside a file you upload is stored as you uploaded it, so upload only what you actually want us to hold.',
           'Support messages: if you email us or use the contact form, we keep the message and your reply address so we can answer you.',
           'Basic technical records: our servers keep short lived request logs that include IP address and browser or device type. We use them to diagnose errors and abuse.',
           'We do not run advertising trackers, third party analytics, or behavioral profiling in the app or on this site.',
@@ -562,8 +563,11 @@ export const LEGAL_CONTENT: Record<LegalSlug, LegalDocument> = {
         heading: 'Where Your Data Lives',
         body: [
           'Homeschool Master runs on a Rails API hosted on Heroku, with your records stored in a PostgreSQL database. Data is stored on servers in the United States.',
+          'Files you upload are stored in Amazon S3, in the United States, in a private bucket that is not readable from the web. They are encrypted at rest. Nothing we store has a public link.',
+          'When you open one of your files, the app checks that the file belongs to your account and then hands your browser a signed link that stops working after five minutes. Anyone you forward that link to within those five minutes can open the file, so treat it the way you would treat the file itself.',
+          'Only your account can reach your files through the app. There is no sharing feature, and no other account can list, open or download them.',
           'Traffic between the app and our API is encrypted in transit with TLS. Database backups are managed by our hosting provider.',
-          'A small number of people on our team can reach production data, and only to operate the service or to help you with a support request.',
+          'A small number of people on our team can reach production data, including uploaded files, and only to operate the service or to help you with a support request.',
         ],
       },
       {
@@ -578,6 +582,7 @@ export const LEGAL_CONTENT: Record<LegalSlug, LegalDocument> = {
         body: [
           'Heroku hosts our API and PostgreSQL database.',
           'Resend delivers our transactional email: password resets, receipts, and account notices. Resend receives your email address and the contents of those messages so it can send them.',
+          'Amazon Web Services stores the files you upload, in S3.',
           'Apple and Google process subscription payments. They tell us whether a subscription is active. We never receive your full payment details.',
           'These providers handle data on our behalf under their own terms, and we do not authorize them to use your information for their own marketing.',
         ],
@@ -594,7 +599,8 @@ export const LEGAL_CONTENT: Record<LegalSlug, LegalDocument> = {
         heading: 'How Long We Keep It',
         body: [
           'We keep your records for as long as your account is open, so that your history, grades, and transcripts stay available to you year over year.',
-          'If you close your account, we delete your family and student records from the production database within 30 days. Encrypted backups roll off on their own cycle, generally within 90 days.',
+          'When you delete a document in the app, the file itself is deleted from storage, not merely hidden. Taking a document off one assignment, task or event is a different action and keeps the file.',
+          'If you close your account, we delete your family and student records from the production database, and the files you uploaded from storage, within 30 days. Encrypted backups roll off on their own cycle, generally within 90 days.',
           'We keep a minimal billing and support record after deletion where we need it for tax and accounting purposes.',
         ],
       },
@@ -603,7 +609,7 @@ export const LEGAL_CONTENT: Record<LegalSlug, LegalDocument> = {
         body: [
           'Access and export: you can view and export your family data from the app at any time.',
           'Correction: you can edit any record you have entered directly in the app.',
-          'Deletion: you can delete individual records, or ask us to delete your entire account.',
+          'Deletion: you can delete individual records, delete an uploaded file, or ask us to delete your entire account.',
           'Email: account and security emails are part of the service, but you can opt out of any newsletter from the link in its footer.',
           'To make any of these requests by hand, email support@myhomeschoolmaster.com from the address on your account.',
         ],
@@ -611,7 +617,7 @@ export const LEGAL_CONTENT: Record<LegalSlug, LegalDocument> = {
       {
         heading: 'Security',
         body: [
-          'We use encrypted transport, hashed passwords, HTTP only session cookies, and access controls that scope every request to the family account that made it.',
+          'We use encrypted transport, hashed passwords, HTTP only session cookies, and access controls that scope every request to the family account that made it, including every request for an uploaded file.',
           'No system is perfectly secure. If we ever discover a breach affecting your data, we will notify affected account holders by email and describe what happened and what we are doing about it.',
         ],
       },
