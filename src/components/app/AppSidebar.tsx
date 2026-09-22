@@ -42,6 +42,12 @@ const AssignmentsIcon = () => (
     <path d='M9.5 8.5h5M9.5 12h5M9.5 15.5h3' />
   </svg>
 )
+const DocumentsIcon = () => (
+  <svg viewBox='0 0 24 24' fill='none' stroke='currentColor' strokeWidth='2' strokeLinecap='round' strokeLinejoin='round'>
+    <path d='M13 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V9z' />
+    <path d='M13 3v6h6' />
+  </svg>
+)
 // Three dots rather than a chevron: a chevron says "open downward", which is
 // also what the strip's own rows look like they might do.
 const MoreIcon = () => (
@@ -57,6 +63,7 @@ const ICONS: Record<AppNavKey, () => React.ReactElement> = {
   tasks: TasksIcon,
   assignments: AssignmentsIcon,
   grades: GradesIcon,
+  documents: DocumentsIcon,
 }
 
 /** Only one More control is ever on the page, so a fixed id is safe. */

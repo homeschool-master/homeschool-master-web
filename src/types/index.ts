@@ -454,3 +454,56 @@ export interface ProgressRange {
   from: string
   to: string
 }
+
+/**
+ * Where a document is filed. Null occurrenceDate means the record itself,
+ * which on a repeating task or event is the whole series; a date means that
+ * one occurrence and no other.
+ */
+export interface DocumentAttachment {
+  id: string
+  attachableType: DocumentAttachableType
+  attachableId: string
+  occurrenceDate: string | null
+  /** The id the client already holds for that row, occurrence date included. */
+  targetId: string
+  /** The record's own title, so the library can say where a document is filed. */
+  label: string | null
+}
+
+export type DocumentAttachableType = 'Assignment' | 'Task' | 'CalendarEvent'
+
+/**
+ * One uploaded file with a title the teacher gave it.
+ *
+ * No signed id and no storage URL: downloadPath is the only way to the bytes,
+ * and it checks who is asking before it redirects to a link that expires.
+ */
+export interface TeacherDocument {
+  id: string
+  teacherId: string
+  title: string
+  filename: string
+  contentType: string
+  byteSize: number
+  image: boolean
+  downloadPath: string
+  createdAt: string
+  attachments: DocumentAttachment[]
+}
+
+/** Where to PUT the bytes, and what to call the file afterwards. */
+export interface DocumentUploadTicket {
+  signedId: string
+  url: string
+  headers: { name: string; value: string }[]
+}
+
+export interface DocumentInput {
+  title: string
+  /** The signedId from the upload ticket. */
+  file: string
+}
+
+/** What the library is showing: everything, or only what is filed nowhere. */
+export type DocumentFilter = 'all' | 'unattached'

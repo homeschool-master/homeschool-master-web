@@ -32,6 +32,7 @@ import NotificationsSection from './components/dashboard/NotificationsSection'
 import OnboardingPage from './pages/app/OnboardingPage'
 import CalendarPage from './pages/app/CalendarPage'
 import TasksPage from './pages/app/TasksPage'
+import DocumentsPage from './pages/app/DocumentsPage'
 import AssignmentsPage from './pages/app/AssignmentsPage'
 import GradesPage from './pages/app/GradesPage'
 import ReportCardsPage from './pages/app/ReportCardsPage'
@@ -93,6 +94,10 @@ const App = () => {
                   <Route path='/calendar/:id/edit' element={<EventFormPage />} />
                   <Route path='/dashboard' element={<DashboardPage />} />
                   <Route path='/tasks' element={<TasksPage />} />
+                  {/* Its own section rather than a page under Settings:
+                      filing a document is school day work, not account
+                      configuration. */}
+                  <Route path='/documents' element={<DocumentsPage />} />
                   {/* Two sections rather than one page with a toggle:
                       Assignments is where work is set and marked, Grades is
                       where it is read back. */}

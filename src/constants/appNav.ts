@@ -5,6 +5,7 @@ export type AppNavKey =
   | 'tasks'
   | 'assignments'
   | 'grades'
+  | 'documents'
 
 export interface AppNavItem {
   key: AppNavKey
@@ -23,10 +24,11 @@ export interface AppNavItem {
    * without someone deciding where it sits in that queue.
    *
    * Settings leads because it is the one section nobody visits during a school
-   * day, then Grades, which is read at the end of a term rather than daily,
-   * then Assignments, which is opened when work is set or marked rather than
-   * every morning. The three that are open every morning are last and in
-   * practice never move.
+   * day, then Documents, which is opened when a receipt needs filing and is
+   * reachable from the work it belongs to anyway, then Grades, which is read
+   * at the end of a term rather than daily, then Assignments, which is opened
+   * when work is set or marked rather than every morning. The three that are
+   * open every morning are last and in practice never move.
    */
   overflowRank: number
 }
@@ -46,11 +48,12 @@ export const APP_NAV_CONTENT = {
   /** Names the popover for screen readers, since its trigger just says More. */
   moreMenuLabel: 'More app sections',
   items: [
-    { key: 'dashboard', label: 'Dashboard', to: '/dashboard', carriesProfile: true, overflowRank: 6 },
+    { key: 'dashboard', label: 'Dashboard', to: '/dashboard', carriesProfile: true, overflowRank: 7 },
     { key: 'settings', label: 'Settings', to: '/settings', overflowRank: 1 },
-    { key: 'calendar', label: 'Calendar', to: '/calendar', carriesProfile: true, overflowRank: 5 },
-    { key: 'tasks', label: 'Tasks', to: '/tasks', carriesProfile: true, overflowRank: 4 },
-    { key: 'assignments', label: 'Assignments', to: '/assignments', overflowRank: 3 },
-    { key: 'grades', label: 'Grades', to: '/grades', overflowRank: 2 },
+    { key: 'calendar', label: 'Calendar', to: '/calendar', carriesProfile: true, overflowRank: 6 },
+    { key: 'tasks', label: 'Tasks', to: '/tasks', carriesProfile: true, overflowRank: 5 },
+    { key: 'assignments', label: 'Assignments', to: '/assignments', overflowRank: 4 },
+    { key: 'grades', label: 'Grades', to: '/grades', overflowRank: 3 },
+    { key: 'documents', label: 'Documents', to: '/documents', overflowRank: 2 },
   ] as AppNavItem[],
 }

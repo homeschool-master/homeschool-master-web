@@ -13,6 +13,10 @@ interface TaskRowProps {
   /** Omitted on the dashboard panel, which lists rather than manages. */
   onEdit?: (task: Task) => void
   onRemove?: (task: Task) => void
+  /** Omitted on the dashboard panel, which lists rather than manages. */
+  onDocuments?: (task: Task) => void
+  /** How many documents are filed against this row, so it can say so. */
+  documentCount?: number
   /** Resolves the student ids the task carries into first names. */
   students: Student[]
 }
@@ -29,6 +33,8 @@ const TaskRow = ({
   onToggle,
   onEdit,
   onRemove,
+  onDocuments,
+  documentCount = 0,
   students,
 }: TaskRowProps) => {
   const overdue = isOverdue(task, today)
@@ -91,11 +97,18 @@ const TaskRow = ({
 
       {task.description && <p className='task-row__notes'>{task.description}</p>}
 
-      {(onEdit || onRemove) && (
+      {(onEdit || onRemove || onDocuments) && (
         <span className='task-row__actions'>
           {onEdit && (
             <button type='button' className='task-row__action' onClick={() => onEdit(task)}>
               {TASKS_CONTENT.editAction}
+            </button>
+          )}
+          {onDocuments && (
+            <button type='button' className='task-row__action' onClick={() => onDocuments(task)}>
+              {documentCount > 0
+                ? `${TASKS_CONTENT.documentsAction} (${documentCount})`
+                : TASKS_CONTENT.documentsAction}
             </button>
           )}
           {onRemove && (

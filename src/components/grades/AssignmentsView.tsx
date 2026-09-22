@@ -18,11 +18,15 @@ import { fetchStudents } from '../../store/studentsSlice'
 import { fetchSubjects } from '../../store/subjectsSlice'
 import { fetchAssignmentTypes } from '../../store/assignmentTypesSlice'
 import { GRADES_CONTENT } from '../../constants/grades'
+import { DOCUMENTS_CONTENT } from '../../constants/documents'
+import { countsByTarget } from '../../utils/documents'
+import { fetchDocuments } from '../../store/documentsSlice'
 import { MARK_FILTERS, applyAssignmentFilters, isMarkFilter } from '../../utils/grades'
 import type { MarkFilter } from '../../utils/grades'
 import Button from '../shared/Button'
 import AssignmentForm from './AssignmentForm'
 import AssignmentRow from './AssignmentRow'
+import AttachedDocuments from '../documents/AttachedDocuments'
 import ScorePanel from './ScorePanel'
 
 type Mode =
@@ -31,6 +35,7 @@ type Mode =
   | { kind: 'edit'; assignment: Assignment }
   | { kind: 'score'; assignment: Assignment }
   | { kind: 'remove'; assignment: Assignment }
+  | { kind: 'documents'; assignment: Assignment }
 
 const SUBJECT_PARAM = 'subject'
 const MARK_PARAM = 'show'
@@ -63,11 +68,18 @@ const AssignmentsView = () => {
   const { items: students, loading: studentsLoading } = useSelector(
     (state: RootState) => state.students
   )
+  const { items: documents } = useSelector((state: RootState) => state.documents)
 
   const [mode, setMode] = useState<Mode>({ kind: 'idle' })
 
+  // One fetch for the page: the rows say how many documents they carry, and
+  // the panel reads the same list rather than fetching its own.
+  const documentCounts = useMemo(() => countsByTarget(documents, 'Assignment'), [documents])
+
   useEffect(() => {
     dispatch(fetchAssignments())
+    // The rows carry a document count, which needs the library.
+    dispatch(fetchDocuments())
     // The row names its subject and the form offers them, so both lists are
     // needed here rather than only on the page that edits them.
     dispatch(fetchSubjects())
@@ -264,6 +276,25 @@ const AssignmentsView = () => {
             </>
           )}
 
+          {/* In the same slot the form and the score panel use, so opening
+              the documents on a row a long way down does not send the eye
+              somewhere else. */}
+          {mode.kind === 'documents' && (
+            <div className='grades__confirm'>
+              <p className='grades__confirm-title'>{mode.assignment.title}</p>
+              <AttachedDocuments attachableType='Assignment' targetId={mode.assignment.id} />
+              <div className='assignment-form__actions'>
+                <button
+                  type='button'
+                  className='assignment-form__cancel'
+                  onClick={() => goTo({ kind: 'idle' })}
+                >
+                  {DOCUMENTS_CONTENT.attached.done}
+                </button>
+              </div>
+            </div>
+          )}
+
           {mode.kind === 'score' && current && (
             <>
               {scoreError && (
@@ -337,6 +368,8 @@ const AssignmentsView = () => {
               onScore={(next) => goTo({ kind: 'score', assignment: next })}
               onEdit={(next) => goTo({ kind: 'edit', assignment: next })}
               onRemove={(next) => goTo({ kind: 'remove', assignment: next })}
+              onDocuments={(next) => goTo({ kind: 'documents', assignment: next })}
+              documentCount={documentCounts[assignment.id] ?? 0}
               highlighted={assignment.id === openParam}
             />
           ))}

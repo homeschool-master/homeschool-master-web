@@ -1,0 +1,528 @@
+@use 'variables' as *;
+@use 'mixins' as *;
+
+$color-danger: #b42318;
+
+.documents {
+  // The upload panel opens above the list, so what is below it moves. Without
+  // this the browser compensates by shifting the scroll position, which fights
+  // the panel trying to bring itself into view.
+  overflow-anchor: none;
+  font-family: $font-family-base;
+  color: $color-text;
+  background-color: $color-white;
+  padding: 0 5px;
+
+  &__inner {
+    @include container;
+    padding-top: $spacing-lg;
+    padding-bottom: $spacing-xl;
+    // A document row carries a title, what it is, and where it is filed.
+    max-width: 52rem;
+  }
+
+  &__header {
+    margin-bottom: $spacing-lg;
+  }
+
+  &__heading {
+    font-size: 2rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    color: $color-headline;
+    margin-bottom: $spacing-xs;
+
+    @include respond-to(mobile) {
+      font-size: 1.5rem;
+    }
+  }
+
+  &__subhead {
+    font-size: 1rem;
+  }
+
+  &__bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: $spacing-md;
+    margin-bottom: $spacing-md;
+
+    @include respond-to(mobile) {
+      flex-direction: column;
+      align-items: stretch;
+    }
+  }
+
+  // Always in the open, never behind a disclosure: which of the two lists is
+  // showing is the only thing that explains why a document is not on screen.
+  &__filters {
+    display: flex;
+    gap: $spacing-xs;
+    padding: $spacing-xs;
+    border: 1.5px solid $color-gradient-dark;
+    border-radius: 999px;
+    background-color: $color-surface;
+    width: fit-content;
+
+    @include respond-to(mobile) {
+      width: 100%;
+    }
+  }
+
+  &__filter {
+    padding: $spacing-xs $spacing-md;
+    border: none;
+    border-radius: 999px;
+    background: none;
+    font-family: $font-family-base;
+    font-size: 0.9375rem;
+    font-weight: 600;
+    color: $color-headline;
+    cursor: pointer;
+
+    &:hover {
+      background-color: rgba($color-white, 0.7);
+    }
+
+    &:focus-visible {
+      outline: 2px solid $color-headline;
+      outline-offset: 2px;
+    }
+
+    @include respond-to(mobile) {
+      flex: 1;
+      padding: $spacing-xs $spacing-sm;
+    }
+  }
+
+  &__filter--active {
+    background-color: $color-gradient-light;
+    box-shadow: inset 0 0 0 1.5px $color-accent;
+  }
+
+  &__add {
+    padding: $spacing-sm $spacing-md;
+    border: 1.5px solid $color-gradient-dark;
+    border-radius: 999px;
+    background-color: $color-gradient-light;
+    font-family: $font-family-base;
+    font-size: 0.9375rem;
+    font-weight: 700;
+    color: $color-headline;
+    cursor: pointer;
+
+    &:focus-visible {
+      outline: 2px solid $color-headline;
+      outline-offset: 2px;
+    }
+  }
+
+  &__slot {
+    margin-bottom: $spacing-md;
+  }
+
+  &__list {
+    list-style: none;
+    margin: 0 0 $spacing-lg;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: $spacing-sm;
+  }
+
+  &__status {
+    margin-bottom: $spacing-lg;
+    padding: $spacing-md;
+    border: 1px dashed $color-gradient-dark;
+    border-radius: 16px;
+    font-size: 0.9375rem;
+    font-style: italic;
+  }
+
+  &__error {
+    margin-bottom: $spacing-md;
+    padding: $spacing-sm $spacing-md;
+    border-radius: 12px;
+    background-color: rgba($color-danger, 0.08);
+    color: $color-danger;
+    font-size: 0.9375rem;
+  }
+}
+
+.document-upload {
+  padding: $spacing-md;
+  border: 1.5px solid $color-gradient-dark;
+  border-radius: 16px;
+  background-color: $color-surface;
+
+  &__hint {
+    font-size: 0.875rem;
+    font-style: italic;
+    margin-bottom: $spacing-sm;
+  }
+
+  &__pickers {
+    display: flex;
+    flex-wrap: wrap;
+    gap: $spacing-sm;
+    margin-bottom: $spacing-sm;
+  }
+
+  // The real input is off screen rather than display:none, so it keeps its
+  // place in the tab order and its label still opens it.
+  &__input {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
+    white-space: nowrap;
+    border: 0;
+
+    &:focus-visible + label {
+      outline: 2px solid $color-headline;
+      outline-offset: 2px;
+    }
+  }
+
+  &__picker {
+    display: inline-block;
+    padding: $spacing-sm $spacing-md;
+    border: 1.5px solid $color-gradient-dark;
+    border-radius: 999px;
+    background-color: $color-white;
+    font-size: 0.9375rem;
+    font-weight: 600;
+    color: $color-headline;
+    cursor: pointer;
+  }
+
+  &__selected {
+    font-size: 0.9375rem;
+    font-weight: 600;
+    margin-bottom: $spacing-sm;
+    word-break: break-word;
+  }
+
+  &__label {
+    display: block;
+    font-size: 0.875rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: $spacing-xs;
+  }
+
+  &__title {
+    width: 100%;
+    padding: $spacing-sm;
+    border: 1.5px solid $color-gradient-dark;
+    border-radius: 12px;
+    background-color: $color-white;
+    font-family: $font-family-base;
+    font-size: 1rem;
+    color: $color-text;
+
+    &:focus-visible {
+      outline: 2px solid $color-headline;
+      outline-offset: 1px;
+    }
+  }
+
+  &__progress {
+    margin-top: $spacing-sm;
+    font-size: 0.9375rem;
+    font-weight: 600;
+  }
+
+  &__error {
+    margin-top: $spacing-sm;
+    color: $color-danger;
+    font-size: 0.9375rem;
+  }
+
+  &__actions {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    gap: $spacing-sm;
+    margin-top: $spacing-md;
+  }
+
+  &__cancel {
+    padding: $spacing-sm $spacing-md;
+    border: none;
+    background: none;
+    font-family: $font-family-base;
+    font-size: 0.9375rem;
+    font-weight: 600;
+    color: $color-text;
+    cursor: pointer;
+    text-decoration: underline;
+  }
+}
+
+.document-card {
+  padding: $spacing-md;
+  border: 1.5px solid $color-gradient-dark;
+  border-radius: 16px;
+  background-color: $color-surface;
+
+  &__title {
+    font-size: 1.0625rem;
+    font-weight: 700;
+    color: $color-headline;
+    word-break: break-word;
+  }
+
+  &__meta {
+    font-size: 0.875rem;
+    margin-top: $spacing-xs;
+    word-break: break-word;
+  }
+
+  &__filed-label {
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-top: $spacing-sm;
+  }
+
+  &__filed {
+    list-style: none;
+    margin: $spacing-xs 0 0;
+    padding: 0;
+    display: flex;
+    flex-wrap: wrap;
+    gap: $spacing-xs;
+  }
+
+  &__chip {
+    display: inline-flex;
+    align-items: center;
+    gap: $spacing-xs;
+    padding: 2px $spacing-sm;
+    border-radius: 999px;
+    background-color: $color-gradient-light;
+    font-size: 0.8125rem;
+    // A chip naming a long event title must wrap rather than push the card
+    // wider than the phone it is on.
+    max-width: 100%;
+
+    span {
+      // Lets the title, and only the title, be the part that wraps.
+      min-width: 0;
+      word-break: break-word;
+    }
+  }
+
+  &__unfile {
+    border: none;
+    background: none;
+    padding: 0;
+    font-family: $font-family-base;
+    font-size: 0.8125rem;
+    font-weight: 700;
+    color: $color-accent;
+    cursor: pointer;
+    text-decoration: underline;
+    // The long title beside it is what wraps. Without these the button is the
+    // thing that gets squeezed, and at 375px it breaks mid word into "Unfil e".
+    white-space: nowrap;
+    flex-shrink: 0;
+  }
+
+  &__nowhere {
+    margin-top: $spacing-sm;
+    font-size: 0.875rem;
+    font-style: italic;
+  }
+
+  &__actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: $spacing-md;
+    margin-top: $spacing-sm;
+  }
+
+  &__action {
+    border: none;
+    background: none;
+    padding: 0;
+    font-family: $font-family-base;
+    font-size: 0.9375rem;
+    font-weight: 600;
+    color: $color-accent;
+    cursor: pointer;
+    text-decoration: underline;
+
+    &:focus-visible {
+      outline: 2px solid $color-headline;
+      outline-offset: 2px;
+    }
+  }
+
+  &__action--danger {
+    color: $color-danger;
+  }
+
+  &__panel {
+    margin-top: $spacing-md;
+    padding: $spacing-md;
+    border: 1.5px solid $color-gradient-dark;
+    border-radius: 12px;
+    background-color: $color-white;
+  }
+
+  &__panel-title {
+    font-size: 1rem;
+    font-weight: 700;
+    color: $color-headline;
+    margin-bottom: $spacing-xs;
+  }
+
+  &__panel-body {
+    font-size: 0.9375rem;
+    margin-bottom: $spacing-sm;
+  }
+
+  &__panel-actions {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    gap: $spacing-sm;
+    margin-top: $spacing-sm;
+  }
+
+  &__error {
+    margin-top: $spacing-sm;
+    color: $color-danger;
+    font-size: 0.9375rem;
+  }
+}
+
+.attached-documents {
+  &__heading {
+    font-size: 0.875rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: $color-headline;
+    margin-bottom: $spacing-xs;
+  }
+
+  // Out in the open above the list, because on one occurrence of a series the
+  // difference between this morning and every morning is the whole decision.
+  &__scope {
+    font-size: 0.875rem;
+    font-style: italic;
+    margin-bottom: $spacing-sm;
+  }
+
+  &__empty {
+    font-size: 0.9375rem;
+    font-style: italic;
+  }
+
+  &__list,
+  &__available {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: $spacing-xs;
+  }
+
+  &__item {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: $spacing-sm;
+    padding: $spacing-xs 0;
+  }
+
+  &__link,
+  &__title {
+    font-size: 0.9375rem;
+    font-weight: 600;
+    color: $color-headline;
+    word-break: break-word;
+  }
+
+  &__meta {
+    font-size: 0.8125rem;
+    color: $color-text;
+  }
+
+  &__attach,
+  &__detach,
+  &__add {
+    border: none;
+    background: none;
+    padding: 0;
+    font-family: $font-family-base;
+    font-size: 0.9375rem;
+    font-weight: 600;
+    color: $color-accent;
+    cursor: pointer;
+    text-decoration: underline;
+
+    &:focus-visible {
+      outline: 2px solid $color-headline;
+      outline-offset: 2px;
+    }
+  }
+
+  &__add {
+    margin-top: $spacing-sm;
+  }
+
+  &__picker {
+    margin-top: $spacing-sm;
+    padding: $spacing-md;
+    border: 1.5px solid $color-gradient-dark;
+    border-radius: 12px;
+    background-color: $color-white;
+  }
+
+  &__hint {
+    font-size: 0.875rem;
+    font-style: italic;
+    margin-bottom: $spacing-sm;
+  }
+
+  &__tabs {
+    display: flex;
+    gap: $spacing-xs;
+    margin-bottom: $spacing-sm;
+  }
+
+  &__tab {
+    flex: 1;
+    padding: $spacing-xs $spacing-sm;
+    border: 1.5px solid $color-gradient-dark;
+    border-radius: 999px;
+    background-color: $color-surface;
+    font-family: $font-family-base;
+    font-size: 0.9375rem;
+    font-weight: 600;
+    color: $color-headline;
+    cursor: pointer;
+  }
+
+  &__tab--active {
+    background-color: $color-gradient-light;
+    box-shadow: inset 0 0 0 1.5px $color-accent;
+  }
+
+  &__error {
+    margin-top: $spacing-sm;
+    color: $color-danger;
+    font-size: 0.9375rem;
+  }
+}

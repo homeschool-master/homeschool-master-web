@@ -66,6 +66,8 @@ export const TASKS_CONTENT = {
   addButton: 'Add a task',
   editAction: 'Edit',
   removeAction: 'Remove',
+  /** Carries a count when there are any, so a row says it has files. */
+  documentsAction: 'Documents',
 
   /** Shown on a row so a repeating task is recognisable before it is opened. */
   seriesBadge: RECURRENCE_CONTENT.seriesBadge,
